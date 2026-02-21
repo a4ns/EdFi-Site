@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 
 const Hero = () => {
@@ -67,18 +68,18 @@ const Hero = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-10">
-                    <button className="hero-cta relative overflow-hidden bg-accent text-black px-8 py-4 rounded-xl font-bold tracking-wide transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-105 group text-sm">
+                    <Link to="/demo" className="hero-cta relative overflow-hidden bg-accent text-black px-8 py-4 rounded-xl font-bold tracking-wide transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-105 group text-sm flex items-center justify-center">
                         <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"></span>
                         <span className="relative z-10 flex items-center gap-2">
-                            Start the Protocol
+                            Start the Protocol Demo
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                         </span>
-                    </button>
-                    <button className="hero-cta relative overflow-hidden bg-surfaceHover text-primary px-8 py-4 rounded-xl font-bold tracking-wide transition-colors duration-300 hover:bg-surfaceHover/80 text-sm">
+                    </Link>
+                    <a href="#process" className="hero-cta flex items-center justify-center relative overflow-hidden bg-surfaceHover text-primary px-8 py-4 rounded-xl font-bold tracking-wide transition-colors duration-300 hover:bg-surfaceHover/80 text-sm">
                         Read Whitepaper
-                    </button>
+                    </a>
                 </div>
 
                 {/* Fake Crypto Stats Row */}

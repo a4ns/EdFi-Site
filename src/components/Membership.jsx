@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Sparkles, ArrowRight, Zap } from 'lucide-react';
@@ -46,13 +47,13 @@ const Membership = () => {
                     Join the Binance Crypto Ideathon winning ecosystem. Integrate BNB Chain directly into your educational process with zero friction.
                 </p>
 
-                <button className="cta-element relative overflow-hidden bg-accent text-black px-10 py-4 rounded-xl font-bold text-base tracking-wide transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-105 group shadow-[0_10px_30px_rgba(252,213,53,0.2)] z-10">
+                <Link to="/demo" className="cta-element relative overflow-hidden bg-accent text-black px-10 py-4 rounded-xl font-bold text-base tracking-wide transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-105 group shadow-[0_10px_30px_rgba(252,213,53,0.2)] z-10 mx-auto block w-max">
                     <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"></span>
                     <span className="relative z-10 flex items-center justify-center gap-3">
-                        Initialize Access
+                        Initialize Access Demo
                         <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                     </span>
-                </button>
+                </Link>
             </div>
         </section>
     );

@@ -66,9 +66,9 @@ const Protocol = () => {
 
     const steps = [
         {
-            id: 'PHASE 01',
-            title: 'Performance Oracle',
-            description: 'Your academic trajectory is evaluated continuously. High GPA and attendance metrics are validated on-chain via custom oracles.',
+            id: 'EARN',
+            title: 'Academic Mining',
+            description: 'Your academic trajectory is evaluated continuously. High GPA (Performance), 100% attendance, and published articles are validated on-chain via custom oracles to mint EDC tokens.',
             Visual: () => (
                 <svg viewBox="0 0 200 200" className="w-full h-full text-accent geo-rotation drop-shadow-[0_0_15px_rgba(252,213,53,0.3)]">
                     <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 8" />
@@ -81,9 +81,9 @@ const Protocol = () => {
             )
         },
         {
-            id: 'PHASE 02',
-            title: 'The Sandbox Web3',
-            description: 'Zero risk, full exposure. Establish practical crypto literacy by interacting with non-custodial wallets and real smart contracts in a secure testnet environment.',
+            id: 'SPEND',
+            title: 'Campus Economy',
+            description: 'Zero friction daily utility. Spend your earned EDC directly on campus infrastructure: pay for the canteen, dormitory fees, or exclusive university merchandise.',
             Visual: () => (
                 <div className="relative w-full h-full bg-surfaceHover/40 rounded-xl overflow-hidden p-6 border border-surfaceHover">
                     <div className="grid grid-cols-8 gap-2 h-full opacity-40">
@@ -100,9 +100,9 @@ const Protocol = () => {
             )
         },
         {
-            id: 'PHASE 03',
-            title: 'Campus Digital Economy',
-            description: 'Your earned assets are liquid. Spend tokens on canteen meals, dormitory fees, or withdraw directly through a seamless Binance Pay integration.',
+            id: 'LIQUIDITY',
+            title: 'Real World Bridge',
+            description: 'Your earned assets are truly liquid. Withdraw EDC out of the campus sandbox via seamless integration with Binance Pay, P2P exchange, or stake for future yields.',
             Visual: () => (
                 <svg viewBox="0 0 400 200" className="w-full h-full text-green p-4 drop-shadow-[0_0_10px_rgba(14,203,129,0.4)]">
                     {/* Background Grid */}
