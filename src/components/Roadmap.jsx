@@ -26,24 +26,19 @@ const Roadmap = () => {
 
     const timeline = [
         {
-            date: 'Q4 2024',
-            title: 'Ideathon Victory',
-            desc: 'Won the Binance Crypto Ideathon (EdFi track). Core protocol concept and Learn-to-Earn mechanics formulated.'
+            date: 'Nov 2025',
+            title: 'Smart Contract MVP',
+            desc: 'Initial Kozybayev University (6000 students) sandbox deployment on BNB Testnet to validate the Learn-to-Earn hypothesis.'
         },
         {
-            date: 'Q1-Q2 2025',
-            title: 'Architecture & Network',
-            desc: 'Currently developing smart contract architecture, building EU network via Erasmus+ in Lithuania, and finalizing UI/UX design.'
+            date: 'Q2 2026',
+            title: 'Full Campus Economy',
+            desc: 'Mainnet migration. Spending integration with campus canteens, dormitories, and local merchandise stores.'
         },
         {
-            date: 'Q3 2025',
-            title: 'MVP Testnet Launch',
-            desc: 'Testnet deployment and integration with the first pilot university/student community to validate the Oracle mechanisms.'
-        },
-        {
-            date: 'Q4 2025',
-            title: 'Corporate Sponsorships',
-            desc: 'Launch of the Smart Scholarships mechanism and onboarding of initial corporate sponsor liquidity pools.'
+            date: '2027',
+            title: 'National eGov Integration',
+            desc: 'Creation of a national standard. Direct integration with state educational databases scaling mechanics across Kazakhstan.'
         }
     ];
 
