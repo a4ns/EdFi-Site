@@ -7,15 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0B0E11', // Binance Dark Backgroun
-        surface: '#181A20',    // Binance Dark Card Background
-        surfaceHover: '#2B3139', // Binance Hover State
-        primary: '#EAECEF',    // White/Light Gray Text
-        secondary: '#848E9C',  // Medium Gray Text
-        accent: '#FCD535',     // Binance Yellow
-        dark: '#0B0E11',       // Keeping this for compatibility
-        green: '#0ECB81',      // Binance Green Positive
-        red: '#F6465D',        // Binance Red Negative
+        background: '#05050A', // Deep OLED Black
+        surface: '#0A0A14',    // Dark Surface
+        surfaceHover: '#13131F', // Lighter Surface
+        primary: '#FFFFFF',    // Pure White Text
+        secondary: '#A1A1AA',  // Zinc-400 Text
+        accent: '#6366F1',     // Web3 Indigo/Purple
+        dark: '#05050A',
+        green: '#10B981',      // Emerald
+        red: '#EF4444',        // Red
       },
       fontFamily: {
         sans: ['"Inter"', 'sans-serif'],
