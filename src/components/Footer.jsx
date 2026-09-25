@@ -56,7 +56,7 @@ export default function Footer() {
             <h3 className="mt-8 text-base font-medium text-ink">Community</h3>
             <div className="mt-4 grid max-w-[176px] grid-cols-4 gap-4">
               {SOCIAL.map(([label, icon]) => (
-                <a key={label} href="#" aria-label={label} className="text-ink-3 transition-colors hover:text-yellow">
+                <a key={label} href="#" aria-label={label} className="text-ink-3 transition-colors hover:text-yellow-text">
                   {icon}
                 </a>
               ))}

@@ -46,7 +46,7 @@ export default function DepositModal({ onClose }) {
       </div>
 
       <div className="mt-4 flex gap-2 rounded-lg bg-yellow/5 p-3 text-xs leading-5 text-ink-2">
-        <Info size={16} className="mt-0.5 shrink-0 text-yellow" />
+        <Info size={16} className="mt-0.5 shrink-0 text-yellow-text" />
         Send only EDC on BNB Smart Chain (BEP20) to this address. Deposits arrive after 15 network confirmations.
       </div>
     </Modal>

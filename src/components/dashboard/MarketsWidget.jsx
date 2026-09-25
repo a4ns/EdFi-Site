@@ -39,7 +39,7 @@ export default function MarketsWidget({ balance }) {
       <div className="mt-2 flex h-8 items-center text-xs text-ink-3">
         <span className="flex-1">Coin</span>
         <span className="w-[104px] text-right">{tab === 'holding' ? 'Amount' : 'Price'}</span>
-        <span className="w-[72px] text-right">24h Change</span>
+        <span className="w-[88px] text-right">24h Change</span>
       </div>
       <ul>
         {rows.map((r) => (
@@ -56,7 +56,7 @@ export default function MarketsWidget({ balance }) {
             ) : (
               <Price quote={r} className="w-[104px] text-right text-sm text-ink" />
             )}
-            <Change value={r.change} className="w-[72px] text-right text-sm" />
+            <Change value={r.change} className="w-[88px] text-right text-sm" />
           </li>
         ))}
       </ul>

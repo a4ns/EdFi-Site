@@ -2,7 +2,7 @@ import { ROADMAP } from '../../data/content';
 
 export default function Roadmap() {
   return (
-    <section id="roadmap" className="page-x scroll-mt-16 py-16 lg:py-24">
+    <section id="roadmap" className="page-x scroll-mt-16 py-12 lg:py-16">
       <h2 className="section-title">Roadmap</h2>
       <p className="mt-3 max-w-xl text-base text-ink-3">
         From a single-campus sandbox in Petropavlovsk to a national education standard.

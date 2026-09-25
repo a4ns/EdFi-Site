@@ -46,7 +46,7 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-ink">Learn &amp; Earn</h2>
         {claimable > 0 ? (
-          <span className="chip bg-yellow/10 text-yellow">{claimable} ready to claim</span>
+          <span className="chip bg-yellow/10 text-yellow-text">{claimable} ready to claim</span>
         ) : (
           <span className="text-xs text-ink-3">All rewards claimed</span>
         )}

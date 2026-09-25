@@ -47,6 +47,8 @@ export default function MarketsProvider({ children }) {
               price: Number(r.lastPrice),
               change: Number(r.priceChangePercent),
               volume: Number(r.quoteVolume),
+              high: Number(r.highPrice),
+              low: Number(r.lowPrice),
             });
           }
           return next;
@@ -77,7 +79,12 @@ export default function MarketsProvider({ children }) {
         const price = Math.max(0.02, prev.EDC.price * drift);
         return {
           ...prev,
-          EDC: withTick(prev.EDC, { price, change: (price / EDC_OPEN - 1) * 100 }),
+          EDC: withTick(prev.EDC, {
+            price,
+            change: (price / EDC_OPEN - 1) * 100,
+            high: Math.max(prev.EDC.high, price),
+            low: Math.min(prev.EDC.low, price),
+          }),
         };
       });
     }, 3000);

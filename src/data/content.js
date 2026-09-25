@@ -7,20 +7,38 @@ export const COINS = {
   ETH: { name: 'Ethereum', color: '#627EEA' },
   SOL: { name: 'Solana', color: '#9945FF' },
   XRP: { name: 'XRP', color: '#23292F' },
+  DOGE: { name: 'Dogecoin', color: '#C2A633' },
+  ADA: { name: 'Cardano', color: '#0033AD' },
+  TRX: { name: 'TRON', color: '#EB0029' },
+  LINK: { name: 'Chainlink', color: '#2A5ADA' },
+  AVAX: { name: 'Avalanche', color: '#E84142' },
+  SUI: { name: 'Sui', color: '#4DA2FF' },
+  TON: { name: 'Toncoin', color: '#0098EA' },
+  LTC: { name: 'Litecoin', color: '#345D9D' },
+  DOT: { name: 'Polkadot', color: '#E6007A' },
   USDT: { name: 'TetherUS', color: '#26A17B' },
 };
 
 // Snapshot used until live prices from Binance's public market-data API arrive
 // (and whenever that API is unreachable).
 export const FALLBACK_MARKETS = {
-  BTC: { price: 84033.99, change: -0.68, volume: 1570440950 },
-  ETH: { price: 2693.96, change: 0.03, volume: 688309857 },
-  BNB: { price: 775.21, change: -0.73, volume: 105021356 },
-  SOL: { price: 122.02, change: 3.79, volume: 482173688 },
-  XRP: { price: 1.5702, change: 2.57, volume: 540407579 },
+  BTC: { price: 84016, change: -0.5, volume: 1563047679, high: 85255, low: 83183 },
+  ETH: { price: 2693.21, change: -0.09, volume: 680154606, high: 2743, low: 2667.33 },
+  BNB: { price: 775.3, change: -0.59, volume: 104387119, high: 790.29, low: 768.58 },
+  SOL: { price: 121.72, change: 3.7, volume: 481695710, high: 122.78, low: 115.86 },
+  XRP: { price: 1.57, change: 2.78, volume: 541155128, high: 1.63, low: 1.5191 },
+  DOGE: { price: 0.09799, change: 1.95, volume: 98163992, high: 0.09912, low: 0.09456 },
+  ADA: { price: 0.2547, change: 2.83, volume: 52672013, high: 0.2586, low: 0.2461 },
+  TRX: { price: 0.3375, change: -0.97, volume: 26360728, high: 0.3408, low: 0.336 },
+  LINK: { price: 13.848, change: 5.16, volume: 82572929, high: 14.219, low: 13.102 },
+  AVAX: { price: 10.446, change: -0.05, volume: 58739032, high: 10.75, low: 10.082 },
+  SUI: { price: 1.1379, change: 11.93, volume: 154494798, high: 1.1615, low: 1 },
+  TON: { price: 1.6, change: 0.95, volume: 7717352, high: 1.641, low: 1.58 },
+  LTC: { price: 71.14, change: 0.1, volume: 60303408, high: 72.42, low: 68.96 },
+  DOT: { price: 1.183, change: 1.2, volume: 11989957, high: 1.204, low: 1.131 },
 };
 
-export const EDC_START = { price: 0.0267, change: 4.82, volume: 1204380 * 0.0267 };
+export const EDC_START = { price: 0.0267, change: 4.82, volume: 1204380 * 0.0267, high: 0.0271, low: 0.0252 };
 
 export const NAV = [
   {

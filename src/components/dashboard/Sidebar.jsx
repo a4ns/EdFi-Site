@@ -1,17 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Gift, GraduationCap, History, LayoutDashboard, LogOut, QrCode, Settings, User, UserPlus, Wallet } from 'lucide-react';
-
-const SIDEBAR_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, target: 'top' },
-  { id: 'assets', label: 'Assets', icon: Wallet, target: 'balance' },
-  { id: 'earn', label: 'Learn & Earn', icon: GraduationCap, target: 'tasks' },
-  { id: 'pay', label: 'Campus Pay', icon: QrCode, action: 'pay' },
-  { id: 'history', label: 'History', icon: History, target: 'history' },
-  { id: 'rewards', label: 'Rewards Hub', icon: Gift, target: 'tasks' },
-  { id: 'referral', label: 'Referral', icon: UserPlus, target: 'top' },
-  { id: 'account', label: 'Account', icon: User, target: 'top' },
-  { id: 'settings', label: 'Settings', icon: Settings, target: 'top' },
-];
+import { LogOut } from 'lucide-react';
+import { SIDEBAR_ITEMS } from './nav';
 
 export default function Sidebar({ active, onSelect }) {
   return (
@@ -31,7 +20,7 @@ export default function Sidebar({ active, onSelect }) {
                   isActive ? 'bg-card text-ink' : 'text-ink-3 hover:bg-card hover:text-ink'
                 }`}
               >
-                <Ico size={20} className={isActive ? 'text-ink' : ''} />
+                <Ico size={20} className={isActive ? 'text-ink [&_*]:fill-current [&_*]:[fill-opacity:0.2]' : ''} />
                 {label}
               </button>
             );

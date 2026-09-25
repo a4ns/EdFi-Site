@@ -7,7 +7,7 @@ export default function FAQ() {
   const baseId = useId();
 
   return (
-    <section id="faq" className="page-x scroll-mt-16 py-16 lg:py-24">
+    <section id="faq" className="page-x scroll-mt-16 py-12 lg:py-16">
       <h2 className="section-title">Frequently Asked Questions</h2>
       <div className="mt-10 space-y-2">
         {ITEMS.map((item, i) => {

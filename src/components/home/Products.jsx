@@ -73,7 +73,7 @@ const PREVIEWS = [EarnPreview, SpendPreview, WithdrawPreview];
 
 export default function Products() {
   return (
-    <section id="products" className="page-x scroll-mt-16 py-16 lg:py-24">
+    <section id="products" className="page-x scroll-mt-16 py-12 lg:py-16">
       <h2 className="section-title">One token for your whole campus</h2>
       <p className="mt-3 max-w-xl text-base text-ink-3">
         EDC is earned for verified academic results and accepted across campus. It never gets stuck in a transcript.
@@ -83,15 +83,13 @@ export default function Products() {
           const Preview = PREVIEWS[i];
           return (
             <article key={p.tag} className="card flex flex-col p-6 lg:p-8">
-              <div className="flex items-center justify-between">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-raised text-yellow">
-                  <Icon name={p.icon} size={24} />
-                </span>
-                <span className="chip bg-raised text-ink-2">{p.tag}</span>
-              </div>
-              <h3 className="mt-6 text-xl font-semibold text-ink">{p.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-ink-3">{p.desc}</p>
-              <div className="mt-6 flex-1">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-raised text-yellow-text">
+                <Icon name={p.icon} size={24} />
+              </span>
+              <p className="mt-6 text-sm font-medium text-yellow-text">{p.tag}</p>
+              <h3 className="mt-1 text-xl font-semibold text-ink">{p.title}</h3>
+              <p className="mt-2 min-h-[72px] text-sm leading-6 text-ink-3">{p.desc}</p>
+              <div className="mt-6 flex h-[112px] flex-col justify-end">
                 <Preview />
               </div>
               <Link to="/demo" className="link-more mt-6 text-ink">

@@ -40,7 +40,7 @@ export default function PhoneMockup() {
 
         {/* app bar */}
         <div className="flex items-center gap-2 px-4 pb-3 pt-1">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-raised text-[10px] font-semibold text-yellow">AK</span>
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-raised text-[10px] font-semibold text-yellow-text">AK</span>
           <span className="flex h-7 flex-1 items-center gap-1.5 rounded-full bg-raised px-3 text-[11px] text-ink-3">
             <Search size={12} />
             EDC
@@ -100,7 +100,7 @@ export default function PhoneMockup() {
         <div className="absolute inset-x-0 bottom-0 grid grid-cols-5 border-t border-line bg-page px-2 pb-5 pt-2">
           {TABS.map(([label, Ico, active]) => (
             <span key={label} className={`flex flex-col items-center gap-0.5 text-[9px] ${active ? 'text-ink' : 'text-ink-3'}`}>
-              <Ico size={18} className={active ? 'text-yellow' : ''} />
+              <Ico size={18} className={active ? 'text-yellow-text' : ''} />
               {label}
             </span>
           ))}
