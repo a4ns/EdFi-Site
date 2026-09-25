@@ -20,7 +20,7 @@ const PLATFORMS = [
 
 export default function AppDownload() {
   return (
-    <section id="download" className="page-x scroll-mt-16 py-12 lg:py-16">
+    <section id="download" className="page-x scroll-mt-16 py-10 lg:py-12">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="order-2 lg:order-1">
           <PhoneMockup />

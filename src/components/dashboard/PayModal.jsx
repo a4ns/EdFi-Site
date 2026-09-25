@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { BedDouble, CircleCheck, Printer, Shirt, Utensils } from 'lucide-react';
+import { BedDouble, Check, Copy, Printer, Shirt, Utensils } from 'lucide-react';
 import Modal from './Modal';
 import AmountInput from './AmountInput';
 import SummaryRow from './SummaryRow';
 import { MERCHANTS } from './data';
-import { formatAmount } from '../../lib/format';
+import { formatAmount, formatDateTime } from '../../lib/format';
 
 const ICONS = { Utensils, BedDouble, Shirt, Printer };
 
-export default function PayModal({ balance, onClose, onPay }) {
+const hex = (n) => Array.from({ length: n }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
   const [merchant, setMerchant] = useState(MERCHANTS[0].id);
   const [amount, setAmount] = useState('15.00');
   const [done, setDone] = useState(null);
@@ -19,15 +21,36 @@ export default function PayModal({ balance, onClose, onPay }) {
   if (done) {
     return (
       <Modal title="Scan Pay" onClose={onClose}>
-        <div className="flex flex-col items-center py-4 text-center">
-          <CircleCheck size={56} className="text-up" />
-          <p className="mt-4 text-xl font-semibold text-ink">Payment Successful</p>
-          <p className="num mt-2 text-[28px] font-semibold text-ink">-{formatAmount(done.amount)} EDC</p>
-          <p className="mt-1 text-sm text-ink-3">Paid to {done.name} · Fee 0.00 EDC</p>
-          <button type="button" className="btn btn-secondary btn-lg mt-8 w-full" onClick={onClose}>
-            Done
-          </button>
+        <div className="flex flex-col items-center text-center">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-up/15">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-up text-white">
+              <Check size={28} strokeWidth={2.5} />
+            </span>
+          </span>
+          <p className="mt-4 text-base font-medium text-ink">Payment Successful</p>
+          <p className="num mt-1 text-[28px] font-semibold leading-9 text-ink">-{formatAmount(done.amount)} EDC</p>
         </div>
+        <div className="mt-6 space-y-3 rounded-lg bg-page p-4">
+          <SummaryRow label="Merchant">{done.name}</SummaryRow>
+          <SummaryRow label="Fee">0.00 EDC</SummaryRow>
+          <SummaryRow label="Time">{formatDateTime(new Date(done.at))}</SummaryRow>
+          <SummaryRow label="Order ID">{done.order}</SummaryRow>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-ink-3">Tx hash</span>
+            <span className="num flex items-center gap-1.5 text-ink-2">
+              {done.hash.slice(0, 8)}…{done.hash.slice(-6)}
+              <button type="button" onClick={() => navigator.clipboard?.writeText(done.hash).catch(() => {})} className="text-ink-3 hover:text-yellow-text" aria-label="Copy transaction hash">
+                <Copy size={14} />
+              </button>
+            </span>
+          </div>
+        </div>
+        <button type="button" className="btn btn-primary btn-lg mt-6 w-full" onClick={onClose}>
+          Done
+        </button>
+        <button type="button" className="mt-3 w-full text-center text-sm font-medium text-ink-3 hover:text-ink" onClick={onViewHistory}>
+          View in History
+        </button>
       </Modal>
     );
   }
@@ -39,7 +62,7 @@ export default function PayModal({ balance, onClose, onPay }) {
           e.preventDefault();
           if (!value || over) return;
           onPay({ merchant: m, amount: value });
-          setDone({ amount: value, name: m.name });
+          setDone({ amount: value, name: m.name, at: Date.now(), order: `CP${Date.now().toString().slice(-10)}`, hash: `0x${hex(64)}` });
         }}
       >
         <p className="text-sm text-ink-3">Merchant</p>

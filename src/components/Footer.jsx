@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Github, Instagram, Linkedin, Youtube } from 'lucide-react';
+import { ChevronDown, Github, Instagram, Linkedin, Youtube } from 'lucide-react';
 import Logo from './Logo';
 import { FOOTER_COLUMNS } from '../data/content';
 
@@ -63,7 +63,7 @@ export default function Footer() {
             </div>
           </div>
           {FOOTER_COLUMNS.map((col) => (
-            <div key={col.title}>
+            <div key={col.title} className="hidden md:block">
               <h3 className="text-base font-medium text-ink">{col.title}</h3>
               <ul className="mt-4 space-y-3">
                 {col.links.map(([label, href]) => (
@@ -74,6 +74,23 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+          <div className="col-span-2 -mt-4 md:hidden">
+            {FOOTER_COLUMNS.map((col) => (
+              <details key={col.title} className="group border-b border-line">
+                <summary className="flex h-14 cursor-pointer list-none items-center justify-between text-base font-medium text-ink [&::-webkit-details-marker]:hidden">
+                  {col.title}
+                  <ChevronDown size={18} className="text-ink-3 transition-transform group-open:rotate-180" />
+                </summary>
+                <ul className="space-y-3 pb-4">
+                  {col.links.map(([label, href]) => (
+                    <li key={label}>
+                      <FooterLink label={label} href={href} />
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-ink-3 md:flex-row md:items-center md:justify-between">
