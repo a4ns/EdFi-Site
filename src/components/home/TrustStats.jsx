@@ -3,7 +3,7 @@ import { TRUST_STATS } from '../../data/content';
 export default function TrustStats() {
   return (
     <section className="page-x" aria-label="EdFi in numbers">
-      <div className="grid grid-cols-2 gap-y-8 rounded-2xl border border-line py-8 lg:grid-cols-4 lg:py-10">
+      <div className="grid grid-cols-2 gap-y-8 rounded-xl border border-line py-8 lg:grid-cols-4 lg:py-10">
         {TRUST_STATS.map((s, i) => (
           <div
             key={s.label}

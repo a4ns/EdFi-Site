@@ -305,8 +305,9 @@ function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
     <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
       <div className="absolute inset-0 animate-fade-in bg-black/60" onClick={onClose} />
       <div className="absolute inset-y-0 right-0 flex w-full max-w-[400px] animate-slide-in flex-col overflow-y-auto bg-page">
-        <div className="flex h-16 shrink-0 items-center justify-end px-4">
-          <button type="button" className="icon-btn" onClick={onClose} aria-label="Close menu">
+        <div className="flex h-16 shrink-0 items-center justify-between px-4">
+          <Logo />
+          <button type="button" className="icon-btn text-ink" onClick={onClose} aria-label="Close menu">
             <X size={24} />
           </button>
         </div>
@@ -389,6 +390,14 @@ function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
         )}
 
         <div className="mt-auto border-t border-line px-2 pb-6 pt-2">
+          <div className="flex h-14 items-center justify-between px-3">
+            <span className="text-base font-medium text-ink">Language</span>
+            <span className="text-sm text-ink-3">English</span>
+          </div>
+          <div className="flex h-14 items-center justify-between px-3">
+            <span className="text-base font-medium text-ink">Currency</span>
+            <span className="text-sm text-ink-3">USD - $</span>
+          </div>
           <DrawerThemeRow />
           {variant === 'app' && (
             <Link to="/" onClick={onClose} className={`${row} gap-3 text-ink-3`}>

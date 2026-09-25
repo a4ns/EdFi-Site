@@ -22,6 +22,7 @@ export default function Modal({ title, onClose, children }) {
         ref={panel}
         className="relative max-h-[92vh] w-full animate-pop-in overflow-y-auto rounded-t-2xl bg-card p-6 shadow-pop sm:max-w-[420px] sm:rounded-2xl"
       >
+        <span className="mx-auto -mt-2 mb-4 block h-1 w-9 rounded-full bg-line-strong sm:hidden" aria-hidden="true" />
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-ink">{title}</h2>
           <button type="button" data-close className="icon-btn -mr-1" onClick={onClose} aria-label="Close">

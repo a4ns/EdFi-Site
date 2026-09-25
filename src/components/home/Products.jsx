@@ -11,7 +11,7 @@ function EarnPreview() {
         ['Exam grade A', 'Macroeconomics', '+50.00'],
         ['Weekly attendance', '5 of 5 days', '+25.00'],
       ].map(([t, s, v]) => (
-        <div key={t} className="flex items-center gap-3 rounded-lg bg-page px-3 py-2.5">
+        <div key={t} className="flex items-center gap-3 rounded-md bg-card px-3 py-2">
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-up/10 text-up">
             <ArrowDownLeft size={14} />
           </span>
@@ -28,7 +28,7 @@ function EarnPreview() {
 
 function SpendPreview() {
   return (
-    <div className="rounded-lg bg-page px-4 py-3">
+    <div className="px-1">
       <div className="flex items-center justify-between text-[11px] text-ink-3">
         <span>Campus Canteen</span>
         <span className="inline-flex items-center gap-1 text-up">
@@ -49,7 +49,7 @@ function SpendPreview() {
 
 function WithdrawPreview() {
   return (
-    <div className="space-y-2 rounded-lg bg-page px-4 py-3 text-[11px]">
+    <div className="space-y-2.5 px-1 text-[11px]">
       <div className="flex items-center justify-between">
         <span className="text-ink-3">Coin</span>
         <span className="inline-flex items-center gap-1.5 font-medium text-ink">
@@ -73,7 +73,7 @@ const PREVIEWS = [EarnPreview, SpendPreview, WithdrawPreview];
 
 export default function Products() {
   return (
-    <section id="products" className="page-x scroll-mt-16 py-12 lg:py-16">
+    <section id="products" className="page-x scroll-mt-16 py-10 lg:py-12">
       <h2 className="section-title">One token for your whole campus</h2>
       <p className="mt-3 max-w-xl text-base text-ink-3">
         EDC is earned for verified academic results and accepted across campus. It never gets stuck in a transcript.
@@ -89,7 +89,7 @@ export default function Products() {
               <p className="mt-6 text-sm font-medium text-yellow-text">{p.tag}</p>
               <h3 className="mt-1 text-xl font-semibold text-ink">{p.title}</h3>
               <p className="mt-2 min-h-[72px] text-sm leading-6 text-ink-3">{p.desc}</p>
-              <div className="mt-6 flex h-[112px] flex-col justify-end">
+              <div className="mt-6 flex h-[128px] flex-col justify-center rounded-lg bg-page p-3">
                 <Preview />
               </div>
               <Link to="/demo" className="link-more mt-6 text-ink">

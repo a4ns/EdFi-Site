@@ -104,7 +104,7 @@
   .btn-lg { @apply h-12 px-6 text-base; }
 
   .btn-primary {
-    @apply bg-yellow text-yellow-on hover:bg-yellow-hover;
+    @apply bg-yellow text-yellow-on hover:bg-yellow-hover disabled:bg-raised disabled:text-ink-4 disabled:opacity-100;
   }
   .btn-secondary {
     @apply bg-raised text-ink hover:bg-line-strong;

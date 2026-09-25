@@ -145,6 +145,7 @@ export default function DashboardApp() {
   const pay = ({ merchant, amount }) => {
     setBalance((b) => b - amount);
     addTx({ kind: 'payment', title: merchant.name, sub: 'Scan Pay', amount: -amount });
+    showToast(`Payment of ${formatAmount(amount)} EDC successful`);
   };
 
   const withdraw = ({ address, amount }) => {
@@ -198,7 +199,17 @@ export default function DashboardApp() {
       </div>
       <MobileTabBar onSelect={goTo} />
 
-      {modal === 'pay' && <PayModal balance={balance} onClose={closeModal} onPay={pay} />}
+      {modal === 'pay' && (
+        <PayModal
+          balance={balance}
+          onClose={closeModal}
+          onPay={pay}
+          onViewHistory={() => {
+            setModal(null);
+            goTo('history');
+          }}
+        />
+      )}
       {modal === 'deposit' && <DepositModal onClose={closeModal} />}
       {modal === 'withdraw' && <WithdrawModal balance={balance} onClose={closeModal} onWithdraw={withdraw} />}
       <Toast toast={toast} />

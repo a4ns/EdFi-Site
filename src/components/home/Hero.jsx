@@ -115,7 +115,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="page-x grid grid-cols-1 gap-10 pb-16 pt-8 md:pt-14 lg:grid-cols-[minmax(0,1fr)_468px] lg:gap-16 lg:pb-24 lg:pt-20">
+    <section className="page-x grid grid-cols-1 gap-10 pb-12 pt-8 md:pt-14 lg:grid-cols-[minmax(0,1fr)_468px] lg:gap-16 lg:pb-12 lg:pt-16">
       <div className="flex flex-col lg:pt-4">
         <h1 className="text-[40px] font-bold leading-[48px] text-ink md:text-[64px] md:leading-[72px] lg:text-[72px] lg:leading-[80px]">
           <span className="num block text-brand">{formatInt(earned)}</span>

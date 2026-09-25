@@ -53,8 +53,8 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
       </div>
       <ul className="mt-2">
         {tasks.map((t) => (
-          <li key={t.id} className="flex items-center gap-4 border-b border-line py-4 last:border-0 last:pb-0">
-            <div className="min-w-0 flex-1">
+          <li key={t.id} className="flex flex-col gap-3 border-b border-line py-4 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:gap-4">
+            <div className="min-w-0 w-full flex-1">
               <div className="flex items-center justify-between gap-3">
                 <p className="truncate text-sm font-medium text-ink">{t.title}</p>
                 <p className="num shrink-0 text-sm font-semibold text-ink">
@@ -71,7 +71,9 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
                 <Progress value={Math.min(t.progress, t.total)} total={t.total} />
               </div>
             </div>
-            <Action task={t} onClaim={onClaim} onContinue={onContinue} />
+            <div className="flex justify-end sm:block">
+              <Action task={t} onClaim={onClaim} onContinue={onContinue} />
+            </div>
           </li>
         ))}
       </ul>

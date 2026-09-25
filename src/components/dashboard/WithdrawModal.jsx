@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import Modal from './Modal';
+import CoinIcon from '../CoinIcon';
 import AmountInput from './AmountInput';
 import SummaryRow from './SummaryRow';
 import { formatAmount } from '../../lib/format';
@@ -13,7 +15,16 @@ export default function WithdrawModal({ balance, onClose, onWithdraw }) {
   const value = Number(amount) || 0;
   const over = value > balance;
   const badAddress = touched && address && !isAddress(address);
-  const valid = isAddress(address) && value > 0 && !over;
+  const valid = isAddress(address) && value >= 1 && !over;
+  const paste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) setAddress(text.trim());
+    } catch {
+      /* clipboard read can be blocked; user can type instead */
+    }
+    setTouched(true);
+  };
 
   return (
     <Modal title="Withdraw EDC" onClose={onClose}>
@@ -24,25 +35,45 @@ export default function WithdrawModal({ balance, onClose, onWithdraw }) {
           onWithdraw({ address: address.trim(), amount: value });
         }}
       >
-        <label htmlFor="wd-address" className="block text-sm text-ink-3">
+        <p className="text-sm text-ink-3">Coin</p>
+        <div className="mt-2 flex h-12 items-center justify-between rounded-lg border border-line-strong px-4">
+          <span className="flex items-center gap-2 text-sm font-medium text-ink">
+            <CoinIcon symbol="EDC" size={20} />
+            EDC <span className="font-normal text-ink-3">EdFi Coin</span>
+          </span>
+          <span className="num text-xs text-ink-3">{formatAmount(balance)} available</span>
+        </div>
+
+        <label htmlFor="wd-address" className="mt-6 block text-sm text-ink-3">
           Address
         </label>
-        <input
-          id="wd-address"
-          className={`input num mt-2 ${badAddress ? '!border-down' : ''}`}
-          placeholder="Enter BEP20 address (0x…)"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          onBlur={() => setTouched(true)}
-          autoComplete="off"
-          spellCheck="false"
-        />
+        <div
+          className={`mt-2 flex h-12 items-center rounded-lg border px-4 transition-colors focus-within:border-yellow hover:border-yellow ${
+            badAddress ? '!border-down' : 'border-line-strong'
+          }`}
+        >
+          <input
+            id="wd-address"
+            className="num min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-4"
+            placeholder="Enter BEP20 address (0x…)"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            onBlur={() => setTouched(true)}
+            autoComplete="off"
+            spellCheck="false"
+          />
+          <button type="button" onClick={paste} className="ml-3 text-sm font-medium text-yellow-text hover:text-yellow-hover">
+            Paste
+          </button>
+        </div>
         {badAddress && <p className="mt-2 text-xs text-down">Enter a valid BNB Smart Chain address</p>}
 
         <p className="mt-6 text-sm text-ink-3">Network</p>
-        <div className="mt-2 flex h-12 items-center rounded-lg border border-line-strong px-4 text-sm font-medium text-ink">
+        <div className="mt-2 flex h-12 items-center justify-between rounded-lg border border-line-strong px-4 text-sm font-medium text-ink">
           BNB Smart Chain (BEP20)
+          <ChevronDown size={16} className="text-ink-3" />
         </div>
+        <p className="mt-2 text-xs text-ink-3">Arrival ≈ 3s · Min. withdrawal 1 EDC</p>
 
         <label htmlFor="wd-amount" className="mt-6 block text-sm text-ink-3">
           Amount

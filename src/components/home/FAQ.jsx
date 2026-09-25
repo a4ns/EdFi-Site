@@ -7,13 +7,13 @@ export default function FAQ() {
   const baseId = useId();
 
   return (
-    <section id="faq" className="page-x scroll-mt-16 py-12 lg:py-16">
+    <section id="faq" className="page-x scroll-mt-16 py-10 lg:py-12">
       <h2 className="section-title">Frequently Asked Questions</h2>
       <div className="mt-10 space-y-2">
         {ITEMS.map((item, i) => {
           const isOpen = open === i;
           return (
-            <div key={item.q} className={`rounded-2xl transition-colors ${isOpen ? 'bg-card' : 'hover:bg-card'}`}>
+            <div key={item.q} className={`rounded-xl transition-colors ${isOpen ? 'bg-card' : 'hover:bg-card'}`}>
               <h3>
                 <button
                   type="button"
