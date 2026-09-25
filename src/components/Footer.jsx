@@ -1,69 +1,103 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronDown, Github, Instagram, Linkedin, Youtube } from 'lucide-react';
+import Logo from './Logo';
+import { FOOTER_COLUMNS } from '../data/content';
 
-const Footer = () => {
-    return (
-        <footer className="w-full bg-background text-primary pt-24 pb-12 px-6 md:px-16 border-t border-surfaceHover relative z-0 flex flex-col items-center justify-between">
-            <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
+function XIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.8 2.5h3.1l-6.8 7.8 8 10.6h-6.3l-4.9-6.4-5.6 6.4H2.2l7.3-8.3L1.8 2.5h6.4l4.4 5.9zm-1.1 16.5h1.7L7.4 4.3H5.6z" />
+    </svg>
+  );
+}
 
-                {/* Brand & Tagline */}
-                <div className="md:col-span-5 flex flex-col items-start space-y-6">
-                    <div className="font-heading font-extrabold text-3xl tracking-tighter text-primary flex items-center gap-2">
-                        <div className="w-6 h-6 bg-accent rounded-sm flex items-center justify-center transform rotate-45">
-                            <div className="w-3 h-3 bg-background transform rotate-0 rounded-sm"></div>
-                        </div>
-                        EdFi
-                    </div>
-                    <p className="font-sans font-medium text-sm text-secondary max-w-xs leading-relaxed">
-                        The first Learn-to-Earn university ecosystem powering academic motivation through Web3 architecture.
-                    </p>
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-surface border border-surfaceHover mt-2">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green"></span>
-                        </span>
-                        <span className="font-mono text-[10px] text-primary tracking-widest uppercase font-bold">
-                            Binance Smart Chain Operational
-                        </span>
-                    </div>
-                </div>
+function TelegramIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M21.9 4.3 18.7 19.4c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.2-8.3c.4-.4-.1-.6-.6-.2L6.1 13.1 1.2 11.6c-1.1-.3-1.1-1.1.2-1.6L20.5 2.6c.9-.3 1.7.2 1.4 1.7z" />
+    </svg>
+  );
+}
 
-                {/* Navigation */}
-                <div className="md:col-span-3">
-                    <h4 className="font-sans font-bold text-xs tracking-widest uppercase text-primary mb-6">Platform</h4>
-                    <ul className="space-y-4">
-                        {['Diagnostic Shuffler', 'Telemetry Log', 'Protocol Scheduler', 'Binance Integration'].map((item) => (
-                            <li key={item}>
-                                <a href="#" className="font-sans text-secondary font-medium hover:text-accent transition-colors duration-300 text-sm">
-                                    {item}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+function DiscordIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.7 15.7 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.8c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.8a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.5 14.5c-1 0-1.9-1-1.9-2.1 0-1.2.8-2.1 1.9-2.1s1.9 1 1.9 2.1c0 1.2-.8 2.1-1.9 2.1zm7 0c-1 0-1.9-1-1.9-2.1 0-1.2.8-2.1 1.9-2.1s1.9 1 1.9 2.1c0 1.2-.8 2.1-1.9 2.1z" />
+    </svg>
+  );
+}
 
-                {/* Legal */}
-                <div className="md:col-span-4 flex flex-col md:items-end">
-                    <h4 className="font-sans font-bold text-xs tracking-widest uppercase text-primary mb-6 w-full md:text-right">Project Details</h4>
-                    <ul className="space-y-4 w-full md:text-right">
-                        <li className="font-sans font-medium text-secondary text-sm">Binance Crypto Ideathon</li>
-                        <li className="font-sans font-medium text-secondary text-sm flex md:justify-end items-center gap-2">Participant: <span className="text-primary">Kazbekov Ansar</span></li>
-                        <li className="font-sans font-medium text-secondary text-sm flex md:justify-end items-center gap-2">Mentor: <span className="text-primary">Shaikhin D. N.</span></li>
-                    </ul>
-                </div>
+const SOCIAL = [
+  ['X', <XIcon key="x" />],
+  ['Telegram', <TelegramIcon key="t" />],
+  ['Discord', <DiscordIcon key="d" />],
+  ['Instagram', <Instagram key="i" size={18} />],
+  ['YouTube', <Youtube key="y" size={18} />],
+  ['LinkedIn', <Linkedin key="l" size={18} />],
+  ['GitHub', <Github key="g" size={18} />],
+];
+
+function FooterLink({ label, href }) {
+  const cls = 'text-sm text-ink-3 transition-colors hover:text-ink';
+  return href.startsWith('/') ? (
+    <Link to={href} className={cls}>{label}</Link>
+  ) : (
+    <a href={href} className={cls}>{label}</a>
+  );
+}
+
+export default function Footer() {
+  return (
+    <footer className="border-t border-line bg-page">
+      <div className="page-x pb-10 pt-12 lg:pt-16">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-[1.4fr_repeat(5,1fr)]">
+          <div className="col-span-2 md:col-span-3 lg:col-span-1">
+            <Logo />
+            <h3 className="mt-8 text-base font-medium text-ink">Community</h3>
+            <div className="mt-4 grid max-w-[176px] grid-cols-4 gap-4">
+              {SOCIAL.map(([label, icon]) => (
+                <a key={label} href="#" aria-label={label} className="text-ink-3 transition-colors hover:text-yellow-text">
+                  {icon}
+                </a>
+              ))}
             </div>
-
-            <div className="w-full max-w-7xl border-t border-surfaceHover pt-8 flex flex-col md:flex-row items-center justify-between">
-                <span className="font-sans font-medium text-xs text-secondary">
-                    © {new Date().getFullYear()} EdFi. Built for the BNB Chain Ecosystem. All rights reserved.
-                </span>
-                <div className="flex space-x-6 mt-4 md:mt-0 font-sans font-medium text-xs text-secondary">
-                    <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-                    <a href="#" className="hover:text-primary transition-colors">Cookie Preferences</a>
-                </div>
+          </div>
+          {FOOTER_COLUMNS.map((col) => (
+            <div key={col.title} className="hidden md:block">
+              <h3 className="text-base font-medium text-ink">{col.title}</h3>
+              <ul className="mt-4 space-y-3">
+                {col.links.map(([label, href]) => (
+                  <li key={label}>
+                    <FooterLink label={label} href={href} />
+                  </li>
+                ))}
+              </ul>
             </div>
-        </footer>
-    );
-};
+          ))}
+          <div className="col-span-2 -mt-4 md:hidden">
+            {FOOTER_COLUMNS.map((col) => (
+              <details key={col.title} className="group border-b border-line">
+                <summary className="flex h-14 cursor-pointer list-none items-center justify-between text-base font-medium text-ink [&::-webkit-details-marker]:hidden">
+                  {col.title}
+                  <ChevronDown size={18} className="text-ink-3 transition-transform group-open:rotate-180" />
+                </summary>
+                <ul className="space-y-3 pb-4">
+                  {col.links.map(([label, href]) => (
+                    <li key={label}>
+                      <FooterLink label={label} href={href} />
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
+        </div>
 
-export default Footer;
+        <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-ink-3 md:flex-row md:items-center md:justify-between">
+          <p>EdFi © {new Date().getFullYear()} · Built for the Binance Crypto Ideathon by Kazbekov Ansar · Mentor: Shaikhin D. N.</p>
+          <p className="text-ink-4">Independent concept project. Not affiliated with or endorsed by Binance.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
