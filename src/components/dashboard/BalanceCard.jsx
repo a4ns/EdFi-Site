@@ -52,7 +52,7 @@ export default function BalanceCard({ balance, todayEarned, onPay, onDeposit, on
                           setUnit(u);
                           setUnitOpen(false);
                         }}
-                        className={`w-full px-3 py-2 text-left text-sm hover:bg-raised ${u === unit ? 'text-yellow' : 'text-ink'}`}
+                        className={`w-full px-3 py-2 text-left text-sm hover:bg-raised ${u === unit ? 'text-yellow-text' : 'text-ink'}`}
                       >
                         {u}
                       </button>
@@ -87,11 +87,7 @@ export default function BalanceCard({ balance, todayEarned, onPay, onDeposit, on
         </div>
       </div>
       <div className="mt-4 border-t border-line pt-4">
-        <div className="mb-1 flex justify-between text-xs text-ink-3">
-          <span>Balance, last 30 days</span>
-          <span className="num">{mask(`${formatAmount(balance)} EDC`)}</span>
-        </div>
-        <BalanceChart end={balance} width={640} height={96} />
+        <BalanceChart end={balance} />
       </div>
     </section>
   );

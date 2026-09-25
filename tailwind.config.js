@@ -6,30 +6,31 @@ export default {
   ],
   theme: {
     extend: {
-      // Binance dark design tokens
+      // Binance design tokens. Values live in src/index.css as CSS variables (dark + light themes).
       colors: {
-        page: '#181A20',        // page background
-        deep: '#0B0E11',        // deepest background (footer, trading areas)
-        card: '#1E2329',        // card / vessel
-        raised: '#2B3139',      // hover, secondary buttons, input fill
+        page: 'rgb(var(--c-page) / <alpha-value>)',       // page background
+        deep: 'rgb(var(--c-deep) / <alpha-value>)',       // deepest background
+        card: 'rgb(var(--c-card) / <alpha-value>)',       // card / vessel
+        raised: 'rgb(var(--c-raised) / <alpha-value>)',   // hover, secondary buttons
         line: {
-          DEFAULT: '#2B3139',   // hairline borders
-          strong: '#474D57',    // input borders
+          DEFAULT: 'rgb(var(--c-line) / <alpha-value>)',  // hairline borders
+          strong: 'rgb(var(--c-line-strong) / <alpha-value>)', // input borders
         },
         ink: {
-          DEFAULT: '#EAECEF',   // primary text
-          2: '#B7BDC6',
-          3: '#848E9C',         // secondary text
-          4: '#5E6673',         // disabled / tertiary
+          DEFAULT: 'rgb(var(--c-ink) / <alpha-value>)',   // primary text
+          2: 'rgb(var(--c-ink-2) / <alpha-value>)',
+          3: 'rgb(var(--c-ink-3) / <alpha-value>)',       // secondary text
+          4: 'rgb(var(--c-ink-4) / <alpha-value>)',       // tertiary / disabled
         },
         brand: '#F0B90B',       // brand yellow (logo, highlights)
         yellow: {
           DEFAULT: '#FCD535',   // primary button
           hover: '#F0B90B',
           on: '#202630',        // text on yellow
+          text: 'rgb(var(--c-yellow-text) / <alpha-value>)', // yellow used as text (darker on light theme)
         },
-        up: '#0ECB81',
-        down: '#F6465D',
+        up: 'rgb(var(--c-up) / <alpha-value>)',
+        down: 'rgb(var(--c-down) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['"IBM Plex Sans"', 'Arial', 'sans-serif'],
@@ -38,7 +39,7 @@ export default {
         page: '1248px',
       },
       boxShadow: {
-        pop: '0 8px 32px rgba(0, 0, 0, 0.48)',
+        pop: 'var(--shadow-pop)',
       },
       keyframes: {
         'fade-in': { from: { opacity: 0 }, to: { opacity: 1 } },

@@ -5,8 +5,9 @@ export const KZT_PER_USD = 520;
 
 export function formatPrice(p) {
   if (p == null || Number.isNaN(p)) return '--';
-  if (p >= 1) return usd2.format(p);
-  return p.toFixed(4);
+  if (p >= 1000) return usd2.format(p);
+  if (p >= 1) return p.toFixed(p >= 10 ? 2 : 4);
+  return p.toFixed(p >= 0.1 ? 4 : 5);
 }
 
 export function formatUsd(p) {

@@ -3,8 +3,45 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  /* Binance palette. RGB triplets so Tailwind opacity modifiers work. */
+  :root,
+  [data-theme="dark"] {
+    --c-page: 24 26 32;          /* #181A20 */
+    --c-deep: 11 14 17;          /* #0B0E11 */
+    --c-card: 30 35 41;          /* #1E2329 */
+    --c-raised: 43 49 57;        /* #2B3139 */
+    --c-line: 43 49 57;          /* #2B3139 */
+    --c-line-strong: 71 77 87;   /* #474D57 */
+    --c-ink: 234 236 239;        /* #EAECEF */
+    --c-ink-2: 183 189 198;      /* #B7BDC6 */
+    --c-ink-3: 132 142 156;      /* #848E9C */
+    --c-ink-4: 94 102 115;       /* #5E6673 */
+    --c-yellow-text: 252 213 53; /* #FCD535 */
+    --c-up: 14 203 129;          /* #0ECB81 */
+    --c-down: 246 70 93;         /* #F6465D */
+    --shadow-pop: 0 8px 32px rgba(0, 0, 0, 0.48);
     color-scheme: dark;
+  }
+
+  [data-theme="light"] {
+    --c-page: 255 255 255;       /* #FFFFFF */
+    --c-deep: 245 245 245;       /* #F5F5F5 */
+    --c-card: 245 245 245;       /* #F5F5F5 */
+    --c-raised: 234 236 239;     /* #EAECEF */
+    --c-line: 234 236 239;       /* #EAECEF */
+    --c-line-strong: 216 220 225;/* #D8DCE1 */
+    --c-ink: 30 35 41;           /* #1E2329 */
+    --c-ink-2: 71 77 87;         /* #474D57 */
+    --c-ink-3: 112 122 138;      /* #707A8A */
+    --c-ink-4: 146 154 165;      /* #929AA5 */
+    --c-yellow-text: 201 148 0;  /* #C99400 */
+    --c-up: 3 166 109;           /* #03A66D */
+    --c-down: 207 48 74;         /* #CF304A */
+    --shadow-pop: 0 8px 32px rgba(24, 26, 32, 0.12);
+    color-scheme: light;
+  }
+
+  html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
   }
@@ -17,6 +54,11 @@
     @apply bg-yellow text-yellow-on;
   }
 
+  /* Binance-weight icons: 1.5px strokes instead of lucide's default 2px */
+  svg.lucide {
+    stroke-width: 1.5;
+  }
+
   :focus-visible {
     outline: 2px solid #FCD535;
     outline-offset: 2px;
@@ -25,14 +67,14 @@
   /* Thin dark scrollbars, as on binance.com */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #474D57 transparent;
+    scrollbar-color: rgb(var(--c-line-strong)) transparent;
   }
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-thumb {
-    background: #474D57;
+    background: rgb(var(--c-line-strong));
     border-radius: 3px;
   }
   ::-webkit-scrollbar-track {
@@ -68,11 +110,11 @@
     @apply bg-raised text-ink hover:bg-line-strong;
   }
   .btn-ghost {
-    @apply text-ink hover:text-yellow;
+    @apply text-ink hover:text-yellow-text;
   }
 
   .icon-btn {
-    @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-ink-2 transition-colors hover:text-yellow;
+    @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-ink-2 transition-colors hover:text-yellow-text;
   }
 
   /* Form */
@@ -90,7 +132,7 @@
   }
 
   .link-more {
-    @apply inline-flex items-center gap-0.5 text-sm text-ink-3 transition-colors hover:text-yellow;
+    @apply inline-flex items-center gap-0.5 text-sm text-ink-3 transition-colors hover:text-yellow-text;
   }
 
   .tab {

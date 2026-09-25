@@ -20,7 +20,7 @@ const PLATFORMS = [
 
 export default function AppDownload() {
   return (
-    <section id="download" className="page-x scroll-mt-16 py-16 lg:py-24">
+    <section id="download" className="page-x scroll-mt-16 py-12 lg:py-16">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="order-2 lg:order-1">
           <PhoneMockup />
@@ -41,9 +41,9 @@ export default function AppDownload() {
           <Link to="/demo" className="btn btn-primary btn-lg mt-8 w-full sm:hidden">Open the Web App</Link>
           <div className="mt-10 flex gap-10">
             {PLATFORMS.map(([label, icon]) => (
-              <Link key={label} to="/demo" className="group flex flex-col items-center gap-2 text-ink transition-colors hover:text-yellow">
+              <Link key={label} to="/demo" className="group flex flex-col items-center gap-2 text-ink transition-colors hover:text-yellow-text">
                 {icon}
-                <span className="text-sm text-ink-3 transition-colors group-hover:text-yellow">{label}</span>
+                <span className="text-sm text-ink-3 transition-colors group-hover:text-yellow-text">{label}</span>
               </Link>
             ))}
           </div>

@@ -8,6 +8,15 @@
   <meta name="theme-color" content="#181A20" />
   <meta name="description" content="EdFi turns GPA, attendance and research into EDC tokens on BNB Chain. Earn for learning, pay across campus, withdraw anytime." />
   <title>EdFi | Learn-to-Earn on BNB Chain</title>
+  <script>
+    // Apply the saved theme before first paint (dark is the default, as on binance.com).
+    (function () {
+      var t = 'dark';
+      try { t = localStorage.getItem('edfi-theme') === 'light' ? 'light' : 'dark'; } catch (e) {}
+      document.documentElement.dataset.theme = t;
+      if (t === 'light') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF');
+    })();
+  </script>
 </head>
 
 <body>

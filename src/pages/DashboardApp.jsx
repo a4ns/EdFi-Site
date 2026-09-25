@@ -19,7 +19,7 @@ const DAY = 24 * 3600 * 1000;
 
 function ProfileRow({ onCopy }) {
   const stats = [
-    ['UID', <span key="uid" className="inline-flex items-center gap-1">210404 <button type="button" onClick={onCopy} className="text-ink-3 hover:text-yellow" aria-label="Copy UID"><Copy size={14} /></button></span>],
+    ['UID', <span key="uid" className="inline-flex items-center gap-1">210404 <button type="button" onClick={onCopy} className="text-ink-3 hover:text-yellow-text" aria-label="Copy UID"><Copy size={14} /></button></span>],
     ['Earn Rate', '1.4x'],
     ['Attendance', '98%'],
     ['GPA', '3.72'],
@@ -27,12 +27,12 @@ function ProfileRow({ onCopy }) {
   return (
     <section className="flex flex-col gap-5 md:flex-row md:items-center md:gap-6">
       <div className="flex items-center gap-4">
-        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-raised text-lg font-semibold text-yellow">AK</span>
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-raised text-lg font-semibold text-yellow-text">AK</span>
         <div>
           <h1 className="text-xl font-semibold text-ink md:text-2xl">Ansar Kazbekov</h1>
           <p className="text-sm text-ink-3">Kozybayev University</p>
           <div className="mt-1.5 flex flex-wrap gap-2">
-            <span className="chip bg-yellow/10 text-yellow">Scholar Tier 2</span>
+            <span className="chip bg-yellow/10 text-yellow-text">Scholar Tier 2</span>
             <span className="chip bg-up/10 text-up">
               <BadgeCheck size={12} />
               Verified
@@ -74,7 +74,7 @@ function MobileTabBar({ onSelect }) {
               <Ico size={18} />
             </span>
           ) : (
-            <Ico size={20} className={i === 0 ? 'text-yellow' : ''} />
+            <Ico size={20} className={i === 0 ? 'text-yellow-text' : ''} />
           )}
           {target === 'pay' ? null : label}
         </button>
@@ -156,7 +156,14 @@ export default function DashboardApp() {
 
   return (
     <div className="min-h-screen bg-page">
-      <Header variant="app" onDeposit={() => setModal('deposit')} />
+      <Header
+        variant="app"
+        onDeposit={() => setModal('deposit')}
+        onAppNavigate={(item) => {
+          setActive(item.id);
+          goTo(item.action ?? item.target);
+        }}
+      />
       <div className="flex border-t border-line">
         <Sidebar
           active={active}

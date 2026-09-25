@@ -19,7 +19,7 @@ export default function AmountInput({ id, value, onChange, max, invalid }) {
       />
       <span className="text-sm font-medium text-ink">EDC</span>
       <span className="mx-3 h-4 w-px bg-line-strong" />
-      <button type="button" className="text-sm font-medium text-yellow hover:text-yellow-hover" onClick={() => onChange(max.toFixed(2))}>
+      <button type="button" className="text-sm font-medium text-yellow-text hover:text-yellow-hover" onClick={() => onChange(max.toFixed(2))}>
         Max
       </button>
     </div>

@@ -18,7 +18,7 @@ export default function PayModal({ balance, onClose, onPay }) {
 
   if (done) {
     return (
-      <Modal title="Campus Pay" onClose={onClose}>
+      <Modal title="Scan Pay" onClose={onClose}>
         <div className="flex flex-col items-center py-4 text-center">
           <CircleCheck size={56} className="text-up" />
           <p className="mt-4 text-xl font-semibold text-ink">Payment Successful</p>
@@ -33,7 +33,7 @@ export default function PayModal({ balance, onClose, onPay }) {
   }
 
   return (
-    <Modal title="Campus Pay" onClose={onClose}>
+    <Modal title="Scan Pay" onClose={onClose}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -58,7 +58,7 @@ export default function PayModal({ balance, onClose, onPay }) {
                   sel ? 'border-yellow bg-yellow/5' : 'border-line-strong hover:border-ink-3'
                 }`}
               >
-                <Ico size={18} className={sel ? 'text-yellow' : 'text-ink-3'} />
+                <Ico size={18} className={sel ? 'text-yellow-text' : 'text-ink-3'} />
                 <span className="truncate text-sm font-medium text-ink">{x.name}</span>
               </button>
             );

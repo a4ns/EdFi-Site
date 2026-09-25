@@ -49,7 +49,11 @@ export default function CoinIcon({ symbol, size = 24, className = '' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className={`shrink-0 ${className}`} aria-hidden="true">
       <circle cx="12" cy="12" r="12" fill={COINS[symbol]?.color ?? '#474D57'} />
-      {GLYPHS[symbol]}
+      {GLYPHS[symbol] ?? (
+        <text x="12" y="16.2" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">
+          {symbol[0]}
+        </text>
+      )}
     </svg>
   );
 }

@@ -12,7 +12,7 @@ export default function EarnMarkets() {
   const rows = cat === 'All' ? EARN_ACTIVITIES : EARN_ACTIVITIES.filter((a) => a.category === cat);
 
   return (
-    <section id="earn" className="page-x scroll-mt-16 py-16 lg:py-24">
+    <section id="earn" className="page-x scroll-mt-16 py-12 lg:py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="section-title">Learn &amp; Earn</h2>
@@ -51,7 +51,7 @@ export default function EarnMarkets() {
             <tr key={a.id} className="group h-16 border-t border-line/60 transition-colors hover:bg-card">
               <td className="rounded-l-lg pl-2">
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-raised text-yellow">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-raised text-yellow-text">
                     <Icon name={a.icon} size={16} />
                   </span>
                   <span className="min-w-0">
@@ -73,7 +73,7 @@ export default function EarnMarkets() {
               </td>
               <td className="num hidden text-right text-sm text-ink-2 md:table-cell">{formatInt(a.earners24h)}</td>
               <td className="rounded-r-lg pr-2 text-right">
-                <Link to="/demo" className="text-sm font-medium text-yellow hover:underline">
+                <Link to="/demo" className="text-sm font-medium text-yellow-text hover:underline">
                   Earn
                 </Link>
               </td>
