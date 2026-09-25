@@ -3,37 +3,124 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
-    @apply bg-background text-primary font-sans selection:bg-accent selection:text-black antialiased overflow-x-hidden;
+    @apply bg-page text-ink font-sans antialiased;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-heading tracking-tight;
+  ::selection {
+    @apply bg-yellow text-yellow-on;
   }
 
-  /* Noise Filter Setup - Lower opacity for cleaner tech look */
-  body::before {
+  :focus-visible {
+    outline: 2px solid #FCD535;
+    outline-offset: 2px;
+  }
+
+  /* Thin dark scrollbars, as on binance.com */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #474D57 transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #474D57;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .page-x {
+    @apply w-full max-w-page mx-auto px-4 md:px-6;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-medium
+      transition-colors duration-150 select-none disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-sm { @apply h-8 px-3 text-sm rounded-md; }
+  .btn-md { @apply h-10 px-4 text-sm; }
+  .btn-lg { @apply h-12 px-6 text-base; }
+
+  .btn-primary {
+    @apply bg-yellow text-yellow-on hover:bg-yellow-hover;
+  }
+  .btn-secondary {
+    @apply bg-raised text-ink hover:bg-line-strong;
+  }
+  .btn-ghost {
+    @apply text-ink hover:text-yellow;
+  }
+
+  .icon-btn {
+    @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-ink-2 transition-colors hover:text-yellow;
+  }
+
+  /* Form */
+  .input {
+    @apply h-12 w-full rounded-lg border border-line-strong bg-transparent px-4 text-sm text-ink placeholder:text-ink-4
+      outline-none transition-colors hover:border-yellow focus:border-yellow;
+  }
+
+  /* Surfaces */
+  .card {
+    @apply rounded-2xl bg-card;
+  }
+  .panel {
+    @apply rounded-2xl border border-line;
+  }
+
+  .link-more {
+    @apply inline-flex items-center gap-0.5 text-sm text-ink-3 transition-colors hover:text-yellow;
+  }
+
+  .tab {
+    @apply relative pb-2 text-base font-medium text-ink-3 transition-colors hover:text-ink;
+  }
+  .tab[aria-selected="true"] {
+    @apply text-ink;
+  }
+  .tab[aria-selected="true"]::after {
     content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.02;
-    background-image: var(--noise-url);
+    @apply absolute bottom-0 left-1/2 h-[3px] w-4 -translate-x-1/2 rounded-full bg-yellow;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium;
+  }
+
+  .section-title {
+    @apply text-[28px] font-semibold leading-9 text-ink md:text-[40px] md:leading-[48px];
   }
 }
 
 @layer utilities {
-  .clip-text-gradient {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#F0B90B];
+  .num {
+    font-variant-numeric: tabular-nums;
   }
-
-  .tech-border {
-    @apply border border-surfaceHover;
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
