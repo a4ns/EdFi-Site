@@ -12,6 +12,7 @@ import { appUrl } from '../lib/links';
 import { applyTheme, currentTheme } from '../lib/theme';
 import { formatPrice } from '../lib/format';
 import { useMarkets } from '../state/markets';
+import { useAuth } from '../state/auth';
 import { SIDEBAR_ITEMS } from './dashboard/nav';
 import { AccountMenu, NotificationsMenu } from './dashboard/HeaderMenus';
 
@@ -276,6 +277,7 @@ function DrawerThemeRow() {
 
 function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
   const [expanded, setExpanded] = useState(null);
+  const { openAuth } = useAuth();
   useEffect(() => {
     if (!open) return undefined;
     const prev = document.body.style.overflow;
@@ -334,8 +336,8 @@ function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3 px-4 pb-4">
-              <Link to="/demo" className="btn btn-secondary btn-md" onClick={onClose}>Log In</Link>
-              <Link to="/demo" className="btn btn-primary btn-md" onClick={onClose}>Sign Up</Link>
+              <button type="button" className="btn btn-secondary btn-md" onClick={() => { onClose(); openAuth('login'); }}>Log In</button>
+              <button type="button" className="btn btn-primary btn-md" onClick={() => { onClose(); openAuth('signup'); }}>Sign Up</button>
             </div>
             <nav className="px-2" aria-label="Main">
               {NAV.map((item) =>
@@ -403,6 +405,7 @@ function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
 
 export default function Header({ variant = 'site', onDeposit, onAppNavigate, onCopyUid }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { openAuth } = useAuth();
   const { pathname } = useLocation();
   const onHome = pathname === '/';
   const isApp = variant === 'app';
@@ -438,8 +441,8 @@ export default function Header({ variant = 'site', onDeposit, onAppNavigate, onC
             </>
           ) : (
             <>
-              <Link to="/demo" className="btn btn-secondary btn-sm hidden sm:inline-flex">Log In</Link>
-              <Link to="/demo" className="btn btn-primary btn-sm">Sign Up</Link>
+              <button type="button" onClick={() => openAuth('login')} className="btn btn-secondary btn-sm hidden sm:inline-flex">Log In</button>
+              <button type="button" onClick={() => openAuth('signup')} className="btn btn-primary btn-sm">Sign Up</button>
             </>
           )}
           <span className="mx-1 hidden h-4 w-px bg-line-strong lg:block" />

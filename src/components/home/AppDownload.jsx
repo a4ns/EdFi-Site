@@ -25,18 +25,18 @@ export default function AppDownload() {
         <div className="order-2 lg:order-1">
           <div className="relative mx-auto w-fit">
             <PhoneMockup />
-            <div className="absolute -left-[176px] top-[170px] hidden w-[204px] rounded-xl border border-line bg-card p-3 shadow-pop min-[1400px]:block" aria-hidden="true">
+            <div className="absolute -left-[126px] top-[170px] hidden w-[152px] rounded-xl border border-line bg-card p-3 shadow-pop lg:block" aria-hidden="true">
               <p className="text-xs text-ink-3">Reward received</p>
               <p className="num mt-1 text-lg font-semibold text-up">+50.00 EDC</p>
-              <p className="mt-0.5 text-xs text-ink-3">Macroeconomics exam · grade A</p>
+              <p className="mt-0.5 text-xs text-ink-3">Macroeconomics · A</p>
             </div>
-            <div className="absolute -right-[186px] top-[420px] hidden w-[204px] rounded-xl border border-line bg-card p-3 shadow-pop min-[1400px]:block" aria-hidden="true">
+            <div className="absolute -right-[126px] top-[420px] hidden w-[152px] rounded-xl border border-line bg-card p-3 shadow-pop lg:block" aria-hidden="true">
               <p className="flex items-center justify-between text-xs text-ink-3">
                 Campus Canteen
                 <span className="text-up">Paid</span>
               </p>
               <p className="num mt-1 text-lg font-semibold text-ink">-15.00 EDC</p>
-              <p className="mt-0.5 text-xs text-ink-3">Fee 0.00 · settled in 3s</p>
+              <p className="mt-0.5 text-xs text-ink-3">Fee 0 · settled 3s</p>
             </div>
           </div>
         </div>

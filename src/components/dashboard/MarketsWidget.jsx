@@ -60,6 +60,7 @@ export default function MarketsWidget({ balance }) {
           </li>
         ))}
       </ul>
+      <p className="mt-auto pt-3 text-xs text-ink-3">Prices from Binance market data. EDC is simulated.</p>
     </section>
   );
 }

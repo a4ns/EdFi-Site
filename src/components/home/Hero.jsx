@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronRight, CircleCheck, Gift, GraduationCap, QrCode } from 'lucide-react';
 import CoinIcon from '../CoinIcon';
 import { Change, Price } from '../PriceCell';
 import { useMarkets } from '../../state/markets';
+import { useAuth } from '../../state/auth';
 import { NEWS } from '../../data/content';
 import { formatInt } from '../../lib/format';
 
@@ -75,7 +76,7 @@ function MarketsCard() {
           </li>
         ))}
       </ul>
-      <p className="mt-2 flex items-center gap-1.5 text-xs text-ink-4">
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-ink-3">
         <span className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-up' : 'bg-ink-4'}`} />
         {live ? 'Live prices from Binance market data.' : 'Price snapshot.'} EDC is a pilot token (simulated).
       </p>
@@ -107,11 +108,11 @@ function NewsCard() {
 }
 
 export default function Hero() {
-  const navigate = useNavigate();
   const earned = useEarnedCounter(1204380);
+  const { openAuth } = useAuth();
   const onSubmit = (e) => {
     e.preventDefault();
-    navigate('/demo');
+    openAuth('signup', new FormData(e.currentTarget).get('identifier') ?? '');
   };
 
   return (
@@ -134,7 +135,7 @@ export default function Hero() {
 
         <form onSubmit={onSubmit} className="mt-6 flex max-w-[520px] flex-col gap-3 sm:flex-row">
           <label htmlFor="hero-signup" className="sr-only">University email or student ID</label>
-          <input id="hero-signup" className="input sm:flex-1" placeholder="University email / Student ID" autoComplete="email" />
+          <input id="hero-signup" name="identifier" className="input sm:flex-1" placeholder="University email / Student ID" autoComplete="email" />
           <button type="submit" className="btn btn-primary btn-lg sm:w-[144px]">Sign Up</button>
         </form>
 
@@ -169,8 +170,8 @@ export default function Hero() {
               <QrCode size={20} />
             </a>
             <div className="mt-3 flex gap-2 sm:hidden">
-              <Link to="/demo" className="btn btn-secondary btn-sm px-3">iOS</Link>
-              <Link to="/demo" className="btn btn-secondary btn-sm px-3">Android</Link>
+              <Link to="/demo" className="btn btn-secondary btn-md px-4">iOS</Link>
+              <Link to="/demo" className="btn btn-secondary btn-md px-4">Android</Link>
             </div>
           </div>
         </div>

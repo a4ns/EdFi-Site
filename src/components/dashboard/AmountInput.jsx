@@ -1,5 +1,6 @@
 export default function AmountInput({ id, value, onChange, max, invalid }) {
   return (
+    <>
     <div
       className={`flex h-12 items-center rounded-lg border px-4 transition-colors focus-within:border-yellow hover:border-yellow ${
         invalid ? '!border-down' : 'border-line-strong'
@@ -23,5 +24,18 @@ export default function AmountInput({ id, value, onChange, max, invalid }) {
         Max
       </button>
     </div>
+    <div className="mt-2 grid grid-cols-4 gap-2">
+      {[25, 50, 75, 100].map((pct) => (
+        <button
+          key={pct}
+          type="button"
+          onClick={() => onChange(((max * pct) / 100).toFixed(2))}
+          className="h-7 rounded bg-raised text-xs font-medium text-ink-2 transition-colors hover:text-ink"
+        >
+          {pct}%
+        </button>
+      ))}
+    </div>
+    </>
   );
 }

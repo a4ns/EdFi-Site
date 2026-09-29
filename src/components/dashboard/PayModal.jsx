@@ -78,11 +78,11 @@ export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
             ))}
             <span className="absolute inset-x-3 h-0.5 animate-scan rounded bg-yellow shadow-[0_0_12px_rgba(252,213,53,0.8)]" />
           </div>
-          <p className="absolute bottom-3 flex items-center gap-1 text-xs text-ink-3">
-            <Zap size={12} />
-            Demo: scanning is simulated
-          </p>
         </div>
+        <p className="mt-3 flex items-center justify-center gap-1 text-xs text-ink-3">
+          <Zap size={12} />
+          Demo: scanning is simulated
+        </p>
         <button type="button" className="btn btn-secondary btn-lg mt-6 w-full" onClick={() => setScanning(false)}>
           Select merchant instead
         </button>
