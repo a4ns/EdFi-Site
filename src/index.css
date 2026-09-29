@@ -147,7 +147,7 @@
   }
 
   .chip {
-    @apply inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium leading-none;
   }
 
   .section-title {

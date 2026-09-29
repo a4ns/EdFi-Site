@@ -108,13 +108,17 @@ export default function DashboardApp() {
   const showToast = (text) => setToast({ id: Date.now(), text });
   const addTx = (tx) => setTransactions((ts) => [{ id: `t${Date.now()}`, at: Date.now(), ...tx }, ...ts].slice(0, 8));
   const closeModal = useCallback(() => setModal(null), []);
+  const openModal = (name) => {
+    setToast(null);
+    setModal(name);
+  };
 
   const todayEarned = transactions
     .filter((t) => t.kind === 'reward' && t.at > sessionStart - DAY)
     .reduce((s, t) => s + t.amount, 0);
 
   const goTo = (target) => {
-    if (target === 'pay') return setModal('pay');
+    if (target === 'pay') return openModal('pay');
     if (target === 'top') return window.scrollTo({ top: 0, behavior: 'smooth' });
     return document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -139,7 +143,7 @@ export default function DashboardApp() {
         return { ...t, progress, status: progress >= t.total ? 'claimable' : 'active' };
       }),
     );
-    showToast(task.progress + 1 >= task.total ? 'Course completed. Your reward is ready to claim' : 'Lesson completed');
+    showToast(task.progress + 1 >= task.total ? 'Goal reached. Your reward is ready to claim' : (task.doneText ?? 'Lesson completed'));
   };
 
   const pay = ({ merchant, amount }) => {
@@ -159,7 +163,7 @@ export default function DashboardApp() {
     <div className="min-h-screen bg-page">
       <Header
         variant="app"
-        onDeposit={() => setModal('deposit')}
+        onDeposit={() => openModal('deposit')}
         onAppNavigate={(item) => {
           setActive(item.id);
           goTo(item.action ?? item.target);
@@ -181,18 +185,20 @@ export default function DashboardApp() {
                 <BalanceCard
                   balance={balance}
                   todayEarned={todayEarned}
-                  onPay={() => setModal('pay')}
-                  onDeposit={() => setModal('deposit')}
-                  onWithdraw={() => setModal('withdraw')}
+                  onPay={() => openModal('pay')}
+                  onDeposit={() => openModal('deposit')}
+                  onWithdraw={() => openModal('withdraw')}
                 />
                 <TasksCard tasks={tasks} onClaim={claim} onContinue={advance} />
-                <TransactionsCard transactions={transactions} />
               </div>
               <div className="flex min-w-0 flex-col gap-4 lg:gap-6">
                 <MarketsWidget balance={balance} />
                 <ReferralCard onCopy={() => showToast('Referral link copied')} />
                 <AnnouncementsCard />
               </div>
+            </div>
+            <div className="mt-4 lg:mt-6">
+              <TransactionsCard transactions={transactions} />
             </div>
           </div>
         </main>

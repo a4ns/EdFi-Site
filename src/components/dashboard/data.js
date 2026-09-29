@@ -18,6 +18,7 @@ export const INITIAL_TASKS = [
   { id: 'week', title: '100% weekly attendance', sub: 'Smart-card check-in', reward: 25, progress: 5, total: 5, status: 'claimable' },
   { id: 'course', title: 'Blockchain Basics course', sub: 'EdFi Academy · 4 lessons', reward: 40, progress: 3, total: 4, status: 'active', cta: 'Continue' },
   { id: 'gpa', title: 'Semester GPA 3.5+', sub: 'Current GPA 3.72 · Registrar', reward: 200, progress: 1, total: 1, status: 'verifying' },
+  { id: 'volunteer', title: 'Volunteer 10 hours', sub: 'Student council · 6 of 10 hours', reward: 100, progress: 6, total: 10, status: 'active', cta: 'Log hour', doneText: 'Hour logged' },
   { id: 'paper', title: 'Publish a research article', sub: 'Submit a DOI for verification', reward: 300, progress: 0, total: 1, status: 'active', cta: 'Submit', verify: true },
 ];
 

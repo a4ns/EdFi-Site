@@ -72,15 +72,15 @@ export default function BalanceCard({ balance, todayEarned, onPay, onDeposit, on
         </div>
 
         <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto">
-          <button type="button" className="btn btn-primary btn-md min-w-0 px-2 sm:px-4" onClick={onPay}>
+          <button type="button" className="btn btn-primary btn-sm min-w-0 px-2 max-sm:h-10 sm:px-4" onClick={onPay}>
             <QrCode size={16} />
             Scan Pay
           </button>
-          <button type="button" className="btn btn-secondary btn-md min-w-0 px-2 sm:px-4" onClick={onDeposit}>
+          <button type="button" className="btn btn-secondary btn-sm min-w-0 px-2 max-sm:h-10 sm:px-4" onClick={onDeposit}>
             <Download size={16} />
             Deposit
           </button>
-          <button type="button" className="btn btn-secondary btn-md min-w-0 px-2 sm:px-4" onClick={onWithdraw}>
+          <button type="button" className="btn btn-secondary btn-sm min-w-0 px-2 max-sm:h-10 sm:px-4" onClick={onWithdraw}>
             <Upload size={16} />
             Withdraw
           </button>

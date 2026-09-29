@@ -175,7 +175,7 @@ export const FOOTER_COLUMNS = [
   },
   {
     title: 'Universities',
-    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq'], ['Pilot: Kozybayev University', '#roadmap']],
+    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq'], ['Kozybayev pilot', '#roadmap']],
   },
   {
     title: 'Learn',

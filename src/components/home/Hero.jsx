@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, Gift, GraduationCap, QrCode } from 'lucide-react';
+import { ChevronRight, CircleCheck, Gift, GraduationCap, QrCode } from 'lucide-react';
 import CoinIcon from '../CoinIcon';
 import { Change, Price } from '../PriceCell';
 import { useMarkets } from '../../state/markets';
@@ -117,7 +117,7 @@ export default function Hero() {
   return (
     <section className="page-x grid grid-cols-1 gap-10 pb-12 pt-8 md:pt-14 lg:grid-cols-[minmax(0,1fr)_468px] lg:gap-16 lg:pb-12 lg:pt-16">
       <div className="flex flex-col lg:pt-4">
-        <h1 className="text-[40px] font-bold leading-[48px] text-ink md:text-[64px] md:leading-[72px] lg:text-[72px] lg:leading-[80px]">
+        <h1 className="text-[44px] font-semibold leading-[52px] text-ink md:text-[68px] md:leading-[76px] lg:text-[76px] lg:leading-[84px]">
           <span className="num block text-brand">{formatInt(earned)}</span>
           <span className="block">EDC EARNED</span>
           <span className="block">BY STUDENTS</span>
@@ -170,6 +170,15 @@ export default function Hero() {
             </a>
           </div>
         </div>
+
+        <ul className="mt-12 flex max-w-[520px] flex-col gap-3 border-t border-line pt-6 text-sm text-ink-2 lg:mt-auto">
+          {['Rewards verified by university oracles', 'Zero fees for campus payments', 'Built on BNB Chain, withdraw anytime'].map((t) => (
+            <li key={t} className="flex items-center gap-2">
+              <CircleCheck size={16} className="shrink-0 text-up" />
+              {t}
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="flex flex-col gap-4">
