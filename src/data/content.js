@@ -120,18 +120,21 @@ export const ROADMAP = [
   {
     phase: 'Phase 1',
     date: 'Nov 2025',
+    status: 'Completed',
     title: 'Smart contract MVP',
     desc: 'Testnet sandbox at Kozybayev University (6,000 students) to validate the Learn-to-Earn model.',
   },
   {
     phase: 'Phase 2',
     date: 'Q2 2026',
+    status: 'In progress',
     title: 'Full campus economy',
     desc: 'Mainnet migration. Payments at canteens, dormitories and local merchandise stores.',
   },
   {
     phase: 'Phase 3',
     date: '2027',
+    status: 'Planned',
     title: 'National eGov integration',
     desc: 'Direct integration with state education databases to scale EdFi across Kazakhstan.',
   },

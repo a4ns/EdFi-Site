@@ -73,7 +73,7 @@ const PREVIEWS = [EarnPreview, SpendPreview, WithdrawPreview];
 
 export default function Products() {
   return (
-    <section id="products" className="page-x scroll-mt-16 py-10 lg:py-12">
+    <section id="products" className="page-x scroll-mt-16 py-8 lg:py-12">
       <h2 className="section-title">One token for your whole campus</h2>
       <p className="mt-3 max-w-xl text-base text-ink-3">
         EDC is earned for verified academic results and accepted across campus. It never gets stuck in a transcript.

@@ -53,7 +53,7 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
       </div>
       <ul className="mt-2">
         {tasks.map((t) => (
-          <li key={t.id} className="flex flex-col gap-3 border-b border-line py-4 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:gap-4">
+          <li key={t.id} className="flex flex-col gap-3 py-4 first:pt-2 sm:flex-row sm:items-center sm:gap-4">
             <div className="min-w-0 w-full flex-1">
               <div className="flex items-center justify-between gap-3">
                 <p className="truncate text-sm font-medium text-ink">{t.title}</p>

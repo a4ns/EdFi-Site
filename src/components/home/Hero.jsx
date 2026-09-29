@@ -116,9 +116,9 @@ export default function Hero() {
 
   return (
     <section className="page-x grid grid-cols-1 gap-10 pb-12 pt-8 md:pt-14 lg:grid-cols-[minmax(0,1fr)_468px] lg:gap-16 lg:pb-12 lg:pt-16">
-      <div className="flex flex-col lg:pt-4">
+      <div className="flex flex-col">
         <h1 className="text-[44px] font-semibold leading-[52px] text-ink md:text-[68px] md:leading-[76px] lg:text-[76px] lg:leading-[84px]">
-          <span className="num block text-brand">{formatInt(earned)}</span>
+          <span className="num block text-yellow-text">{formatInt(earned)}</span>
           <span className="block">EDC EARNED</span>
           <span className="block">BY STUDENTS</span>
         </h1>
@@ -164,10 +164,14 @@ export default function Hero() {
             <a
               href="#download"
               aria-label="Download App"
-              className="mt-3 flex h-10 w-10 items-center justify-center rounded-lg bg-raised text-ink transition-colors hover:bg-line-strong"
+              className="mt-3 hidden h-10 w-10 items-center justify-center rounded-lg bg-raised text-ink transition-colors hover:bg-line-strong sm:flex"
             >
               <QrCode size={20} />
             </a>
+            <div className="mt-3 flex gap-2 sm:hidden">
+              <Link to="/demo" className="btn btn-secondary btn-sm px-3">iOS</Link>
+              <Link to="/demo" className="btn btn-secondary btn-sm px-3">Android</Link>
+            </div>
           </div>
         </div>
 

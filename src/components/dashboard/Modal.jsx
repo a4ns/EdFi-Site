@@ -8,7 +8,10 @@ export default function Modal({ title, onClose, children }) {
     document.body.style.overflow = 'hidden';
     const onKey = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
-    panel.current?.querySelector('input, button:not([data-close])')?.focus();
+    // Autofocus only where there is a hardware keyboard; on phones it would cover the sheet.
+    if (window.matchMedia('(min-width: 640px) and (hover: hover)').matches) {
+      panel.current?.querySelector('input, button:not([data-close])')?.focus();
+    }
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener('keydown', onKey);
@@ -20,7 +23,7 @@ export default function Modal({ title, onClose, children }) {
       <div className="absolute inset-0 animate-fade-in bg-black/60" onClick={onClose} />
       <div
         ref={panel}
-        className="relative max-h-[92vh] w-full animate-pop-in overflow-y-auto rounded-t-2xl bg-card p-6 shadow-pop sm:max-w-[420px] sm:rounded-2xl"
+        className="relative max-h-[90dvh] w-full animate-pop-in overflow-y-auto rounded-t-2xl bg-card p-6 shadow-pop sm:max-w-[420px] sm:rounded-2xl"
       >
         <span className="mx-auto -mt-2 mb-4 block h-1 w-9 rounded-full bg-line-strong sm:hidden" aria-hidden="true" />
         <div className="mb-6 flex items-center justify-between">

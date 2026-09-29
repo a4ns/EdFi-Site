@@ -3,7 +3,7 @@ import { ANNOUNCEMENTS } from './data';
 
 export default function AnnouncementsCard() {
   return (
-    <section className="panel p-4 md:p-6">
+    <section className="panel flex-1 p-4 md:p-6">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-ink">Announcements</h2>
         <a href="/#faq" className="link-more">
