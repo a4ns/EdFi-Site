@@ -4,9 +4,25 @@ import { X } from 'lucide-react';
 export default function Modal({ title, onClose, children }) {
   const panel = useRef(null);
   useEffect(() => {
+    const opener = document.activeElement;
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const onKey = (e) => e.key === 'Escape' && onClose();
+    const onKey = (e) => {
+      if (e.key === 'Escape') return onClose();
+      if (e.key !== 'Tab' || !panel.current) return undefined;
+      const items = [...panel.current.querySelectorAll('button:not([disabled]), input, a[href], [tabindex]:not([tabindex="-1"])')];
+      if (!items.length) return undefined;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+      return undefined;
+    };
     window.addEventListener('keydown', onKey);
     // Autofocus only where there is a hardware keyboard; on phones it would cover the sheet.
     if (window.matchMedia('(min-width: 640px) and (hover: hover)').matches) {
@@ -15,6 +31,7 @@ export default function Modal({ title, onClose, children }) {
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener('keydown', onKey);
+      opener?.focus?.();
     };
   }, [onClose]);
 

@@ -1,7 +1,38 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { formatAmount } from '../../lib/format';
 
+// Round axis ticks (e.g. 0 / 200 / 400) covering [lo, hi].
+function niceTicks(lo, hi) {
+  const raw = (hi - lo) / 3 || 1;
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((c) => c >= raw);
+  const start = Math.floor(lo / step) * step;
+  const out = [];
+  for (let t = start; t < hi + step * 0.999; t += step) out.push(t);
+  return out.length > 1 ? out : [start, start + step];
+}
+
 const RANGES = { '7D': 7, '30D': 30, '90D': 90 };
+
+// Deterministic balance history ending exactly at today's balance.
+// Walks backwards: rewards arrive in steps, spending pulls the balance down.
+function buildSeries(end, n) {
+  let seed = 11 + n;
+  const rand = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  const growth = { 7: 0.86, 30: 0.62, 90: 0.4 }[n];
+  const step = Math.pow(growth, 1 / (n - 1));
+  const vals = [end];
+  let v = end;
+  for (let i = 1; i < n; i += 1) {
+    const shock = rand() < 0.12 ? (rand() - 0.3) * 0.09 : (rand() - 0.5) * 0.012;
+    v = Math.max(end * 0.15, v * step * (1 + shock));
+    vals.unshift(v);
+  }
+  return vals;
+}
 const DAY = 24 * 3600 * 1000;
 
 // Balance history ending at the current balance, drawn at the container's real pixel width.
@@ -21,29 +52,15 @@ export default function BalanceChart({ end, height = 168 }) {
     return () => ro.disconnect();
   }, []);
 
-  const points = useMemo(() => {
-    const n = RANGES[range];
-    let seed = 7 + n;
-    const rand = () => {
-      seed = (seed * 16807) % 2147483647;
-      return seed / 2147483647;
-    };
-    const vals = [];
-    let v = end * (n === 7 ? 0.85 : n === 30 ? 0.55 : 0.3);
-    for (let i = 0; i < n - 1; i += 1) {
-      v += (end * 0.97 - v) * (3 / n) + (rand() - 0.45) * end * 0.03;
-      vals.push(Math.min(v, end * 0.985));
-    }
-    vals.push(end);
-    return vals;
-  }, [end, range]);
+  const points = useMemo(() => buildSeries(end, RANGES[range]), [end, range]);
 
+  const ticks = niceTicks(Math.min(...points), Math.max(...points));
   const pad = 8;
   const gutter = 52;
   const axis = 22; // room for x-axis date labels
   const plotH = height - axis;
-  const min = Math.min(...points);
-  const max = Math.max(...points);
+  const min = ticks[0];
+  const max = ticks[ticks.length - 1];
   const x = (i) => gutter + (i / (points.length - 1)) * (width - gutter - pad);
   const y = (v) => plotH - pad - ((v - min) / (max - min || 1)) * (plotH - pad * 2);
   const line = points.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
@@ -82,11 +99,11 @@ export default function BalanceChart({ end, height = 168 }) {
               <stop offset="1" stopColor="currentColor" stopOpacity="0" />
             </linearGradient>
           </defs>
-          {[max, (max + min) / 2, min].map((v) => (
+          {ticks.map((v) => (
             <g key={v}>
               <line x1={gutter} x2={width} y1={y(v)} y2={y(v)} stroke="currentColor" className="text-line" strokeDasharray="2 4" />
               <text x={0} y={y(v) + 4} fontSize="12" fill="rgb(var(--c-ink-3))" className="num">
-                {v.toFixed(0)}
+                {Math.round(v)}
               </text>
             </g>
           ))}

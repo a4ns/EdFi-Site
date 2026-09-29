@@ -24,7 +24,7 @@ export function NotificationsMenu() {
   const { open, setOpen, ref } = usePopover();
   const [unread, setUnread] = useState(NOTIFICATIONS.length);
   return (
-    <div ref={ref} className="relative hidden sm:block">
+    <div ref={ref} className="sm:relative">
       <button
         type="button"
         className="icon-btn relative w-10"
@@ -36,7 +36,7 @@ export function NotificationsMenu() {
         {unread > 0 && <span className="absolute right-2 top-1.5 h-2 w-2 rounded-full bg-down" />}
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-[360px] animate-pop-in rounded-xl border border-line bg-card shadow-pop">
+        <div className="fixed inset-x-4 top-[68px] z-50 animate-pop-in sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-[360px] rounded-xl border border-line bg-card shadow-pop">
           <div className="flex items-center justify-between px-4 py-3">
             <h2 className="text-base font-semibold text-ink">Notifications</h2>
             <button type="button" onClick={() => setUnread(0)} disabled={!unread} className="text-xs font-medium text-yellow-text disabled:text-ink-4">
@@ -65,13 +65,13 @@ export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
   const { open, setOpen, ref } = usePopover();
   const item = 'flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm text-ink transition-colors hover:bg-raised';
   return (
-    <div ref={ref} className="relative hidden sm:block">
+    <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label="Account menu"
-        className="ml-1 flex h-8 w-8 items-center justify-center rounded-full bg-raised text-xs font-semibold text-yellow-text transition-colors hover:bg-line-strong"
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-raised text-xs font-semibold text-yellow-text transition-colors hover:bg-line-strong"
       >
         AK
       </button>

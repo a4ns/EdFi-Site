@@ -8,6 +8,16 @@ const KIND = {
   deposit: { label: 'Deposit', icon: ArrowDownLeft, cls: 'bg-up/10 text-up' },
 };
 
+function Status({ status = 'completed', className = '' }) {
+  const processing = status === 'processing';
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-sm text-ink-2 ${className}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${processing ? 'animate-pulse bg-yellow' : 'bg-up'}`} />
+      {processing ? 'Processing' : 'Completed'}
+    </span>
+  );
+}
+
 function Amount({ value }) {
   return (
     <span className={`num whitespace-nowrap text-sm font-medium ${value > 0 ? 'text-up' : 'text-ink'}`}>
@@ -29,14 +39,14 @@ export default function TransactionsCard({ transactions }) {
       </div>
 
       {/* desktop table */}
-      <table className="mt-4 hidden w-full md:table">
+      <table className="mt-4 hidden w-full table-fixed md:table">
         <thead>
           <tr className="h-9 text-left text-xs text-ink-3">
             <th className="font-normal">Activity</th>
-            <th className="font-normal">Type</th>
-            <th className="text-right font-normal">Amount</th>
-            <th className="text-right font-normal">Date</th>
-            <th className="w-[110px] text-right font-normal">Status</th>
+            <th className="hidden w-[150px] font-normal xl:table-cell">Type</th>
+            <th className="w-[170px] text-right font-normal">Amount</th>
+            <th className="w-[170px] text-right font-normal">Date</th>
+            <th className="w-[130px] text-right font-normal">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -56,13 +66,13 @@ export default function TransactionsCard({ transactions }) {
                     </span>
                   </div>
                 </td>
-                <td className="text-sm text-ink-2">{k.label}</td>
+                <td className="hidden text-sm text-ink-2 xl:table-cell">{k.label}</td>
                 <td className="text-right">
                   <Amount value={t.amount} />
                 </td>
                 <td className="num whitespace-nowrap text-right text-xs text-ink-3">{formatDateTime(new Date(t.at))}</td>
                 <td className="text-right">
-                  <span className="text-sm text-ink-2">Completed</span>
+                  <Status status={t.status} />
                 </td>
               </tr>
             );
@@ -86,7 +96,7 @@ export default function TransactionsCard({ transactions }) {
               </div>
               <div className="text-right">
                 <Amount value={t.amount} />
-                <p className="text-xs text-ink-3">Completed</p>
+                <p className="text-xs text-ink-3">{t.status === 'processing' ? 'Processing' : 'Completed'}</p>
               </div>
             </li>
           );

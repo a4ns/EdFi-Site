@@ -44,9 +44,9 @@ export const NAV = [
   {
     label: 'Learn & Earn',
     menu: [
-      { icon: 'GraduationCap', title: 'Academic Rewards', desc: 'Grades and GPA paid out in EDC', href: '#earn' },
-      { icon: 'CalendarCheck', title: 'Attendance Streaks', desc: 'Weekly and monthly check-in bonuses', href: '#earn' },
-      { icon: 'FlaskConical', title: 'Research Grants', desc: 'Earn for published, DOI-verified work', href: '#earn' },
+      { icon: 'GraduationCap', title: 'Academic Rewards', desc: 'Grades and GPA paid out in EDC', href: '#earn-academic' },
+      { icon: 'CalendarCheck', title: 'Attendance Streaks', desc: 'Weekly and monthly check-in bonuses', href: '#earn-attendance' },
+      { icon: 'FlaskConical', title: 'Research Grants', desc: 'Earn for published, DOI-verified work', href: '#earn-research' },
       { icon: 'PiggyBank', title: 'EDC Staking', desc: 'Lock EDC for a boosted earn rate', href: '#products' },
     ],
   },
@@ -64,11 +64,11 @@ export const NAV = [
 ];
 
 export const NEWS = [
-  'EdFi pilot opens to 6,000 Kozybayev University students on BNB Chain testnet',
-  'How EDC rewards are calculated: GPA, attendance and research explained',
-  'Campus Pay: spend EDC at the canteen, dormitory office and merch store',
-  'EdFi presented at the Binance Crypto Ideathon',
-  'Roadmap update: mainnet migration and eGov integration',
+  'EdFi pilot opens to 6,000 students',
+  'How EDC rewards are calculated',
+  'Campus Pay: spend EDC at the canteen',
+  'EdFi at the Binance Crypto Ideathon',
+  'Mainnet migration and eGov roadmap',
 ];
 
 export const TRUST_STATS = [
@@ -170,7 +170,7 @@ export const FAQ = [
 export const FOOTER_COLUMNS = [
   {
     title: 'About',
-    links: [['About EdFi', '#products'], ['Roadmap', '#roadmap'], ['Binance Crypto Ideathon', '#faq'], ['Whitepaper', '#faq']],
+    links: [['About EdFi', '#products'], ['Roadmap', '#roadmap'], ['Binance Crypto Ideathon', '#faq']],
   },
   {
     title: 'Products',

@@ -16,10 +16,10 @@ function EarnPreview() {
             <ArrowDownLeft size={14} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-xs font-medium text-ink">{t}</span>
-            <span className="block text-[11px] text-ink-3">{s}</span>
+            <span className="block truncate text-[13px] font-medium text-ink">{t}</span>
+            <span className="block text-xs text-ink-3">{s}</span>
           </span>
-          <span className="num text-xs font-semibold text-up">{v} EDC</span>
+          <span className="num text-[13px] font-semibold text-up">{v} EDC</span>
         </div>
       ))}
     </div>
@@ -29,7 +29,7 @@ function EarnPreview() {
 function SpendPreview() {
   return (
     <div className="px-1">
-      <div className="flex items-center justify-between text-[11px] text-ink-3">
+      <div className="flex items-center justify-between text-xs text-ink-3">
         <span>Campus Canteen</span>
         <span className="inline-flex items-center gap-1 text-up">
           <CircleCheck size={12} />
@@ -39,7 +39,7 @@ function SpendPreview() {
       <p className="num mt-1 text-xl font-semibold text-ink">
         -15.00 <span className="text-sm font-normal text-ink-3">EDC</span>
       </p>
-      <div className="mt-2 flex justify-between border-t border-line pt-2 text-[11px] text-ink-3">
+      <div className="mt-2 flex justify-between border-t border-line pt-2 text-xs text-ink-3">
         <span>Fee</span>
         <span className="num text-ink-2">0.00 EDC</span>
       </div>
@@ -49,7 +49,7 @@ function SpendPreview() {
 
 function WithdrawPreview() {
   return (
-    <div className="space-y-2.5 px-1 text-[11px]">
+    <div className="space-y-2.5 px-1 text-xs">
       <div className="flex items-center justify-between">
         <span className="text-ink-3">Coin</span>
         <span className="inline-flex items-center gap-1.5 font-medium text-ink">
@@ -83,7 +83,7 @@ export default function Products() {
           const Preview = PREVIEWS[i];
           return (
             <article key={p.tag} className="card flex flex-col p-5 lg:p-6">
-              <div className="flex h-[140px] flex-col justify-center rounded-lg bg-page p-3">
+              <div className="flex h-[156px] flex-col justify-center rounded-lg bg-page p-3">
                 <Preview />
               </div>
               <p className="mt-5 flex items-center gap-1.5 text-xs font-medium text-yellow-text">

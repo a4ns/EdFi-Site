@@ -11,14 +11,14 @@ function Progress({ value, total }) {
 function Action({ task, onClaim, onContinue }) {
   if (task.status === 'claimable') {
     return (
-      <button type="button" className="btn btn-primary btn-sm w-[88px]" onClick={() => onClaim(task)}>
+      <button type="button" className="btn btn-primary btn-sm w-[76px] sm:w-[88px]" onClick={() => onClaim(task)}>
         Claim
       </button>
     );
   }
   if (task.status === 'claimed') {
     return (
-      <span className="inline-flex w-[88px] items-center justify-center gap-1 text-sm text-up">
+      <span className="inline-flex w-[76px] sm:w-[88px] items-center justify-center gap-1 text-sm text-up">
         <CircleCheck size={16} />
         Claimed
       </span>
@@ -26,14 +26,14 @@ function Action({ task, onClaim, onContinue }) {
   }
   if (task.status === 'verifying') {
     return (
-      <span className="inline-flex w-[88px] items-center justify-center gap-1 text-sm text-ink-3" title="Waiting for the registrar oracle">
+      <span className="inline-flex w-[76px] sm:w-[88px] items-center justify-center gap-1 text-sm text-ink-3" title="Waiting for the registrar oracle">
         <Hourglass size={14} />
         Verifying
       </span>
     );
   }
   return (
-    <button type="button" className="btn btn-secondary btn-sm w-[88px]" onClick={() => onContinue(task)}>
+    <button type="button" className="btn btn-secondary btn-sm w-[76px] sm:w-[88px]" onClick={() => onContinue(task)}>
       {task.cta ?? 'Start'}
     </button>
   );
@@ -53,10 +53,10 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
       </div>
       <ul className="mt-2">
         {tasks.map((t) => (
-          <li key={t.id} className="flex flex-col gap-3 py-4 first:pt-2 sm:flex-row sm:items-center sm:gap-4">
+          <li key={t.id} className="flex items-center gap-4 py-4 first:pt-2">
             <div className="min-w-0 w-full flex-1">
               <div className="flex items-center justify-between gap-3">
-                <p className="truncate text-sm font-medium text-ink">{t.title}</p>
+                <p className="text-sm font-medium text-ink sm:truncate">{t.title}</p>
                 <p className="num shrink-0 text-sm font-semibold text-ink">
                   +{t.reward} <span className="font-normal text-ink-3">EDC</span>
                 </p>
@@ -71,9 +71,7 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
                 <Progress value={Math.min(t.progress, t.total)} total={t.total} />
               </div>
             </div>
-            <div className="flex justify-end sm:block">
-              <Action task={t} onClaim={onClaim} onContinue={onContinue} />
-            </div>
+            <Action task={t} onClaim={onClaim} onContinue={onContinue} />
           </li>
         ))}
       </ul>

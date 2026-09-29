@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BadgeCheck, Copy, GraduationCap, History, Home, QrCode, Wallet } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/dashboard/Sidebar';
 import BalanceCard from '../components/dashboard/BalanceCard';
@@ -72,13 +72,13 @@ function MobileTabBar({ onSelect }) {
           className={`flex h-14 flex-col items-center justify-center gap-0.5 text-[10px] font-medium ${i === 0 ? 'text-ink' : 'text-ink-3'}`}
         >
           {target === 'pay' ? (
-            <span className="-mt-1 flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-yellow-on">
+            <span className="-mt-3 flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-yellow-on">
               <Ico size={18} />
             </span>
           ) : (
             <Ico size={20} className={i === 0 ? 'text-yellow-text' : ''} />
           )}
-          {target === 'pay' ? null : label}
+          {label}
         </button>
       ))}
     </nav>
@@ -94,6 +94,7 @@ export default function DashboardApp() {
   const [toast, setToast] = useState(null);
   const [active, setActive] = useState('dashboard');
   const navigate = useNavigate();
+  const { hash } = useLocation();
 
   useEffect(() => {
     document.title = 'Dashboard | EdFi';
@@ -101,6 +102,14 @@ export default function DashboardApp() {
       document.title = 'EdFi | Learn-to-Earn on BNB Chain';
     };
   }, []);
+
+  // Deep links such as /demo#tasks from the marketing site.
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.slice(1);
+    const t = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+    return () => clearTimeout(t);
+  }, [hash]);
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -156,7 +165,10 @@ export default function DashboardApp() {
 
   const withdraw = ({ address, amount }) => {
     setBalance((b) => b - amount);
-    addTx({ kind: 'withdraw', title: 'Withdraw', sub: `To ${shortAddress(address)}`, amount: -amount });
+    const id = `t${Date.now()}`;
+    setTransactions((ts) => [{ id, at: Date.now(), kind: 'withdraw', title: 'Withdraw', sub: `To ${shortAddress(address)}`, amount: -amount, status: 'processing' }, ...ts].slice(0, 8));
+    // On-chain settlement: processing first, completed a few seconds later.
+    setTimeout(() => setTransactions((ts) => ts.map((t) => (t.id === id ? { ...t, status: 'completed' } : t))), 4000);
     setModal(null);
     showToast(`Withdrawal of ${formatAmount(amount)} EDC submitted`);
   };
@@ -191,10 +203,10 @@ export default function DashboardApp() {
                 onDeposit={() => openModal('deposit')}
                 onWithdraw={() => openModal('withdraw')}
               />
-              <div className="flex min-w-0 max-xl:order-2 xl:[&>section]:flex-1">
+              <div className="flex min-w-0 max-xl:order-2 [&>section]:min-w-0 [&>section]:flex-1">
                 <MarketsWidget balance={balance} />
               </div>
-              <div className="flex min-w-0 max-xl:order-1 xl:[&>section]:flex-1">
+              <div className="flex min-w-0 max-xl:order-1 [&>section]:min-w-0 [&>section]:flex-1">
                 <TasksCard tasks={tasks} onClaim={claim} onContinue={advance} />
               </div>
               <div className="flex min-w-0 flex-col gap-4 max-xl:order-3 lg:gap-6">
