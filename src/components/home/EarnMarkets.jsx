@@ -37,13 +37,16 @@ export default function EarnMarkets() {
       <table className="mt-2 w-full table-fixed">
         <thead>
           <tr className="h-12 text-left text-xs text-ink-3">
-            <th className="w-auto font-normal lg:w-[300px]">Activity</th>
-            <th className="w-[64px] text-right font-normal sm:w-[112px] md:w-[120px]">Reward (EDC)</th>
-            <th className="hidden w-[120px] text-right font-normal md:table-cell">≈ Value</th>
-            <th className="hidden w-[130px] text-right font-normal lg:table-cell">Frequency</th>
-            <th className="hidden w-auto text-right font-normal lg:table-cell">Verified by</th>
+            <th className="w-auto font-normal">Activity</th>
+            <th className="w-[72px] text-right font-normal sm:w-[120px] lg:w-[140px]">
+              <span className="sm:hidden">EDC</span>
+              <span className="hidden sm:inline">Reward</span>
+            </th>
+            <th className="hidden w-[110px] text-right font-normal md:table-cell lg:w-[130px]">≈ Value</th>
+            <th className="hidden w-[150px] text-right font-normal lg:table-cell">Frequency</th>
+            <th className="hidden w-[230px] pl-12 font-normal lg:table-cell">Verified by</th>
             <th className="hidden w-[130px] text-right font-normal md:table-cell">Earners (24h)</th>
-            <th className="w-[64px] text-right font-normal md:w-[96px]">Action</th>
+            <th className="w-[76px] text-right font-normal md:w-[96px]">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -65,7 +68,7 @@ export default function EarnMarkets() {
               </td>
               <td className="num hidden text-right text-sm text-ink-2 md:table-cell">${formatAmount(a.reward * quotes.EDC.price)}</td>
               <td className="hidden text-right text-sm text-ink-2 lg:table-cell">{a.frequency}</td>
-              <td className="hidden text-right text-sm text-ink-2 lg:table-cell">
+              <td className="hidden pl-12 text-sm text-ink-2 lg:table-cell">
                 <span className="inline-flex items-center gap-1.5">
                   <ShieldCheck size={14} className="text-up" />
                   {a.oracle}
@@ -73,7 +76,7 @@ export default function EarnMarkets() {
               </td>
               <td className="num hidden text-right text-sm text-ink-2 md:table-cell">{formatInt(a.earners24h)}</td>
               <td className="rounded-r-lg pr-2 text-right">
-                <Link to="/demo" className="text-sm font-medium text-yellow-text hover:underline">
+                <Link to="/demo" className="btn btn-secondary btn-sm h-7 px-3 md:px-4">
                   Earn
                 </Link>
               </td>

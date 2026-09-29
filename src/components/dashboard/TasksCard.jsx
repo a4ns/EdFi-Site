@@ -1,4 +1,4 @@
-import { CircleCheck, Hourglass } from 'lucide-react';
+import { ChevronRight, CircleCheck, Hourglass } from 'lucide-react';
 
 function Progress({ value, total }) {
   return (
@@ -42,7 +42,7 @@ function Action({ task, onClaim, onContinue }) {
 export default function TasksCard({ tasks, onClaim, onContinue }) {
   const claimable = tasks.filter((t) => t.status === 'claimable').length;
   return (
-    <section id="tasks" className="panel scroll-mt-20 p-4 md:p-6">
+    <section id="tasks" className="panel flex flex-1 scroll-mt-20 flex-col p-4 md:p-6">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-ink">Learn &amp; Earn</h2>
         {claimable > 0 ? (
@@ -77,6 +77,12 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
           </li>
         ))}
       </ul>
+      <div className="mt-auto border-t border-line pt-4">
+        <a href="/#earn" className="link-more">
+          View all reward rates
+          <ChevronRight size={16} />
+        </a>
+      </div>
     </section>
   );
 }

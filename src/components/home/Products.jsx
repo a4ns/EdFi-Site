@@ -82,17 +82,17 @@ export default function Products() {
         {PRODUCTS.map((p, i) => {
           const Preview = PREVIEWS[i];
           return (
-            <article key={p.tag} className="card flex flex-col p-6 lg:p-8">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-raised text-yellow-text">
-                <Icon name={p.icon} size={24} />
-              </span>
-              <p className="mt-6 text-sm font-medium text-yellow-text">{p.tag}</p>
-              <h3 className="mt-1 text-xl font-semibold text-ink">{p.title}</h3>
-              <p className="mt-2 min-h-[72px] text-sm leading-6 text-ink-3">{p.desc}</p>
-              <div className="mt-6 flex h-[128px] flex-col justify-center rounded-lg bg-page p-3">
+            <article key={p.tag} className="card flex flex-col p-5 lg:p-6">
+              <div className="flex h-[140px] flex-col justify-center rounded-lg bg-page p-3">
                 <Preview />
               </div>
-              <Link to="/demo" className="link-more mt-6 text-ink">
+              <p className="mt-5 flex items-center gap-1.5 text-xs font-medium text-yellow-text">
+                <Icon name={p.icon} size={14} />
+                {p.tag}
+              </p>
+              <h3 className="mt-1 text-xl font-semibold text-ink">{p.title}</h3>
+              <p className="mt-2 flex-1 text-sm leading-6 text-ink-3">{p.desc}</p>
+              <Link to="/demo" className="link-more mt-4 text-ink">
                 {p.cta}
                 <ChevronRight size={16} />
               </Link>

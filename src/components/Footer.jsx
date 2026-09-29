@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ChevronDown, Github, Instagram, Linkedin, Youtube } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, Github, Globe, Instagram, Linkedin, Moon, Sun, Youtube } from 'lucide-react';
+import { applyTheme, currentTheme } from '../lib/theme';
 import Logo from './Logo';
 import { FOOTER_COLUMNS } from '../data/content';
 
@@ -37,6 +39,35 @@ const SOCIAL = [
   ['GitHub', <Github key="g" size={18} />],
 ];
 
+function FooterTheme() {
+  const [theme, setTheme] = useState(currentTheme);
+  return (
+    <div className="flex items-center gap-3 text-sm text-ink-2">
+      Theme
+      <div className="flex rounded-lg bg-card p-1">
+        {[
+          ['dark', Moon],
+          ['light', Sun],
+        ].map(([t, Ico]) => (
+          <button
+            key={t}
+            type="button"
+            aria-pressed={theme === t}
+            aria-label={`${t} theme`}
+            onClick={() => {
+              applyTheme(t);
+              setTheme(t);
+            }}
+            className={`flex h-7 w-9 items-center justify-center rounded-md transition-colors ${theme === t ? 'bg-raised text-ink' : 'text-ink-3'}`}
+          >
+            <Ico size={14} />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function FooterLink({ label, href }) {
   const cls = 'text-sm text-ink-3 transition-colors hover:text-ink';
   return href.startsWith('/') ? (
@@ -50,7 +81,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-line bg-page">
       <div className="page-x pb-10 pt-12 lg:pt-16">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-[1.4fr_repeat(5,1fr)]">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-[1.1fr_repeat(5,1fr)]">
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Logo />
             <h3 className="mt-8 text-base font-medium text-ink">Community</h3>
@@ -93,7 +124,19 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-ink-3 md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
+          <div className="flex items-center gap-4 text-sm text-ink-2">
+            <span className="flex items-center gap-1.5">
+              <Globe size={16} className="text-ink-3" />
+              English
+            </span>
+            <span className="h-4 w-px bg-line-strong" />
+            <span>USD</span>
+          </div>
+          <FooterTheme />
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6 text-xs text-ink-3 md:flex-row md:items-center md:justify-between">
           <p>EdFi © {new Date().getFullYear()} · Built for the Binance Crypto Ideathon by Kazbekov Ansar · Mentor: Shaikhin D. N.</p>
           <p className="text-ink-4">Independent concept project. Not affiliated with or endorsed by Binance.</p>
         </div>

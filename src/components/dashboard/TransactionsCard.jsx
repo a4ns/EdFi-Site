@@ -60,12 +60,9 @@ export default function TransactionsCard({ transactions }) {
                 <td className="text-right">
                   <Amount value={t.amount} />
                 </td>
-                <td className="num text-right text-sm text-ink-3">{formatDateTime(new Date(t.at))}</td>
+                <td className="num whitespace-nowrap text-right text-xs text-ink-3">{formatDateTime(new Date(t.at))}</td>
                 <td className="text-right">
-                  <span className="inline-flex items-center gap-1.5 text-sm text-ink-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-up" />
-                    Completed
-                  </span>
+                  <span className="text-sm text-ink-2">Completed</span>
                 </td>
               </tr>
             );

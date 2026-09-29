@@ -7,18 +7,24 @@ export default function Roadmap() {
       <p className="mt-3 max-w-xl text-base text-ink-3">
         From a single-campus sandbox in Petropavlovsk to a national education standard.
       </p>
-      <ol className="relative mt-10 grid gap-4 md:grid-cols-3 lg:gap-6">
+      <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-0">
         {ROADMAP.map((r, i) => (
-          <li key={r.phase} className="card relative !rounded-xl flex flex-col p-6 lg:p-8">
-            <div className="flex items-center gap-3">
-              <span className="num flex h-8 w-8 items-center justify-center rounded-lg bg-yellow text-sm font-semibold text-yellow-on">
+          <li key={r.phase} className="relative flex gap-4 md:block md:pr-8">
+            {/* connector: vertical on mobile, horizontal on desktop */}
+            <div className="flex flex-col items-center md:mb-6 md:flex-row">
+              <span className="num z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-yellow text-sm font-semibold text-yellow-on">
                 {i + 1}
               </span>
-              <span className="text-sm font-medium text-ink-3">{r.phase}</span>
-              <span className="ml-auto rounded bg-raised px-2 py-0.5 text-xs font-medium text-ink-2">{r.date}</span>
+              {i < ROADMAP.length - 1 && <span className="mt-2 w-px flex-1 bg-line-strong md:ml-3 md:mt-0 md:h-px md:w-auto" />}
             </div>
-            <h3 className="mt-6 text-xl font-semibold text-ink">{r.title}</h3>
-            <p className="mt-2 text-sm leading-6 text-ink-3">{r.desc}</p>
+            <div>
+              <p className="flex items-center gap-2 text-sm text-ink-3">
+                {r.phase}
+                <span className="rounded bg-raised px-2 py-0.5 text-xs font-medium text-ink-2">{r.date}</span>
+              </p>
+              <h3 className="mt-2 text-xl font-semibold text-ink">{r.title}</h3>
+              <p className="mt-2 max-w-[340px] text-sm leading-6 text-ink-3">{r.desc}</p>
+            </div>
           </li>
         ))}
       </ol>

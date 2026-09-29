@@ -39,9 +39,10 @@ export default function BalanceChart({ end, height = 96 }) {
   }, [end, range]);
 
   const pad = 6;
+  const gutter = 46;
   const min = Math.min(...points);
   const max = Math.max(...points);
-  const x = (i) => pad + (i / (points.length - 1)) * (width - pad * 2);
+  const x = (i) => gutter + (i / (points.length - 1)) * (width - gutter - pad);
   const y = (v) => height - pad - ((v - min) / (max - min || 1)) * (height - pad * 2);
   const line = points.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
   const hi = hover ?? points.length - 1;
@@ -49,7 +50,7 @@ export default function BalanceChart({ end, height = 96 }) {
 
   const onMove = (e) => {
     const r = e.currentTarget.getBoundingClientRect();
-    const i = Math.round(((e.clientX - r.left - pad) / (width - pad * 2)) * (points.length - 1));
+    const i = Math.round(((e.clientX - r.left - gutter) / (width - gutter - pad)) * (points.length - 1));
     setHover(Math.max(0, Math.min(points.length - 1, i)));
   };
 
@@ -75,10 +76,18 @@ export default function BalanceChart({ end, height = 96 }) {
         <svg width={width} height={height} className="block" aria-hidden="true">
           <defs>
             <linearGradient id={gid} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stopColor="#F0B90B" stopOpacity="0.28" />
+              <stop offset="0" stopColor="#F0B90B" stopOpacity="0.14" />
               <stop offset="1" stopColor="#F0B90B" stopOpacity="0" />
             </linearGradient>
           </defs>
+          {[max, (max + min) / 2, min].map((v) => (
+            <g key={v}>
+              <line x1={gutter} x2={width} y1={y(v)} y2={y(v)} stroke="currentColor" className="text-line" strokeDasharray="2 4" />
+              <text x={0} y={y(v) + 3.5} fontSize="10" fill="currentColor" className="num text-ink-4">
+                {v.toFixed(0)}
+              </text>
+            </g>
+          ))}
           <path d={`${line} L${x(points.length - 1)} ${height} L${x(0)} ${height} Z`} fill={`url(#${gid})`} />
           <path d={line} fill="none" stroke="#F0B90B" strokeWidth="1.5" />
           {hover != null && <line x1={x(hi)} x2={x(hi)} y1={0} y2={height} stroke="currentColor" className="text-line-strong" strokeDasharray="3 3" />}
