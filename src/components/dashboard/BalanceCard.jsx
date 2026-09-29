@@ -18,11 +18,11 @@ export default function BalanceCard({ balance, todayEarned, onPay, onDeposit, on
   const pct = start > 0 ? (todayEarned / start) * 100 : 0;
 
   return (
-    <section id="balance" className="panel scroll-mt-20 p-4 md:p-6">
+    <section id="balance" className="panel min-w-0 scroll-mt-20 p-4 md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-ink">Estimated Balance</h2>
+            <h2 className="text-base font-semibold text-ink">EDC Balance</h2>
             <button type="button" className="icon-btn h-6 w-6" onClick={() => setHidden((h) => !h)} aria-label={hidden ? 'Show balance' : 'Hide balance'}>
               {hidden ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -72,15 +72,15 @@ export default function BalanceCard({ balance, todayEarned, onPay, onDeposit, on
         </div>
 
         <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto">
-          <button type="button" className="btn btn-primary btn-md min-w-0 px-2 sm:px-4" onClick={onPay}>
+          <button type="button" className="btn btn-primary btn-sm min-w-0 px-2 max-sm:h-10 sm:px-4" onClick={onPay}>
             <QrCode size={16} />
             Scan Pay
           </button>
-          <button type="button" className="btn btn-secondary btn-md min-w-0 px-2 sm:px-4" onClick={onDeposit}>
+          <button type="button" className="btn btn-secondary btn-sm min-w-0 px-2 max-sm:h-10 sm:px-4" onClick={onDeposit}>
             <Download size={16} />
             Deposit
           </button>
-          <button type="button" className="btn btn-secondary btn-md min-w-0 px-2 sm:px-4" onClick={onWithdraw}>
+          <button type="button" className="btn btn-secondary btn-sm min-w-0 px-2 max-sm:h-10 sm:px-4" onClick={onWithdraw}>
             <Upload size={16} />
             Withdraw
           </button>

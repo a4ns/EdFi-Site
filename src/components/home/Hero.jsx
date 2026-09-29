@@ -1,30 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, Gift, GraduationCap, QrCode } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ChevronRight, CircleCheck, Gift, GraduationCap, QrCode } from 'lucide-react';
 import CoinIcon from '../CoinIcon';
+import { AppleIcon, GoogleIcon } from '../SocialIcons';
 import { Change, Price } from '../PriceCell';
 import { useMarkets } from '../../state/markets';
+import { useAuth } from '../../state/auth';
 import { NEWS } from '../../data/content';
 import { formatInt } from '../../lib/format';
-
-function GoogleIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.7z" />
-      <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24z" />
-      <path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8z" />
-      <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.8 3.6-4.9 6.7-4.9z" />
-    </svg>
-  );
-}
-
-function AppleIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-ink" aria-hidden="true">
-      <path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9a4.8 4.8 0 0 0-3.8-2c-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9a5 5 0 0 0-4.2 2.6c-1.8 3.1-.5 7.7 1.3 10.2.8 1.2 1.8 2.6 3.1 2.6 1.3-.1 1.7-.8 3.3-.8 1.5 0 1.9.8 3.3.8 1.4 0 2.2-1.3 3-2.5a10 10 0 0 0 1.4-2.8 4.3 4.3 0 0 1-2.3-4.2zM13.9 5c.7-.8 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z" />
-    </svg>
-  );
-}
 
 function useEarnedCounter(start) {
   const [n, setN] = useState(start);
@@ -56,7 +39,7 @@ function MarketsCard() {
             </button>
           ))}
         </div>
-        <Link to="/demo" className="link-more pb-2">
+        <Link to="/markets" className="link-more pb-2">
           View All
           <ChevronRight size={16} />
         </Link>
@@ -75,7 +58,7 @@ function MarketsCard() {
           </li>
         ))}
       </ul>
-      <p className="mt-2 flex items-center gap-1.5 text-xs text-ink-4">
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-ink-3">
         <span className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-up' : 'bg-ink-4'}`} />
         {live ? 'Live prices from Binance market data.' : 'Price snapshot.'} EDC is a pilot token (simulated).
       </p>
@@ -107,18 +90,18 @@ function NewsCard() {
 }
 
 export default function Hero() {
-  const navigate = useNavigate();
   const earned = useEarnedCounter(1204380);
+  const { openAuth } = useAuth();
   const onSubmit = (e) => {
     e.preventDefault();
-    navigate('/demo');
+    openAuth('signup', new FormData(e.currentTarget).get('identifier') ?? '');
   };
 
   return (
     <section className="page-x grid grid-cols-1 gap-10 pb-12 pt-8 md:pt-14 lg:grid-cols-[minmax(0,1fr)_468px] lg:gap-16 lg:pb-12 lg:pt-16">
-      <div className="flex flex-col lg:pt-4">
-        <h1 className="text-[40px] font-bold leading-[48px] text-ink md:text-[64px] md:leading-[72px] lg:text-[72px] lg:leading-[80px]">
-          <span className="num block text-brand">{formatInt(earned)}</span>
+      <div className="flex flex-col">
+        <h1 className="text-[44px] font-semibold leading-[52px] text-ink md:text-[68px] md:leading-[76px] lg:text-[76px] lg:leading-[84px]">
+          <span className="num block text-yellow-text">{formatInt(earned)}</span>
           <span className="block">EDC EARNED</span>
           <span className="block">BY STUDENTS</span>
         </h1>
@@ -132,9 +115,9 @@ export default function Hero() {
           </p>
         </div>
 
-        <form onSubmit={onSubmit} className="mt-6 flex max-w-[520px] flex-col gap-3 sm:flex-row">
+        <form onSubmit={onSubmit} className="mt-6 flex max-w-[520px] flex-col gap-3 sm:flex-row md:max-w-[640px] lg:max-w-[520px]">
           <label htmlFor="hero-signup" className="sr-only">University email or student ID</label>
-          <input id="hero-signup" className="input sm:flex-1" placeholder="University email / Student ID" autoComplete="email" />
+          <input id="hero-signup" name="identifier" className="input sm:flex-1" placeholder="University email / Student ID" autoComplete="email" />
           <button type="submit" className="btn btn-primary btn-lg sm:w-[144px]">Sign Up</button>
         </form>
 
@@ -147,15 +130,16 @@ export default function Hero() {
                 ['Apple', <AppleIcon key="a" />],
                 ['University SSO', <GraduationCap key="u" size={20} className="text-ink" />],
               ].map(([label, icon]) => (
-                <Link
+                <button
                   key={label}
-                  to="/demo"
+                  type="button"
+                  onClick={() => openAuth('signup')}
                   aria-label={`Continue with ${label}`}
                   title={label}
                   className="flex h-10 w-10 items-center justify-center rounded-lg bg-raised transition-colors hover:bg-line-strong"
                 >
                   {icon}
-                </Link>
+                </button>
               ))}
             </div>
           </div>
@@ -164,15 +148,28 @@ export default function Hero() {
             <a
               href="#download"
               aria-label="Download App"
-              className="mt-3 flex h-10 w-10 items-center justify-center rounded-lg bg-raised text-ink transition-colors hover:bg-line-strong"
+              className="mt-3 hidden h-10 w-10 items-center justify-center rounded-lg bg-raised text-ink transition-colors hover:bg-line-strong sm:flex"
             >
               <QrCode size={20} />
             </a>
+            <div className="mt-3 flex gap-2 sm:hidden">
+              <Link to="/demo" className="btn btn-secondary btn-md px-4">iOS</Link>
+              <Link to="/demo" className="btn btn-secondary btn-md px-4">Android</Link>
+            </div>
           </div>
         </div>
+
+        <ul className="mt-12 flex max-w-[520px] flex-col gap-3 border-t border-line pt-6 text-sm text-ink-2 lg:mt-auto">
+          {['Rewards verified by university oracles', 'Zero fees for campus payments', 'Built on BNB Chain, withdraw anytime'].map((t) => (
+            <li key={t} className="flex items-center gap-2">
+              <CircleCheck size={16} className="shrink-0 text-up" />
+              {t}
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:flex lg:flex-col">
         <MarketsCard />
         <NewsCard />
       </div>

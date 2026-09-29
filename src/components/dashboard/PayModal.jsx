@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { BedDouble, Check, Copy, Printer, Shirt, Utensils } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { BedDouble, Check, Copy, Printer, Shirt, Utensils, Zap } from 'lucide-react';
 import Modal from './Modal';
 import AmountInput from './AmountInput';
 import SummaryRow from './SummaryRow';
@@ -14,6 +14,17 @@ export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
   const [merchant, setMerchant] = useState(MERCHANTS[0].id);
   const [amount, setAmount] = useState('15.00');
   const [done, setDone] = useState(null);
+  const [scanning, setScanning] = useState(true);
+
+  // The demo has no camera: "detect" the canteen QR code after a moment.
+  useEffect(() => {
+    if (!scanning) return undefined;
+    const id = setTimeout(() => {
+      setMerchant('canteen');
+      setScanning(false);
+    }, 2600);
+    return () => clearTimeout(id);
+  }, [scanning]);
   const value = Number(amount) || 0;
   const over = value > balance;
   const m = MERCHANTS.find((x) => x.id === merchant);
@@ -50,6 +61,30 @@ export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
         </button>
         <button type="button" className="mt-3 w-full text-center text-sm font-medium text-ink-3 hover:text-ink" onClick={onViewHistory}>
           View in History
+        </button>
+      </Modal>
+    );
+  }
+
+  if (scanning) {
+    return (
+      <Modal title="Scan Pay" onClose={onClose}>
+        <p className="text-center text-sm text-ink-3">Point your camera at the merchant QR code</p>
+        <div className="relative mx-auto mt-5 flex h-[260px] w-full max-w-[300px] items-center justify-center overflow-hidden rounded-xl bg-deep">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,rgba(0,0,0,0.55)_100%)]" />
+          <div className="relative h-[190px] w-[190px]">
+            {['left-0 top-0 border-l-2 border-t-2 rounded-tl-lg', 'right-0 top-0 border-r-2 border-t-2 rounded-tr-lg', 'left-0 bottom-0 border-l-2 border-b-2 rounded-bl-lg', 'right-0 bottom-0 border-r-2 border-b-2 rounded-br-lg'].map((c) => (
+              <span key={c} className={`absolute h-7 w-7 border-yellow ${c}`} />
+            ))}
+            <span className="absolute inset-x-3 h-0.5 animate-scan rounded bg-yellow shadow-[0_0_12px_rgba(252,213,53,0.8)]" />
+          </div>
+        </div>
+        <p className="mt-3 flex items-center justify-center gap-1 text-xs text-ink-3">
+          <Zap size={12} />
+          Demo: scanning is simulated
+        </p>
+        <button type="button" className="btn btn-secondary btn-lg mt-6 w-full" onClick={() => setScanning(false)}>
+          Select merchant instead
         </button>
       </Modal>
     );
@@ -104,7 +139,7 @@ export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
           </SummaryRow>
         </div>
 
-        <button type="submit" className="btn btn-primary btn-lg mt-6 w-full" disabled={!value || over}>
+        <button type="submit" className="btn btn-primary btn-lg sticky bottom-0 mt-6 w-full" disabled={!value || over}>
           Confirm Payment
         </button>
       </form>

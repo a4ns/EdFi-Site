@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { BadgeCheck, Copy, GraduationCap, History, Home, QrCode, Wallet } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/dashboard/Sidebar';
 import BalanceCard from '../components/dashboard/BalanceCard';
@@ -8,6 +9,7 @@ import TransactionsCard from '../components/dashboard/TransactionsCard';
 import MarketsWidget from '../components/dashboard/MarketsWidget';
 import AnnouncementsCard from '../components/dashboard/AnnouncementsCard';
 import ReferralCard from '../components/dashboard/ReferralCard';
+import AccountModal from '../components/dashboard/AccountModal';
 import PayModal from '../components/dashboard/PayModal';
 import DepositModal from '../components/dashboard/DepositModal';
 import WithdrawModal from '../components/dashboard/WithdrawModal';
@@ -70,13 +72,13 @@ function MobileTabBar({ onSelect }) {
           className={`flex h-14 flex-col items-center justify-center gap-0.5 text-[10px] font-medium ${i === 0 ? 'text-ink' : 'text-ink-3'}`}
         >
           {target === 'pay' ? (
-            <span className="-mt-1 flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-yellow-on">
+            <span className="-mt-3 flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-yellow-on">
               <Ico size={18} />
             </span>
           ) : (
             <Ico size={20} className={i === 0 ? 'text-yellow-text' : ''} />
           )}
-          {target === 'pay' ? null : label}
+          {label}
         </button>
       ))}
     </nav>
@@ -91,6 +93,8 @@ export default function DashboardApp() {
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState(null);
   const [active, setActive] = useState('dashboard');
+  const navigate = useNavigate();
+  const { hash } = useLocation();
 
   useEffect(() => {
     document.title = 'Dashboard | EdFi';
@@ -98,6 +102,14 @@ export default function DashboardApp() {
       document.title = 'EdFi | Learn-to-Earn on BNB Chain';
     };
   }, []);
+
+  // Deep links such as /demo#tasks from the marketing site.
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.slice(1);
+    const t = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+    return () => clearTimeout(t);
+  }, [hash]);
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -108,13 +120,17 @@ export default function DashboardApp() {
   const showToast = (text) => setToast({ id: Date.now(), text });
   const addTx = (tx) => setTransactions((ts) => [{ id: `t${Date.now()}`, at: Date.now(), ...tx }, ...ts].slice(0, 8));
   const closeModal = useCallback(() => setModal(null), []);
+  const openModal = (name) => {
+    setToast(null);
+    setModal(name);
+  };
 
   const todayEarned = transactions
     .filter((t) => t.kind === 'reward' && t.at > sessionStart - DAY)
     .reduce((s, t) => s + t.amount, 0);
 
   const goTo = (target) => {
-    if (target === 'pay') return setModal('pay');
+    if (target === 'pay' || target === 'account' || target === 'settings') return openModal(target);
     if (target === 'top') return window.scrollTo({ top: 0, behavior: 'smooth' });
     return document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -139,18 +155,20 @@ export default function DashboardApp() {
         return { ...t, progress, status: progress >= t.total ? 'claimable' : 'active' };
       }),
     );
-    showToast(task.progress + 1 >= task.total ? 'Course completed. Your reward is ready to claim' : 'Lesson completed');
+    showToast(task.progress + 1 >= task.total ? 'Goal reached. Your reward is ready to claim' : (task.doneText ?? 'Lesson completed'));
   };
 
   const pay = ({ merchant, amount }) => {
     setBalance((b) => b - amount);
     addTx({ kind: 'payment', title: merchant.name, sub: 'Scan Pay', amount: -amount });
-    showToast(`Payment of ${formatAmount(amount)} EDC successful`);
   };
 
   const withdraw = ({ address, amount }) => {
     setBalance((b) => b - amount);
-    addTx({ kind: 'withdraw', title: 'Withdraw', sub: `To ${shortAddress(address)}`, amount: -amount });
+    const id = `t${Date.now()}`;
+    setTransactions((ts) => [{ id, at: Date.now(), kind: 'withdraw', title: 'Withdraw', sub: `To ${shortAddress(address)}`, amount: -amount, status: 'processing' }, ...ts].slice(0, 8));
+    // On-chain settlement: processing first, completed a few seconds later.
+    setTimeout(() => setTransactions((ts) => ts.map((t) => (t.id === id ? { ...t, status: 'completed' } : t))), 4000);
     setModal(null);
     showToast(`Withdrawal of ${formatAmount(amount)} EDC submitted`);
   };
@@ -159,7 +177,8 @@ export default function DashboardApp() {
     <div className="min-h-screen bg-page">
       <Header
         variant="app"
-        onDeposit={() => setModal('deposit')}
+        onDeposit={() => openModal('deposit')}
+        onCopyUid={() => showToast('UID copied')}
         onAppNavigate={(item) => {
           setActive(item.id);
           goTo(item.action ?? item.target);
@@ -177,22 +196,26 @@ export default function DashboardApp() {
           <div className="mx-auto max-w-[1200px]">
             <ProfileRow onCopy={() => showToast('UID copied')} />
             <div className="mt-6 grid gap-4 lg:mt-8 lg:gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-              <div className="flex min-w-0 flex-col gap-4 lg:gap-6">
-                <BalanceCard
-                  balance={balance}
-                  todayEarned={todayEarned}
-                  onPay={() => setModal('pay')}
-                  onDeposit={() => setModal('deposit')}
-                  onWithdraw={() => setModal('withdraw')}
-                />
-                <TasksCard tasks={tasks} onClaim={claim} onContinue={advance} />
-                <TransactionsCard transactions={transactions} />
-              </div>
-              <div className="flex min-w-0 flex-col gap-4 lg:gap-6">
+              <BalanceCard
+                balance={balance}
+                todayEarned={todayEarned}
+                onPay={() => openModal('pay')}
+                onDeposit={() => openModal('deposit')}
+                onWithdraw={() => openModal('withdraw')}
+              />
+              <div className="flex min-w-0 max-xl:order-2 [&>section]:min-w-0 [&>section]:flex-1">
                 <MarketsWidget balance={balance} />
+              </div>
+              <div className="flex min-w-0 max-xl:order-1 [&>section]:min-w-0 [&>section]:flex-1">
+                <TasksCard tasks={tasks} onClaim={claim} onContinue={advance} />
+              </div>
+              <div className="flex min-w-0 flex-col gap-4 max-xl:order-3 lg:gap-6">
                 <ReferralCard onCopy={() => showToast('Referral link copied')} />
                 <AnnouncementsCard />
               </div>
+            </div>
+            <div className="mt-4 lg:mt-6">
+              <TransactionsCard transactions={transactions} />
             </div>
           </div>
         </main>
@@ -211,6 +234,9 @@ export default function DashboardApp() {
         />
       )}
       {modal === 'deposit' && <DepositModal onClose={closeModal} />}
+      {(modal === 'account' || modal === 'settings') && (
+        <AccountModal mode={modal} onClose={closeModal} onLogout={() => navigate('/')} />
+      )}
       {modal === 'withdraw' && <WithdrawModal balance={balance} onClose={closeModal} onWithdraw={withdraw} />}
       <Toast toast={toast} />
     </div>

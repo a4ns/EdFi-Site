@@ -16,10 +16,10 @@ function EarnPreview() {
             <ArrowDownLeft size={14} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-xs font-medium text-ink">{t}</span>
-            <span className="block text-[11px] text-ink-3">{s}</span>
+            <span className="block truncate text-[13px] font-medium text-ink">{t}</span>
+            <span className="block text-xs text-ink-3">{s}</span>
           </span>
-          <span className="num text-xs font-semibold text-up">{v} EDC</span>
+          <span className="num text-[13px] font-semibold text-up">{v} EDC</span>
         </div>
       ))}
     </div>
@@ -29,7 +29,7 @@ function EarnPreview() {
 function SpendPreview() {
   return (
     <div className="px-1">
-      <div className="flex items-center justify-between text-[11px] text-ink-3">
+      <div className="flex items-center justify-between text-xs text-ink-3">
         <span>Campus Canteen</span>
         <span className="inline-flex items-center gap-1 text-up">
           <CircleCheck size={12} />
@@ -39,7 +39,7 @@ function SpendPreview() {
       <p className="num mt-1 text-xl font-semibold text-ink">
         -15.00 <span className="text-sm font-normal text-ink-3">EDC</span>
       </p>
-      <div className="mt-2 flex justify-between border-t border-line pt-2 text-[11px] text-ink-3">
+      <div className="mt-2 flex justify-between border-t border-line pt-2 text-xs text-ink-3">
         <span>Fee</span>
         <span className="num text-ink-2">0.00 EDC</span>
       </div>
@@ -49,7 +49,7 @@ function SpendPreview() {
 
 function WithdrawPreview() {
   return (
-    <div className="space-y-2.5 px-1 text-[11px]">
+    <div className="space-y-2.5 px-1 text-xs">
       <div className="flex items-center justify-between">
         <span className="text-ink-3">Coin</span>
         <span className="inline-flex items-center gap-1.5 font-medium text-ink">
@@ -59,7 +59,7 @@ function WithdrawPreview() {
       </div>
       <div className="flex items-center justify-between">
         <span className="text-ink-3">Network</span>
-        <span className="rounded bg-raised px-1.5 py-0.5 font-medium text-ink">BNB Smart Chain (BEP20)</span>
+        <span className="whitespace-nowrap rounded bg-raised px-1.5 py-0.5 font-medium text-ink">BNB Smart Chain (BEP20)</span>
       </div>
       <div className="flex items-center justify-between">
         <span className="text-ink-3">Address</span>
@@ -73,29 +73,31 @@ const PREVIEWS = [EarnPreview, SpendPreview, WithdrawPreview];
 
 export default function Products() {
   return (
-    <section id="products" className="page-x scroll-mt-16 py-10 lg:py-12">
+    <section id="products" className="page-x scroll-mt-16 py-8 lg:py-12">
       <h2 className="section-title">One token for your whole campus</h2>
       <p className="mt-3 max-w-xl text-base text-ink-3">
         EDC is earned for verified academic results and accepted across campus. It never gets stuck in a transcript.
       </p>
-      <div className="mt-10 grid gap-4 md:grid-cols-3 lg:gap-6">
+      <div className="mt-10 grid gap-4 lg:grid-cols-3 lg:gap-6">
         {PRODUCTS.map((p, i) => {
           const Preview = PREVIEWS[i];
           return (
-            <article key={p.tag} className="card flex flex-col p-6 lg:p-8">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-raised text-yellow-text">
-                <Icon name={p.icon} size={24} />
-              </span>
-              <p className="mt-6 text-sm font-medium text-yellow-text">{p.tag}</p>
-              <h3 className="mt-1 text-xl font-semibold text-ink">{p.title}</h3>
-              <p className="mt-2 min-h-[72px] text-sm leading-6 text-ink-3">{p.desc}</p>
-              <div className="mt-6 flex h-[128px] flex-col justify-center rounded-lg bg-page p-3">
+            <article key={p.tag} className="card flex flex-col gap-0 p-5 md:flex-row md:gap-6 lg:flex-col lg:gap-0 lg:p-6">
+              <div className="flex h-[156px] flex-col justify-center rounded-lg bg-page p-3 md:w-[300px] md:shrink-0 lg:w-auto">
                 <Preview />
               </div>
-              <Link to="/demo" className="link-more mt-6 text-ink">
+              <div className="flex flex-1 flex-col md:justify-center lg:justify-start">
+              <p className="mt-5 flex items-center gap-1.5 text-xs font-medium text-yellow-text md:mt-0 lg:mt-5">
+                <Icon name={p.icon} size={14} />
+                {p.tag}
+              </p>
+              <h3 className="mt-1 text-xl font-semibold text-ink">{p.title}</h3>
+              <p className="mt-2 flex-1 text-sm leading-6 text-ink-3">{p.desc}</p>
+              <Link to="/demo" className="link-more mt-4 text-ink">
                 {p.cta}
                 <ChevronRight size={16} />
               </Link>
+              </div>
             </article>
           );
         })}

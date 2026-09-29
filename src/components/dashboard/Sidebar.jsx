@@ -11,8 +11,8 @@ export default function Sidebar({ active, onSelect }) {
             const { id, label, icon: Ico } = item;
             const isActive = active === id;
             return (
+              <div key={id} className={id === 'referral' || id === 'account' ? 'mt-2 border-t border-line pt-3' : ''}>
               <button
-                key={id}
                 type="button"
                 onClick={() => onSelect(item)}
                 aria-current={isActive ? 'page' : undefined}
@@ -23,6 +23,7 @@ export default function Sidebar({ active, onSelect }) {
                 <Ico size={20} className={isActive ? 'text-ink [&_*]:fill-current [&_*]:[fill-opacity:0.2]' : ''} />
                 {label}
               </button>
+              </div>
             );
           })}
         </nav>

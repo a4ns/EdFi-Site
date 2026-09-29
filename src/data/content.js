@@ -44,13 +44,13 @@ export const NAV = [
   {
     label: 'Learn & Earn',
     menu: [
-      { icon: 'GraduationCap', title: 'Academic Rewards', desc: 'Grades and GPA paid out in EDC', href: '#earn' },
-      { icon: 'CalendarCheck', title: 'Attendance Streaks', desc: 'Weekly and monthly check-in bonuses', href: '#earn' },
-      { icon: 'FlaskConical', title: 'Research Grants', desc: 'Earn for published, DOI-verified work', href: '#earn' },
+      { icon: 'GraduationCap', title: 'Academic Rewards', desc: 'Grades and GPA paid out in EDC', href: '#earn-academic' },
+      { icon: 'CalendarCheck', title: 'Attendance Streaks', desc: 'Weekly and monthly check-in bonuses', href: '#earn-attendance' },
+      { icon: 'FlaskConical', title: 'Research Grants', desc: 'Earn for published, DOI-verified work', href: '#earn-research' },
       { icon: 'PiggyBank', title: 'EDC Staking', desc: 'Lock EDC for a boosted earn rate', href: '#products' },
     ],
   },
-  { label: 'Markets', href: '#markets' },
+  { label: 'Markets', href: '/markets' },
   { label: 'Campus Pay', href: '#products' },
   { label: 'Roadmap', href: '#roadmap' },
   {
@@ -64,11 +64,11 @@ export const NAV = [
 ];
 
 export const NEWS = [
-  'EdFi pilot opens to 6,000 Kozybayev University students on BNB Chain testnet',
-  'How EDC rewards are calculated: GPA, attendance and research explained',
-  'Campus Pay: spend EDC at the canteen, dormitory office and merch store',
-  'EdFi presented at the Binance Crypto Ideathon',
-  'Roadmap update: mainnet migration and eGov integration',
+  'EdFi pilot opens to 6,000 students',
+  'How EDC rewards are calculated',
+  'Campus Pay: spend EDC at the canteen',
+  'EdFi at the Binance Crypto Ideathon',
+  'Mainnet migration and eGov roadmap',
 ];
 
 export const TRUST_STATS = [
@@ -120,18 +120,21 @@ export const ROADMAP = [
   {
     phase: 'Phase 1',
     date: 'Nov 2025',
+    status: 'Completed',
     title: 'Smart contract MVP',
     desc: 'Testnet sandbox at Kozybayev University (6,000 students) to validate the Learn-to-Earn model.',
   },
   {
     phase: 'Phase 2',
-    date: 'Q2 2026',
+    date: 'H2 2026',
+    status: 'In progress',
     title: 'Full campus economy',
     desc: 'Mainnet migration. Payments at canteens, dormitories and local merchandise stores.',
   },
   {
     phase: 'Phase 3',
     date: '2027',
+    status: 'Planned',
     title: 'National eGov integration',
     desc: 'Direct integration with state education databases to scale EdFi across Kazakhstan.',
   },
@@ -167,7 +170,7 @@ export const FAQ = [
 export const FOOTER_COLUMNS = [
   {
     title: 'About',
-    links: [['About EdFi', '#products'], ['Roadmap', '#roadmap'], ['Binance Crypto Ideathon', '#faq'], ['Whitepaper', '#faq']],
+    links: [['About EdFi', '#products'], ['Roadmap', '#roadmap'], ['Binance Crypto Ideathon', '#faq']],
   },
   {
     title: 'Products',
@@ -175,7 +178,7 @@ export const FOOTER_COLUMNS = [
   },
   {
     title: 'Universities',
-    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq'], ['Pilot: Kozybayev University', '#roadmap']],
+    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq'], ['Kozybayev pilot', '#roadmap']],
   },
   {
     title: 'Learn',

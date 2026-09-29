@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Check, ChevronDown, ChevronRight, Download, Globe, LogOut, Menu, Moon, Search, Sun, X } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, Download, Globe, LogOut, Menu, Moon, Search, Sun, X } from 'lucide-react';
 import Logo from './Logo';
 import Icon from './Icon';
 import QRCode from './QRCode';
@@ -12,7 +12,9 @@ import { appUrl } from '../lib/links';
 import { applyTheme, currentTheme } from '../lib/theme';
 import { formatPrice } from '../lib/format';
 import { useMarkets } from '../state/markets';
+import { useAuth } from '../state/auth';
 import { SIDEBAR_ITEMS } from './dashboard/nav';
+import { AccountMenu, NotificationsMenu } from './dashboard/HeaderMenus';
 
 // On the homepage "#earn" scrolls in place; elsewhere it must point back to "/#earn".
 const resolveHref = (href, onHome) => (href.startsWith('#') && !onHome ? `/${href}` : href);
@@ -89,7 +91,7 @@ function NavItem({ item, onHome }) {
 }
 
 const PAGES = [
-  { label: 'Markets overview', href: '/#markets' },
+  { label: 'Markets overview', href: '/markets' },
   { label: 'Learn & Earn rewards', href: '/#earn' },
   { label: 'Campus Pay', href: '/#products' },
   { label: 'Roadmap', href: '/#roadmap' },
@@ -159,7 +161,7 @@ function SearchBox() {
                 <li key={c.symbol}>
                   <button
                     type="button"
-                    onClick={() => go('/#markets')}
+                    onClick={() => go('/markets')}
                     className="-mx-2 flex h-11 w-[calc(100%+16px)] items-center rounded-lg px-2 text-left transition-colors hover:bg-raised"
                   >
                     <CoinIcon symbol={c.symbol} size={20} />
@@ -217,12 +219,6 @@ function DownloadPopover() {
   );
 }
 
-const LANGUAGES = [
-  ['English', true],
-  ['Русский', false],
-  ['Қазақша', false],
-];
-
 function RegionPopover() {
   return (
     <div className="group relative hidden lg:block">
@@ -232,22 +228,17 @@ function RegionPopover() {
       <HoverPanel align="right">
         <div className="w-[240px] rounded-xl border border-line bg-card p-2 shadow-pop">
           <p className="px-3 pb-1 pt-2 text-xs text-ink-3">Language</p>
-          {LANGUAGES.map(([label, active]) => (
-            <div key={label} className="flex h-10 items-center justify-between rounded-lg px-3 text-sm">
-              <span className={active ? 'text-ink' : 'text-ink-4'}>{label}</span>
-              {active ? <Check size={16} className="text-yellow-text" /> : <span className="text-xs text-ink-4">Soon</span>}
-            </div>
-          ))}
-          <div className="mx-3 my-1 border-t border-line" />
-          <p className="px-3 pb-1 pt-2 text-xs text-ink-3">Currency</p>
-          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm">
-            <span className="text-ink">USD - $</span>
+          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm text-ink">
+            English
             <Check size={16} className="text-yellow-text" />
           </div>
-          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm">
-            <span className="text-ink-4">KZT - ₸</span>
-            <span className="text-xs text-ink-4">Soon</span>
+          <div className="mx-3 my-1 border-t border-line" />
+          <p className="px-3 pb-1 pt-2 text-xs text-ink-3">Currency</p>
+          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm text-ink">
+            USD - $
+            <Check size={16} className="text-yellow-text" />
           </div>
+          <p className="px-3 pb-2 pt-1 text-xs leading-5 text-ink-3">More languages and KZT arrive with the mainnet launch.</p>
         </div>
       </HoverPanel>
     </div>
@@ -286,6 +277,7 @@ function DrawerThemeRow() {
 
 function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
   const [expanded, setExpanded] = useState(null);
+  const { openAuth } = useAuth();
   useEffect(() => {
     if (!open) return undefined;
     const prev = document.body.style.overflow;
@@ -344,8 +336,8 @@ function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3 px-4 pb-4">
-              <Link to="/demo" className="btn btn-secondary btn-md" onClick={onClose}>Log In</Link>
-              <Link to="/demo" className="btn btn-primary btn-md" onClick={onClose}>Sign Up</Link>
+              <button type="button" className="btn btn-secondary btn-md" onClick={() => { onClose(); openAuth('login'); }}>Log In</button>
+              <button type="button" className="btn btn-primary btn-md" onClick={() => { onClose(); openAuth('signup'); }}>Sign Up</button>
             </div>
             <nav className="px-2" aria-label="Main">
               {NAV.map((item) =>
@@ -411,8 +403,9 @@ function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
   );
 }
 
-export default function Header({ variant = 'site', onDeposit, onAppNavigate }) {
+export default function Header({ variant = 'site', onDeposit, onAppNavigate, onCopyUid }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { openAuth } = useAuth();
   const { pathname } = useLocation();
   const onHome = pathname === '/';
   const isApp = variant === 'app';
@@ -439,18 +432,17 @@ export default function Header({ variant = 'site', onDeposit, onAppNavigate }) {
                 <Download size={16} className="-ml-0.5" />
                 Deposit
               </button>
-              <button type="button" className="icon-btn relative hidden w-10 sm:inline-flex" aria-label="Notifications, 3 unread">
-                <Bell size={20} />
-                <span className="absolute right-2 top-1.5 h-2 w-2 rounded-full bg-down" />
-              </button>
-              <span className="ml-1 hidden h-8 w-8 items-center justify-center rounded-full bg-raised text-xs font-semibold text-yellow-text sm:flex" aria-label="Ansar Kazbekov">
-                AK
-              </span>
+              <NotificationsMenu />
+              <AccountMenu
+                onAccount={() => onAppNavigate?.({ id: 'account', action: 'account' })}
+                onSettings={() => onAppNavigate?.({ id: 'settings', action: 'settings' })}
+                onCopyUid={onCopyUid}
+              />
             </>
           ) : (
             <>
-              <Link to="/demo" className="btn btn-secondary btn-sm hidden sm:inline-flex">Log In</Link>
-              <Link to="/demo" className="btn btn-primary btn-sm">Sign Up</Link>
+              <button type="button" onClick={() => openAuth('login')} className="btn btn-secondary btn-sm hidden sm:inline-flex">Log In</button>
+              <button type="button" onClick={() => openAuth('signup')} className="btn btn-primary btn-sm">Sign Up</button>
             </>
           )}
           <span className="mx-1 hidden h-4 w-px bg-line-strong lg:block" />
