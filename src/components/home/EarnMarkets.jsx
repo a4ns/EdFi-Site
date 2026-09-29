@@ -2,25 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronRight } from 'lucide-react';
 import Icon from '../Icon';
+import Sparkline from '../Sparkline';
 import { useMarkets } from '../../state/markets';
 import { EARN_ACTIVITIES, EARN_CATEGORIES } from '../../data/content';
 import { formatAmount, formatInt } from '../../lib/format';
-
-// Deterministic 7-day earners trend, drawn like Binance's market-row sparklines.
-function Sparkline({ seed }) {
-  let h = 0;
-  for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) % 9973;
-  const pts = Array.from({ length: 12 }, (_, i) => 12 + Math.sin(i * 0.9 + h) * 5 + ((h >> (i % 5)) & 3) * 1.5 + i * 0.7);
-  const min = Math.min(...pts);
-  const max = Math.max(...pts);
-  const d = pts.map((v, i) => `${i ? 'L' : 'M'}${(i / 11) * 88 + 1} ${28 - ((v - min) / (max - min || 1)) * 24 - 2}`).join(' ');
-  const up = pts[11] >= pts[0];
-  return (
-    <svg width="90" height="28" viewBox="0 0 90 28" className={`ml-auto ${up ? 'text-up' : 'text-down'}`} aria-hidden="true">
-      <path d={d} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function SortHead({ k, sort, onSort, children, className = '' }) {
   const on = sort.key === k;
@@ -90,8 +75,8 @@ export default function EarnMarkets() {
               <span className="hidden sm:inline">Reward</span>
             </SortHead>
             <th className="hidden w-[110px] text-right font-normal md:table-cell">≈ Value</th>
-            <th className="hidden w-[130px] text-right font-normal lg:table-cell">Frequency</th>
-            <th className="hidden w-[200px] pl-10 font-normal lg:table-cell">Verified by</th>
+            <th className="hidden w-[130px] font-normal lg:table-cell">Frequency</th>
+            <th className="hidden w-[200px] font-normal lg:table-cell">Verified by</th>
             <SortHead k="earners24h" sort={sort} onSort={toggleSort} className="hidden w-[130px] md:table-cell">Earners (24h)</SortHead>
             <th className="hidden w-[120px] text-right font-normal lg:table-cell">7D trend</th>
             <th className="w-[80px] pr-2 text-right font-normal md:w-[96px]">Action</th>
@@ -115,8 +100,8 @@ export default function EarnMarkets() {
                 +{a.reward} <span className="hidden font-normal text-ink-3 sm:inline">EDC</span>
               </td>
               <td className="num hidden text-right text-sm text-ink-2 md:table-cell">${formatAmount(a.reward * quotes.EDC.price)}</td>
-              <td className="hidden text-right text-sm text-ink-2 lg:table-cell">{a.frequency}</td>
-              <td className="hidden pl-10 text-sm text-ink-2 lg:table-cell">
+              <td className="hidden text-sm text-ink-2 lg:table-cell">{a.frequency}</td>
+              <td className="hidden text-sm text-ink-2 lg:table-cell">
                 {a.oracle}
               </td>
               <td className="num hidden text-right text-sm text-ink-2 md:table-cell">{formatInt(a.earners24h)}</td>

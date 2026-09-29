@@ -59,7 +59,7 @@ function WithdrawPreview() {
       </div>
       <div className="flex items-center justify-between">
         <span className="text-ink-3">Network</span>
-        <span className="rounded bg-raised px-1.5 py-0.5 font-medium text-ink">BNB Smart Chain (BEP20)</span>
+        <span className="whitespace-nowrap rounded bg-raised px-1.5 py-0.5 font-medium text-ink">BNB Smart Chain (BEP20)</span>
       </div>
       <div className="flex items-center justify-between">
         <span className="text-ink-3">Address</span>
@@ -78,15 +78,16 @@ export default function Products() {
       <p className="mt-3 max-w-xl text-base text-ink-3">
         EDC is earned for verified academic results and accepted across campus. It never gets stuck in a transcript.
       </p>
-      <div className="mt-10 grid gap-4 md:grid-cols-3 lg:gap-6">
+      <div className="mt-10 grid gap-4 lg:grid-cols-3 lg:gap-6">
         {PRODUCTS.map((p, i) => {
           const Preview = PREVIEWS[i];
           return (
-            <article key={p.tag} className="card flex flex-col p-5 lg:p-6">
-              <div className="flex h-[156px] flex-col justify-center rounded-lg bg-page p-3">
+            <article key={p.tag} className="card flex flex-col gap-0 p-5 md:flex-row md:gap-6 lg:flex-col lg:gap-0 lg:p-6">
+              <div className="flex h-[156px] flex-col justify-center rounded-lg bg-page p-3 md:w-[300px] md:shrink-0 lg:w-auto">
                 <Preview />
               </div>
-              <p className="mt-5 flex items-center gap-1.5 text-xs font-medium text-yellow-text">
+              <div className="flex flex-1 flex-col md:justify-center lg:justify-start">
+              <p className="mt-5 flex items-center gap-1.5 text-xs font-medium text-yellow-text md:mt-0 lg:mt-5">
                 <Icon name={p.icon} size={14} />
                 {p.tag}
               </p>
@@ -96,6 +97,7 @@ export default function Products() {
                 {p.cta}
                 <ChevronRight size={16} />
               </Link>
+              </div>
             </article>
           );
         })}

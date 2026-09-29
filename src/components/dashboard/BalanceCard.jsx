@@ -22,7 +22,7 @@ export default function BalanceCard({ balance, todayEarned, onPay, onDeposit, on
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-ink">Estimated Balance</h2>
+            <h2 className="text-base font-semibold text-ink">EDC Balance</h2>
             <button type="button" className="icon-btn h-6 w-6" onClick={() => setHidden((h) => !h)} aria-label={hidden ? 'Show balance' : 'Hide balance'}>
               {hidden ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>

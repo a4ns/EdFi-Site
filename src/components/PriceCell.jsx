@@ -1,11 +1,14 @@
 import { formatChange, formatUsd } from '../lib/format';
 
 // Price that briefly flashes green/red when it ticks, like on binance.com.
+// The flash is scoped to the text so it never fills a wider layout cell.
 export function Price({ quote, className = '' }) {
   const flash = quote.dir === 'up' ? 'animate-flash-up' : quote.dir === 'down' ? 'animate-flash-down' : '';
   return (
-    <span key={quote.tick} className={`num rounded-sm ${quote.tick ? flash : ''} ${className}`}>
-      {formatUsd(quote.price)}
+    <span className={className}>
+      <span key={quote.tick} className={`num rounded-sm px-0.5 ${quote.tick ? flash : ''}`}>
+        {formatUsd(quote.price)}
+      </span>
     </span>
   );
 }

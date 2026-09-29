@@ -2,7 +2,15 @@ import { COINS } from '../data/content';
 import { LogoMark } from './Logo';
 
 const GLYPHS = {
-  BTC: <text x="12" y="16.6" textAnchor="middle" fontSize="13" fontWeight="700" fill="#fff">₿</text>,
+  BTC: (
+    <g fill="#fff" fillRule="evenodd">
+      <path d="M9.3 6.9h3.9c1.6 0 2.7.8 2.7 2.1 0 .9-.5 1.6-1.4 1.9 1.2.3 1.9 1.1 1.9 2.2 0 1.6-1.3 2.6-3.3 2.6H9.3zm1.9 1.6v2h1.7c.7 0 1.2-.4 1.2-1s-.5-1-1.2-1zm0 3.4v2.2h1.9c.8 0 1.4-.4 1.4-1.1s-.6-1.1-1.4-1.1z" />
+      <rect x="10.9" y="5.3" width="1.2" height="1.8" />
+      <rect x="13.3" y="5.3" width="1.2" height="1.8" />
+      <rect x="10.9" y="16.9" width="1.2" height="1.8" />
+      <rect x="13.3" y="16.9" width="1.2" height="1.8" />
+    </g>
+  ),
   ETH: (
     <g fill="#fff">
       <path d="M12 4.5 7.6 12.1 12 14.7l4.4-2.6z" opacity="0.9" />

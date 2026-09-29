@@ -91,7 +91,7 @@ function NavItem({ item, onHome }) {
 }
 
 const PAGES = [
-  { label: 'Markets overview', href: '/#markets' },
+  { label: 'Markets overview', href: '/markets' },
   { label: 'Learn & Earn rewards', href: '/#earn' },
   { label: 'Campus Pay', href: '/#products' },
   { label: 'Roadmap', href: '/#roadmap' },
@@ -161,7 +161,7 @@ function SearchBox() {
                 <li key={c.symbol}>
                   <button
                     type="button"
-                    onClick={() => go('/#markets')}
+                    onClick={() => go('/markets')}
                     className="-mx-2 flex h-11 w-[calc(100%+16px)] items-center rounded-lg px-2 text-left transition-colors hover:bg-raised"
                   >
                     <CoinIcon symbol={c.symbol} size={20} />
@@ -238,7 +238,7 @@ function RegionPopover() {
             USD - $
             <Check size={16} className="text-yellow-text" />
           </div>
-          <p className="px-3 pb-2 pt-1 text-xs leading-5 text-ink-4">More languages and KZT arrive with the mainnet launch.</p>
+          <p className="px-3 pb-2 pt-1 text-xs leading-5 text-ink-3">More languages and KZT arrive with the mainnet launch.</p>
         </div>
       </HoverPanel>
     </div>

@@ -50,7 +50,7 @@ export const NAV = [
       { icon: 'PiggyBank', title: 'EDC Staking', desc: 'Lock EDC for a boosted earn rate', href: '#products' },
     ],
   },
-  { label: 'Markets', href: '#markets' },
+  { label: 'Markets', href: '/markets' },
   { label: 'Campus Pay', href: '#products' },
   { label: 'Roadmap', href: '#roadmap' },
   {
@@ -126,7 +126,7 @@ export const ROADMAP = [
   },
   {
     phase: 'Phase 2',
-    date: 'Q2 2026',
+    date: 'H2 2026',
     status: 'In progress',
     title: 'Full campus economy',
     desc: 'Mainnet migration. Payments at canteens, dormitories and local merchandise stores.',

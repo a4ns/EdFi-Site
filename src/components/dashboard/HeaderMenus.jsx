@@ -50,7 +50,7 @@ export function NotificationsMenu() {
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-ink">{n.title}</p>
                   <p className="mt-0.5 text-xs leading-5 text-ink-3">{n.text}</p>
-                  <p className="mt-1 text-xs text-ink-4">{n.ago}</p>
+                  <p className="mt-1 text-xs text-ink-3">{n.ago}</p>
                 </div>
               </li>
             ))}
