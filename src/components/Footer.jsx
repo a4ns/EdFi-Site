@@ -124,7 +124,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 md:mt-12 md:border-t md:border-line md:pt-6">
           <div className="flex items-center gap-4 text-sm text-ink-2">
             <span className="flex items-center gap-1.5">
               <Globe size={16} className="text-ink-3" />

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Check, ChevronDown, ChevronRight, Download, Globe, LogOut, Menu, Moon, Search, Sun, X } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, Download, Globe, LogOut, Menu, Moon, Search, Sun, X } from 'lucide-react';
 import Logo from './Logo';
 import Icon from './Icon';
 import QRCode from './QRCode';
@@ -13,6 +13,7 @@ import { applyTheme, currentTheme } from '../lib/theme';
 import { formatPrice } from '../lib/format';
 import { useMarkets } from '../state/markets';
 import { SIDEBAR_ITEMS } from './dashboard/nav';
+import { AccountMenu, NotificationsMenu } from './dashboard/HeaderMenus';
 
 // On the homepage "#earn" scrolls in place; elsewhere it must point back to "/#earn".
 const resolveHref = (href, onHome) => (href.startsWith('#') && !onHome ? `/${href}` : href);
@@ -217,12 +218,6 @@ function DownloadPopover() {
   );
 }
 
-const LANGUAGES = [
-  ['English', true],
-  ['Русский', false],
-  ['Қазақша', false],
-];
-
 function RegionPopover() {
   return (
     <div className="group relative hidden lg:block">
@@ -232,22 +227,17 @@ function RegionPopover() {
       <HoverPanel align="right">
         <div className="w-[240px] rounded-xl border border-line bg-card p-2 shadow-pop">
           <p className="px-3 pb-1 pt-2 text-xs text-ink-3">Language</p>
-          {LANGUAGES.map(([label, active]) => (
-            <div key={label} className="flex h-10 items-center justify-between rounded-lg px-3 text-sm">
-              <span className={active ? 'text-ink' : 'text-ink-4'}>{label}</span>
-              {active ? <Check size={16} className="text-yellow-text" /> : <span className="text-xs text-ink-4">Soon</span>}
-            </div>
-          ))}
-          <div className="mx-3 my-1 border-t border-line" />
-          <p className="px-3 pb-1 pt-2 text-xs text-ink-3">Currency</p>
-          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm">
-            <span className="text-ink">USD - $</span>
+          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm text-ink">
+            English
             <Check size={16} className="text-yellow-text" />
           </div>
-          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm">
-            <span className="text-ink-4">KZT - ₸</span>
-            <span className="text-xs text-ink-4">Soon</span>
+          <div className="mx-3 my-1 border-t border-line" />
+          <p className="px-3 pb-1 pt-2 text-xs text-ink-3">Currency</p>
+          <div className="flex h-10 items-center justify-between rounded-lg px-3 text-sm text-ink">
+            USD - $
+            <Check size={16} className="text-yellow-text" />
           </div>
+          <p className="px-3 pb-2 pt-1 text-xs leading-5 text-ink-4">More languages and KZT arrive with the mainnet launch.</p>
         </div>
       </HoverPanel>
     </div>
@@ -411,7 +401,7 @@ function MobileDrawer({ open, onClose, onHome, variant, onAppNavigate }) {
   );
 }
 
-export default function Header({ variant = 'site', onDeposit, onAppNavigate }) {
+export default function Header({ variant = 'site', onDeposit, onAppNavigate, onCopyUid }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
   const onHome = pathname === '/';
@@ -439,13 +429,12 @@ export default function Header({ variant = 'site', onDeposit, onAppNavigate }) {
                 <Download size={16} className="-ml-0.5" />
                 Deposit
               </button>
-              <button type="button" className="icon-btn relative hidden w-10 sm:inline-flex" aria-label="Notifications, 3 unread">
-                <Bell size={20} />
-                <span className="absolute right-2 top-1.5 h-2 w-2 rounded-full bg-down" />
-              </button>
-              <span className="ml-1 hidden h-8 w-8 items-center justify-center rounded-full bg-raised text-xs font-semibold text-yellow-text sm:flex" aria-label="Ansar Kazbekov">
-                AK
-              </span>
+              <NotificationsMenu />
+              <AccountMenu
+                onAccount={() => onAppNavigate?.({ id: 'account', action: 'account' })}
+                onSettings={() => onAppNavigate?.({ id: 'settings', action: 'settings' })}
+                onCopyUid={onCopyUid}
+              />
             </>
           ) : (
             <>

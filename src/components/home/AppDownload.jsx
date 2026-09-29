@@ -20,10 +20,25 @@ const PLATFORMS = [
 
 export default function AppDownload() {
   return (
-    <section id="download" className="page-x scroll-mt-16 py-10 lg:py-12">
+    <section id="download" className="page-x scroll-mt-16 py-8 lg:py-12">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="order-2 lg:order-1">
-          <PhoneMockup />
+          <div className="relative mx-auto w-fit">
+            <PhoneMockup />
+            <div className="absolute -left-[176px] top-[170px] hidden w-[204px] rounded-xl border border-line bg-card p-3 shadow-pop min-[1400px]:block" aria-hidden="true">
+              <p className="text-xs text-ink-3">Reward received</p>
+              <p className="num mt-1 text-lg font-semibold text-up">+50.00 EDC</p>
+              <p className="mt-0.5 text-xs text-ink-3">Macroeconomics exam · grade A</p>
+            </div>
+            <div className="absolute -right-[186px] top-[420px] hidden w-[204px] rounded-xl border border-line bg-card p-3 shadow-pop min-[1400px]:block" aria-hidden="true">
+              <p className="flex items-center justify-between text-xs text-ink-3">
+                Campus Canteen
+                <span className="text-up">Paid</span>
+              </p>
+              <p className="num mt-1 text-lg font-semibold text-ink">-15.00 EDC</p>
+              <p className="mt-0.5 text-xs text-ink-3">Fee 0.00 · settled in 3s</p>
+            </div>
+          </div>
         </div>
         <div className="order-1 lg:order-2">
           <h2 className="section-title">
@@ -31,7 +46,7 @@ export default function AppDownload() {
             <br />
             Anywhere, anytime.
           </h2>
-          <div className="mt-10 hidden max-w-[440px] items-center gap-6 rounded-2xl border border-line p-6 sm:flex">
+          <div className="mt-10 hidden w-full max-w-[520px] items-center gap-6 rounded-xl border border-line p-6 sm:flex">
             <QRCode value={appUrl()} size={112} />
             <div>
               <p className="text-sm text-ink-3">Scan to Download App</p>

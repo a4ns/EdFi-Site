@@ -17,7 +17,7 @@ export default function MarketsWidget({ balance }) {
         : [...list].sort((a, b) => b.change - a.change).slice(0, 5);
 
   return (
-    <section className="panel p-4 md:p-6">
+    <section className="panel flex flex-col p-4 md:p-6">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-ink">Markets</h2>
         <a href="/#markets" className="link-more">

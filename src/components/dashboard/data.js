@@ -1,16 +1,16 @@
 export const WALLET_ADDRESS = '0x71C4e2b8A3f09d5E6c1B7a2D4f8E0c3B9a5D9A24';
 export const shortAddress = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
-const HOUR = 3600 * 1000;
+const t = (h, m, sec) => ((h * 60 + m) * 60 + sec) * 1000;
 
 export function initialTransactions(now = Date.now()) {
   return [
-    { id: 't6', kind: 'reward', title: 'Exam grade A', sub: 'Macroeconomics', amount: 50, at: now - 2 * HOUR },
-    { id: 't5', kind: 'payment', title: 'Campus Canteen', sub: 'Scan Pay', amount: -15, at: now - 5 * HOUR },
-    { id: 't4', kind: 'reward', title: 'Attendance bonus', sub: 'Weekly milestone 100%', amount: 25, at: now - 26 * HOUR },
-    { id: 't3', kind: 'payment', title: 'Merch Store', sub: 'University hoodie', amount: -120, at: now - 74 * HOUR },
-    { id: 't2', kind: 'reward', title: 'Research article', sub: 'DOI verified', amount: 300, at: now - 146 * HOUR },
-    { id: 't1', kind: 'withdraw', title: 'Withdraw', sub: `To ${shortAddress(WALLET_ADDRESS)}`, amount: -100, at: now - 194 * HOUR },
+    { id: 't6', kind: 'reward', title: 'Exam grade A', sub: 'Macroeconomics', amount: 50, at: now - t(2, 14, 37) },
+    { id: 't5', kind: 'payment', title: 'Campus Canteen', sub: 'Scan Pay', amount: -15, at: now - t(5, 41, 9) },
+    { id: 't4', kind: 'reward', title: 'Attendance bonus', sub: 'Weekly milestone 100%', amount: 25, at: now - t(26, 7, 52) },
+    { id: 't3', kind: 'payment', title: 'Merch Store', sub: 'University hoodie', amount: -120, at: now - t(74, 33, 18) },
+    { id: 't2', kind: 'reward', title: 'Research article', sub: 'DOI verified', amount: 300, at: now - t(146, 52, 41) },
+    { id: 't1', kind: 'withdraw', title: 'Withdraw', sub: `To ${shortAddress(WALLET_ADDRESS)}`, amount: -100, at: now - t(194, 5, 26) },
   ];
 }
 
@@ -27,6 +27,12 @@ export const MERCHANTS = [
   { id: 'dorm', name: 'Dormitory Office', sub: 'Dorm fees and services', icon: 'BedDouble' },
   { id: 'merch', name: 'Merch Store', sub: 'University apparel', icon: 'Shirt' },
   { id: 'print', name: 'Library Printing', sub: 'Print and copy center', icon: 'Printer' },
+];
+
+export const NOTIFICATIONS = [
+  { id: 'n1', title: 'Weekly attendance verified', text: '100% attendance confirmed. 25 EDC is ready to claim.', ago: '12 min ago' },
+  { id: 'n2', title: 'Exam reward received', text: '+50.00 EDC for Macroeconomics (grade A).', ago: '2 h ago' },
+  { id: 'n3', title: 'GPA verification in progress', text: 'The registrar oracle is confirming your semester GPA.', ago: 'Yesterday' },
 ];
 
 export const ANNOUNCEMENTS = [

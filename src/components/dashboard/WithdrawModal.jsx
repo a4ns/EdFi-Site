@@ -91,7 +91,7 @@ export default function WithdrawModal({ balance, onClose, onWithdraw }) {
           </SummaryRow>
         </div>
 
-        <button type="submit" className="btn btn-primary btn-lg mt-6 w-full" disabled={!valid}>
+        <button type="submit" className="btn btn-primary btn-lg sticky bottom-0 mt-6 w-full" disabled={!valid}>
           Withdraw
         </button>
       </form>
