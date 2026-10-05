@@ -156,13 +156,13 @@ describe('Localized demo wallet dialogs', () => {
     const user = userEvent.setup();
     const view = render(localized('ru', <NotificationsMenu />));
     await user.click(screen.getByRole('button', { name: translate('ru', 'Notifications, {count} unread', { count: 3 }) }));
-    expect(screen.getByText(translate('ru', 'Weekly attendance verified'))).toBeVisible();
+    expect(screen.getByText(translate('ru', 'Sample: weekly attendance reward'))).toBeVisible();
     await user.click(screen.getByRole('button', { name: translate('ru', 'Mark all as read') }));
     view.rerender(localized('kk', <NotificationsMenu />));
     expect(screen.getByRole('button', { name: translate('kk', 'Notifications') })).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByRole('button', { name: translate('kk', 'Mark all as read') })).toBeDisabled();
-    expect(screen.getByText(translate('kk', 'Weekly attendance verified'))).toBeVisible();
-    expect(screen.getByText(translate('kk', 'The registrar oracle is confirming your semester GPA.'))).toBeVisible();
+    expect(screen.getByText(translate('kk', 'Sample: weekly attendance reward'))).toBeVisible();
+    expect(screen.getByText(translate('kk', 'Try a local verification example in Learn & Earn. No university or oracle is connected.'))).toBeVisible();
     expect(fetch).not.toHaveBeenCalled();
   });
 

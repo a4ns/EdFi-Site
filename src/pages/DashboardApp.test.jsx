@@ -125,7 +125,7 @@ describe('Dashboard demo wallet flows', () => {
     expect(course.getByText('3/4')).toBeVisible();
     expect(course.queryByRole('button', { name: 'Claim' })).not.toBeInTheDocument();
 
-    await user.click(course.getByRole('button', { name: 'Continue' }));
+    await user.click(course.getByRole('button', { name: 'Simulate lesson' }));
     expect(course.getByText('4/4')).toBeVisible();
     expect(screen.getByRole('status')).toHaveTextContent('sample reward is ready to claim');
     expectBalance('450.00');
@@ -137,16 +137,24 @@ describe('Dashboard demo wallet flows', () => {
     expect(screen.getByRole('status')).toHaveTextContent('40.00 demo EDC added');
   });
 
-  it('marks research submission as simulated verification without adding money or contacting a registrar', async () => {
+  it('completes local research verification and claims once without contacting a registrar', async () => {
     const user = renderDashboard();
     const research = taskRow('Publish a research article');
-    await user.dblClick(research.getByRole('button', { name: 'Submit' }));
+    await user.dblClick(research.getByRole('button', { name: 'Start demo review' }));
 
-    expect(research.getByText('Verifying')).toBeVisible();
-    expect(research.queryByRole('button')).not.toBeInTheDocument();
+    expect(research.getByRole('button', { name: 'Simulate verification' })).toBeVisible();
     expect(screen.getByRole('status')).toHaveTextContent('No DOI or registrar request was sent');
     expectBalance('450.00');
     expect(transactionRows()).toHaveLength(6);
+    await user.dblClick(research.getByRole('button', { name: 'Simulate verification' }));
+    expect(research.getByRole('button', { name: 'Claim' })).toBeVisible();
+    expectBalance('450.00');
+    expect(transactionRows()).toHaveLength(6);
+    await user.dblClick(research.getByRole('button', { name: 'Claim' }));
+    expect(research.getByText('Claimed')).toBeVisible();
+    expectBalance('750.00');
+    expect(balanceCard().getByText('+350.00 EDC')).toBeVisible();
+    expect(transactionRows()).toHaveLength(7);
     expect(fetch).not.toHaveBeenCalled();
   });
 

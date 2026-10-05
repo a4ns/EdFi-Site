@@ -1,6 +1,7 @@
 import { useLocale } from '../../state/locale';
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
+import { focusMainContent } from '../../lib/navigation';
 
 export default function Modal({ title, onClose, children }) {
   const { t } = useLocale();
@@ -44,7 +45,8 @@ export default function Modal({ title, onClose, children }) {
       observer.disconnect();
       document.body.style.overflow = prev;
       window.removeEventListener('keydown', onKey);
-      opener?.focus?.();
+      if (opener?.isConnected && opener !== document.body) opener.focus?.();
+      else focusMainContent();
     };
   }, [onClose]);
 

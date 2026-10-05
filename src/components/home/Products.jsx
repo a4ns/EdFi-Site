@@ -75,6 +75,7 @@ function WithdrawPreview() {
 }
 
 const PREVIEWS = [EarnPreview, SpendPreview, WithdrawPreview];
+const DESTINATIONS = ['/demo#tasks', '/demo#pay', '/demo#withdraw'];
 
 export default function Products() {
   const { t } = useLocale();
@@ -99,7 +100,7 @@ export default function Products() {
               </p>
               <h3 className="mt-1 text-xl font-semibold text-ink">{t(p.title)}</h3>
               <p className="mt-2 flex-1 text-sm leading-6 text-ink-3">{t(p.desc)}</p>
-              <Link to="/demo" className="link-more mt-4 text-ink">
+              <Link to={DESTINATIONS[i]} className="link-more mt-4 text-ink">
                 {t(p.cta)}
                 <ChevronRight size={16} />
               </Link>

@@ -1,5 +1,5 @@
 import { useLocale } from '../../state/locale';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Hourglass } from 'lucide-react';
 import Modal from './Modal';
 import CoinIcon from '../CoinIcon';
@@ -7,24 +7,31 @@ import AmountInput from './AmountInput';
 import SummaryRow from './SummaryRow';
 import { formatDemoAmount, isDemoAddress, parseDemoAmount } from '../../lib/demoAmount';
 import DemoNotice from './DemoNotice';
+import { readClipboardText } from '../../lib/clipboard';
 
 export default function WithdrawModal({ balanceUnits, transaction, error, onClose, onWithdraw }) {
   const { locale, t } = useLocale();
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [touched, setTouched] = useState(false);
+  const [pasteFeedback, setPasteFeedback] = useState(null);
+  const pasteRequest = useRef(0);
+  const addressInput = useRef(null);
+  useEffect(() => () => { pasteRequest.current += 1; }, []);
   const units = parseDemoAmount(amount);
   const over = units !== null && units > balanceUnits;
   const badAddress = touched && address && !isDemoAddress(address);
   const valid = isDemoAddress(address) && units !== null && units >= 100 && !over;
   const paste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) setAddress(text.trim());
-    } catch {
-      /* clipboard read can be blocked; user can type instead */
-    }
+    const request = ++pasteRequest.current;
+    setPasteFeedback(null);
+    const result = await readClipboardText();
+    if (request !== pasteRequest.current) return;
+    if (!result.ok) setPasteFeedback('Clipboard access is unavailable. Paste or type a sample address manually.');
+    else if (!result.text.trim()) setPasteFeedback('Clipboard is empty. Enter a sample address manually.');
+    else setAddress(result.text.trim());
     setTouched(true);
+    addressInput.current?.focus();
   };
 
   if (transaction) {
@@ -53,6 +60,7 @@ export default function WithdrawModal({ balanceUnits, transaction, error, onClos
         onSubmit={(e) => {
           e.preventDefault();
           if (!valid) return;
+          pasteRequest.current += 1;
           onWithdraw({ address: address.trim(), amountUnits: units });
         }}
       >
@@ -76,19 +84,27 @@ export default function WithdrawModal({ balanceUnits, transaction, error, onClos
         >
           <input
             id="wd-address"
-            className="num min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-4"
+            ref={addressInput}
+            className="num min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-3"
             placeholder={t('Enter a sample BEP20 address (0x…)')}
             value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            onChange={(e) => {
+              pasteRequest.current += 1;
+              setPasteFeedback(null);
+              setAddress(e.target.value);
+            }}
             onBlur={() => setTouched(true)}
             autoComplete="off"
             spellCheck="false"
+            aria-invalid={badAddress ? true : undefined}
+            aria-describedby={[badAddress ? 'wd-address-error' : null, pasteFeedback ? 'wd-paste-feedback' : null].filter(Boolean).join(' ') || undefined}
           />
-          <button type="button" onClick={paste} className="ml-3 text-sm font-medium text-yellow-text hover:text-yellow-hover">
+          <button type="button" onClick={paste} className="ml-3 text-sm font-medium text-yellow-text hover:underline">
             {t('Paste')}
           </button>
         </div>
-        {badAddress && <p className="mt-2 text-xs text-down">{t('Enter a valid BNB Smart Chain address')}</p>}
+        {badAddress && <p id="wd-address-error" className="mt-2 text-xs text-down">{t('Enter a valid BNB Smart Chain address')}</p>}
+        {pasteFeedback && <p id="wd-paste-feedback" role="status" className="mt-2 text-xs leading-5 text-ink-3">{t(pasteFeedback)}</p>}
 
         <p className="mt-6 text-sm text-ink-3">{t('Network')}</p>
         <div className="mt-2 flex h-12 items-center justify-between rounded-lg border border-line-strong px-4 text-sm font-medium text-ink">

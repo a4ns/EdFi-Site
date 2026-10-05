@@ -1,45 +1,39 @@
 import { useLocale } from '../../state/locale';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, CircleCheck, Gift, GraduationCap, QrCode } from 'lucide-react';
 import CoinIcon from '../CoinIcon';
+import FilterTabs from '../FilterTabs';
 import { AppleIcon, GoogleIcon } from '../SocialIcons';
 import { Change, Price } from '../PriceCell';
 import { useMarkets } from '../../state/markets';
 import { useAuth } from '../../state/auth';
-import { NEWS } from '../../data/content';
+import { GUIDE_LINKS } from '../../data/content';
 function MarketsCard() {
   const { t } = useLocale();
   const { list, live } = useMarkets();
   const [tab, setTab] = useState('popular');
+  const panelId = useId();
   const rows =
     tab === 'popular'
-      ? ['EDC', 'BNB', 'BTC', 'ETH', 'SOL'].map((s) => list.find((q) => q.symbol === s))
-      : [...list].sort((a, b) => b.change - a.change).slice(0, 5);
+      ? ['EDC', 'BNB', 'BTC', 'ETH', 'SOL'].map((s) => list.find((q) => q.symbol === s)).filter(Boolean)
+      : list.filter((quote) => quote.change > 0).sort((a, b) => b.change - a.change).slice(0, 5);
 
   return (
     <div id="markets" className="card scroll-mt-20 p-4 md:p-6">
       <div className="flex flex-wrap items-center justify-between gap-x-3">
-        <div role="tablist" aria-label={t('Markets')} className="flex flex-wrap gap-x-4">
-          {[
-            ['popular', 'Popular'],
-            ['gainers', 'Top Gainers'],
-          ].map(([id, label]) => (
-            <button key={id} type="button" role="tab" aria-selected={tab === id} className="tab" onClick={() => setTab(id)}>
-              {t(label)}
-            </button>
-          ))}
-        </div>
+        <FilterTabs label={t('Markets')} tabs={[{ id: 'popular', label: t('Popular') }, { id: 'gainers', label: t('Top Gainers') }]} value={tab} onChange={setTab} panelId={panelId} className="flex flex-wrap gap-x-4" />
         <Link to="/markets" className="link-more shrink-0 pb-2">
           {t('View All')}
           <ChevronRight size={16} />
         </Link>
       </div>
 
+      <div id={panelId} role="tabpanel" aria-labelledby={`${panelId}-tab-${tab}`} tabIndex={0}>
       <ul className="mt-3">
         {rows.map((r) => (
           <li key={r.symbol}>
-            <Link to="/demo" className="-mx-2 flex h-14 items-center rounded-lg px-2 transition-colors hover:bg-raised">
+            <Link to={`/markets/${r.symbol}`} className="-mx-2 flex h-14 items-center rounded-lg px-2 transition-colors hover:bg-raised">
               <CoinIcon symbol={r.symbol} size={24} />
               <span className="ml-3 text-sm font-semibold text-ink">{r.symbol}</span>
               <span className="ml-2 hidden truncate text-sm text-ink-3 sm:inline">{r.name}</span>
@@ -49,6 +43,8 @@ function MarketsCard() {
           </li>
         ))}
       </ul>
+      {rows.length === 0 && <p className="py-5 text-sm text-ink-3">{t(tab === 'gainers' ? 'No coins with a positive 24h change.' : 'No market quotes are available.')}</p>}
+      </div>
       <p className="mt-2 flex items-center gap-1.5 text-xs text-ink-3">
         <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${live ? 'bg-up' : 'bg-ink-4'}`} />
         {t(live ? 'Live prices from Binance market data.' : 'Price snapshot.')} {t('EDC price is simulated; the token is not live.')}
@@ -57,22 +53,22 @@ function MarketsCard() {
   );
 }
 
-function NewsCard() {
+function GuideCard() {
   const { t } = useLocale();
   return (
     <div className="card p-4 md:p-6">
       <div className="flex flex-wrap items-center justify-between gap-x-3">
-        <h2 className="text-base font-semibold text-ink">{t('News')}</h2>
+        <h2 className="text-base font-semibold text-ink">{t('Explore the prototype')}</h2>
         <a href="#faq" className="link-more">
-          {t('View All News')}
+          {t('FAQ')}
           <ChevronRight size={16} />
         </a>
       </div>
       <ul className="mt-4 space-y-4">
-        {NEWS.slice(0, 4).map((title) => (
-          <li key={title}>
-            <a href="#faq" className="block text-sm text-ink transition-colors hover:text-yellow-text">
-              {t(title)}
+        {GUIDE_LINKS.map(({ label, href }) => (
+          <li key={label}>
+            <a href={href} className="block text-sm text-ink transition-colors hover:text-yellow-text">
+              {t(label)}
             </a>
           </li>
         ))}
@@ -103,7 +99,7 @@ export default function Hero() {
             <Gift size={22} />
           </span>
           <p className="text-base text-ink">
-            {t('Try the demo with a sample {amount} welcome reward', { amount: '100 EDC' })}
+            {t('Explore sample rewards and campus payments')}
           </p>
         </div>
 
@@ -163,7 +159,7 @@ export default function Hero() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:flex lg:flex-col">
         <MarketsCard />
-        <NewsCard />
+        <GuideCard />
       </div>
     </section>
   );

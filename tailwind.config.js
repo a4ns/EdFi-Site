@@ -31,6 +31,9 @@ export default {
         },
         up: 'rgb(var(--c-up) / <alpha-value>)',
         down: 'rgb(var(--c-down) / <alpha-value>)',
+        'up-on': 'rgb(var(--c-up-on) / <alpha-value>)',
+        'down-on': 'rgb(var(--c-down-on) / <alpha-value>)',
+        focus: 'rgb(var(--c-focus) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['"IBM Plex Sans"', 'Arial', 'sans-serif'],

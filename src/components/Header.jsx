@@ -13,6 +13,7 @@ import { NAV } from '../data/content';
 import { appUrl } from '../lib/links';
 import { applyTheme } from '../lib/theme';
 import { useTheme } from '../state/useTheme';
+import { useDisclosure } from '../state/useDisclosure';
 import { formatPrice } from '../lib/format';
 import { useMarkets } from '../state/markets';
 import { useAuth } from '../state/auth';
@@ -43,10 +44,12 @@ function SmartLink({ href, className, onClick, children }) {
   );
 }
 
-function HoverPanel({ align = 'left', children }) {
+function HoverPanel({ align = 'left', open, id, children }) {
   return (
     <div
-      className={`invisible absolute top-full z-50 -mt-2 opacity-0 transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 ${
+      id={id}
+      hidden={!open}
+      className={`absolute top-full z-50 -mt-2 animate-fade-in ${
         align === 'right' ? 'right-0' : 'left-0'
       }`}
     >
@@ -57,6 +60,7 @@ function HoverPanel({ align = 'left', children }) {
 
 function NavItem({ item, onHome }) {
   const { t } = useLocale();
+  const { open, containerRef, triggerRef, panelId, close, toggle, onMouseEnter, onMouseLeave } = useDisclosure();
   if (!item.menu) {
     return (
       <SmartLink
@@ -68,21 +72,25 @@ function NavItem({ item, onHome }) {
     );
   }
   return (
-    <div className="group relative">
+    <div ref={containerRef} className="relative" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <button
+        ref={triggerRef}
         type="button"
-        className="flex h-16 items-center gap-0.5 px-2 2xl:px-3 text-sm font-medium text-ink transition-colors group-hover:text-yellow-text"
-        aria-haspopup="true"
+        className={`flex h-16 items-center gap-0.5 px-2 2xl:px-3 text-sm font-medium transition-colors hover:text-yellow-text ${open ? 'text-yellow-text' : 'text-ink'}`}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={toggle}
       >
         {t(item.label)}
-        <ChevronDown size={16} className="transition-transform duration-200 group-hover:rotate-180" />
+        <ChevronDown size={16} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
-      <HoverPanel>
+      <HoverPanel open={open} id={panelId}>
         <div className="w-[320px] rounded-xl border border-line bg-card p-2 shadow-pop">
           {item.menu.map((m) => (
             <SmartLink
               key={m.title}
               href={resolveHref(m.title === 'Download App' ? '/demo' : m.href, onHome)}
+              onClick={() => close(true)}
               className="group/item flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-raised"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-raised text-ink transition-colors group-hover/item:bg-page group-hover/item:text-yellow-text">
@@ -111,23 +119,11 @@ const PAGES = [
 
 function SearchBox() {
   const { locale, t } = useLocale();
-  const [open, setOpen] = useState(false);
+  const { open, containerRef, triggerRef, panelId, close, toggle } = useDisclosure();
   const [q, setQ] = useState('');
-  const box = useRef(null);
+  const input = useRef(null);
   const navigate = useNavigate();
   const { list } = useMarkets();
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDown = (e) => !box.current?.contains(e.target) && setOpen(false);
-    const onKey = (e) => e.key === 'Escape' && setOpen(false);
-    document.addEventListener('mousedown', onDown);
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDown);
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
 
   const term = q.trim().toLocaleLowerCase(locale);
   const coins = term
@@ -136,31 +132,32 @@ function SearchBox() {
   const pages = term ? PAGES.filter((p) => t(p.label).toLocaleLowerCase(locale).includes(term) || p.label.toLowerCase().includes(term)) : [];
 
   const go = (href) => {
-    setOpen(false);
+    close(true);
     setQ('');
     if (href.startsWith('/#')) window.location.assign(href);
     else navigate(href);
   };
 
   return (
-    <div ref={box} className="relative hidden xl:block">
-      <button type="button" className="icon-btn w-10" aria-label={t('Search')} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+    <div ref={containerRef} className="relative hidden xl:block">
+      <button ref={triggerRef} type="button" className="icon-btn w-10" aria-label={t('Search')} aria-expanded={open} aria-controls={open ? panelId : undefined} onClick={toggle}>
         <Search size={20} />
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-[400px] animate-pop-in rounded-xl border border-line bg-card p-4 shadow-pop">
-          <div className="flex h-10 items-center gap-2 rounded-lg border border-line-strong px-3 focus-within:border-yellow">
+        <div id={panelId} className="absolute right-0 top-12 z-50 w-[400px] animate-pop-in rounded-xl border border-line bg-card p-4 shadow-pop">
+          <div className="flex h-10 items-center gap-2 rounded-lg border border-line-strong px-3 focus-within:border-focus">
             <Search size={16} className="text-ink-3" />
             <input
+              ref={input}
               autoFocus
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={t('Search coins or pages')}
-              className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-4"
+              className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-3"
               aria-label={t('Search coins or pages')}
             />
             {q && (
-              <button type="button" onClick={() => setQ('')} className="text-ink-3 hover:text-ink" aria-label={t('Clear search')}>
+              <button type="button" onClick={() => { setQ(''); input.current?.focus(); }} className="text-ink-3 hover:text-ink" aria-label={t('Clear search')}>
                 <X size={14} />
               </button>
             )}
@@ -172,12 +169,12 @@ function SearchBox() {
                 <li key={c.symbol}>
                   <button
                     type="button"
-                    onClick={() => go('/markets')}
+                    onClick={() => go(`/markets/${c.symbol}`)}
                     className="-mx-2 flex h-11 w-[calc(100%+16px)] items-center rounded-lg px-2 text-left transition-colors hover:bg-raised"
                   >
                     <CoinIcon symbol={c.symbol} size={20} />
                     <span className="ml-2 text-sm font-medium text-ink">{c.symbol}</span>
-                    <span className="ml-1 text-xs text-ink-3">/USDT</span>
+                    <span className="ml-1 text-xs text-ink-3">{c.symbol === 'EDC' ? t('Demo') : '/USDT'}</span>
                     <span className="num ml-auto text-sm text-ink">{formatPrice(c.price, locale)}</span>
                     <Change value={c.change} className="w-[72px] text-right text-sm" />
                   </button>
@@ -214,17 +211,18 @@ function SearchBox() {
 
 function DownloadPopover() {
   const { t } = useLocale();
+  const { open, containerRef, triggerRef, panelId, close, toggle, onMouseEnter, onMouseLeave } = useDisclosure();
   return (
-    <div className="group relative hidden xl:block">
-      <button type="button" className="icon-btn h-16 w-10" aria-label={t('Open web demo')}>
+    <div ref={containerRef} className="relative hidden xl:block" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <button ref={triggerRef} type="button" className="icon-btn h-16 w-10" aria-label={t('Open web demo')} aria-expanded={open} aria-controls={panelId} onClick={toggle}>
         <Download size={20} />
       </button>
-      <HoverPanel align="right">
+      <HoverPanel align="right" open={open} id={panelId}>
         <div className="flex w-[232px] flex-col items-center rounded-xl border border-line bg-card p-6 text-center shadow-pop">
           <QRCode value={appUrl()} size={128} label={t('QR code to open the web demo')} />
           <p className="mt-4 text-sm font-semibold text-ink">{t('Scan to open the web demo')}</p>
           <p className="mt-1 text-xs text-ink-3">{t('Web prototype for desktop and mobile')}</p>
-          <Link to="/demo" className="btn btn-secondary btn-sm mt-4 w-full">{t('Open web demo')}</Link>
+          <Link to="/demo" onClick={() => close(true)} className="btn btn-secondary btn-sm mt-4 w-full">{t('Open web demo')}</Link>
         </div>
       </HoverPanel>
     </div>
@@ -233,32 +231,14 @@ function DownloadPopover() {
 
 function RegionPopover() {
   const { t } = useLocale();
-  const [open, setOpen] = useState(false);
-  const panel = useRef(null);
-  const trigger = useRef(null);
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDown = (event) => !panel.current?.contains(event.target) && setOpen(false);
-    const onKey = (event) => {
-      if (event.key === 'Escape') {
-        setOpen(false);
-        trigger.current?.focus();
-      }
-    };
-    document.addEventListener('mousedown', onDown);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDown);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
+  const { open, containerRef, triggerRef, panelId, toggle } = useDisclosure();
   return (
-    <div ref={panel} className="relative hidden xl:block">
-      <button ref={trigger} type="button" className="icon-btn h-16 w-10" aria-label={t('Language and currency')} aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+    <div ref={containerRef} className="relative hidden xl:block">
+      <button ref={triggerRef} type="button" className="icon-btn h-16 w-10" aria-label={t('Language and currency')} aria-expanded={open} aria-controls={open ? panelId : undefined} onClick={toggle}>
         <Globe size={20} />
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 w-[280px] rounded-xl border border-line bg-card p-4 shadow-pop">
+        <div id={panelId} className="absolute right-0 top-full z-50 w-[280px] rounded-xl border border-line bg-card p-4 shadow-pop">
           <LanguageSwitcher />
           <div className="my-3 border-t border-line" />
           <p className="text-sm text-ink-2">{t('Currency')}</p>

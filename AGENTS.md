@@ -53,7 +53,9 @@ tailwind.config.js           Maps Tailwind colors to the CSS variables
 
 src/pages/LandingPage.jsx    "/"        Header, Hero, TrustStats, EarnMarkets, Products, AppDownload, Roadmap, FAQ, StartEarning, Footer
 src/pages/DashboardApp.jsx   "/demo"    Logged-in wallet demo; owns all demo state (balance, transactions, tasks, modals, toast)
-src/pages/MarketsPage.jsx    "/markets" Market overview: hot/gainers/losers cards + sortable table
+src/pages/MarketsPage.jsx    "/markets" Market overview: sign-filtered summaries, keyboard tabs and sortable table
+src/pages/CoinDetailPage.jsx  "/markets/:symbol" Read-only quote details and source status
+src/pages/NotFoundPage.jsx    Unknown routes: localized recovery destinations
 
 src/components/Header.jsx    Site + app header: nav dropdowns, search, download QR, language, theme, mobile drawer
 src/components/Footer.jsx    Link columns, mobile accordion, theme row, credits
@@ -103,7 +105,7 @@ Data-driven source copy lives in `src/data/content.js` or `dashboard/data.js`; t
 - **Fast refresh:** files that export components must export only components. Put data, hooks' contexts and helpers in separate `.js` files.
 - `no-unused-vars` ignores Capitalized names (component params used only in JSX), by design.
 - Numbers: add the `num` class (tabular figures) to every price, amount, percentage and date.
-- Localization: use `useLocale()` and pass `locale` to shared `Intl` format helpers. Keep stable IDs, source keys and named parameters in state; do not store translated ledger, error, receipt or toast strings. Never key providers/routes by locale or reset financial state when language changes. English is the explicit default; persist the locale safely, keep wallet state in memory, and keep storage failures non-fatal.
+- Localization: use `useLocale()` and pass `locale` to shared `Intl` format helpers. Keep stable IDs, source keys and named parameters in state; do not store translated ledger, error, receipt or toast strings. Never key providers/routes by locale or reset financial state when language changes. Language options are ordered kk, en, ru; English is the explicit default; persist the locale safely, keep wallet state in memory, and keep storage failures non-fatal.
 - Icons: lucide-react; global CSS sets 1.5px strokes. Use 16px in dense UI, 20px in nav, 24px for feature icons.
 - Dialogs: build on `dashboard/Modal.jsx` (Esc, focus trap, focus restore, bottom sheet on phones). Toasts: `showToast()` in `DashboardApp`.
 - New routes: add to `src/App.jsx`. Internal links use `<Link>`; in-page anchors use `href="#section"` on `/` and `/#section` elsewhere (Header's `resolveHref` handles this).
@@ -116,6 +118,8 @@ Data-driven source copy lives in `src/data/content.js` or `dashboard/data.js`; t
 - “Demo earned today” uses the device's local calendar day, including DST. Preserve midnight and visibility refresh plus unmount cleanup in `useLocalDay`.
 - Wallet actions stay in memory and reset on dashboard unmount/reload. No connected wallet, usable deposit address, blockchain hash, network submission or real settlement may be implied.
 - KZT display uses the fixed illustrative assumption `KZT_PER_USD = 520`. Keep the localized demo-rate disclaimer visible. Do not imply this is a live quote or introduce a rate service without a separate task.
+- Demo GPA/research verification is an explicit local step. Only claimable tasks may credit rewards; verification itself never mints or credits.
+- Hash destinations /demo#pay and /demo#withdraw open local dialogs; Back/Forward must preserve session receipts and never repeat a debit.
 - Use the shared modal and test focus across scan/form/receipt changes, keyboard submission, cancel/reopen, navigation and pending-timer cleanup. Keep illustrative chart, price and conversion labels explicit.
 
 ## Contract invariants
@@ -156,6 +160,6 @@ Suggested next tasks, highest value first:
 
 1. **Testnet deployment (Phase 2):** the contracts in `contracts/` are written and tested. Remaining: deploy to BSC testnet with the owner's test wallet, verify on BscScan, list the addresses in `contracts/README.md` and the root README, move admin roles to a multisig, and build a small oracle signer service (signs `Reward` typed data from registrar exports).
 2. **Wallet connection:** connect a real wallet (e.g. wagmi + viem with WalletConnect) on `/demo`, show the real EDC balance on testnet, claim via `RewardMinter.claim` and pay via `CampusPay.payWithPermit`, keep the sample-data mode as a fallback.
-3. **Tests:** extend the Vitest + React Testing Library suite. Demo amounts, formatting, claim/pay/withdraw state and UI flows are covered; add `BalanceChart` series and market-data failure cases next. Keep contract adversarial coverage and the line-coverage gate passing.
-4. **Design polish:** a custom filled icon set for nav/sidebar; official coin marks (BNB, SOL…) instead of simplified glyphs; a coin detail view on `/markets`.
-5. **Localization follow-through:** English, Russian and Kazakh UI and explicit demo KZT display are implemented. Complete real-browser review at all required widths/themes for the published localization commit; native-speaker/product review can refine terminology. Do not describe unverified layouts or translations as production-ready.
+3. **Tests:** extend the Vitest + React Testing Library suite. Demo flows, clipboard failures, task verification, route navigation, `BalanceChart` ranges/DST/tiny values and market-data validation/failure/recovery are covered. Extend meaningful regressions when changing these paths. Keep contract adversarial coverage and the line-coverage gate passing.
+4. **Design polish:** filled navigation icons, locally served licensed coin marks and `/markets/:symbol` details are implemented. Keep coin provenance in `public/coins/NOTICE.md`; do not describe curated artwork as issuer-approved. Maintain contrast-tested tokens and shared keyboard filter tabs.
+5. **Localization follow-through:** English, Russian and Kazakh UI and explicit demo KZT display are implemented. Complete real-browser review at all required widths/themes for each published candidate; native-speaker/product review can refine terminology. Do not describe unverified layouts or translations as production-ready.

@@ -14,11 +14,14 @@
     --c-line-strong: 71 77 87;   /* #474D57 */
     --c-ink: 234 236 239;        /* #EAECEF */
     --c-ink-2: 183 189 198;      /* #B7BDC6 */
-    --c-ink-3: 132 142 156;      /* #848E9C */
+    --c-ink-3: 160 170 184;      /* #A0AAB8: readable on raised surfaces */
     --c-ink-4: 94 102 115;       /* #5E6673 */
     --c-yellow-text: 252 213 53; /* #FCD535 */
     --c-up: 14 203 129;          /* #0ECB81 */
-    --c-down: 246 70 93;         /* #F6465D */
+    --c-down: 255 126 144;       /* #FF7E90 */
+    --c-up-on: 8 45 34;
+    --c-down-on: 38 5 9;
+    --c-focus: 252 213 53;
     --shadow-pop: 0 8px 32px rgba(0, 0, 0, 0.48);
     color-scheme: dark;
   }
@@ -32,11 +35,14 @@
     --c-line-strong: 216 220 225;/* #D8DCE1 */
     --c-ink: 30 35 41;           /* #1E2329 */
     --c-ink-2: 71 77 87;         /* #474D57 */
-    --c-ink-3: 112 122 138;      /* #707A8A */
+    --c-ink-3: 82 94 111;        /* #525E6F: readable on raised surfaces */
     --c-ink-4: 146 154 165;      /* #929AA5 */
-    --c-yellow-text: 201 148 0;  /* #C99400 */
-    --c-up: 3 166 109;           /* #03A66D */
-    --c-down: 207 48 74;         /* #CF304A */
+    --c-yellow-text: 120 87 0;   /* #785700 */
+    --c-up: 0 105 70;            /* #006946 */
+    --c-down: 179 31 56;         /* #B31F38 */
+    --c-up-on: 255 255 255;
+    --c-down-on: 255 255 255;
+    --c-focus: 120 87 0;
     --shadow-pop: 0 8px 32px rgba(24, 26, 32, 0.12);
     color-scheme: light;
   }
@@ -59,8 +65,8 @@
     stroke-width: 1.5;
   }
 
-  :focus-visible {
-    outline: 2px solid #FCD535;
+  :is(a, button, input, select, textarea, summary, [role="tabpanel"]):focus-visible:not([disabled]) {
+    outline: 2px solid rgb(var(--c-focus));
     outline-offset: 2px;
   }
 
@@ -83,6 +89,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
+      scroll-behavior: auto !important;
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
@@ -116,8 +123,8 @@
 
   /* Form */
   .input {
-    @apply h-12 w-full rounded-lg border border-line-strong bg-transparent px-4 text-sm text-ink placeholder:text-ink-4
-      outline-none transition-colors hover:border-yellow focus:border-yellow;
+    @apply h-12 w-full rounded-lg border border-line-strong bg-transparent px-4 text-sm text-ink placeholder:text-ink-3
+      outline-none transition-colors hover:border-yellow focus:border-focus;
   }
 
   /* Surfaces */
@@ -140,7 +147,7 @@
   }
   .tab[aria-selected="true"]::after {
     content: "";
-    @apply absolute bottom-0 left-1/2 h-[3px] w-4 -translate-x-1/2 rounded-full bg-yellow;
+    @apply absolute bottom-0 left-1/2 h-[3px] w-4 -translate-x-1/2 rounded-full bg-yellow-text;
   }
 
   .chip {

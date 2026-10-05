@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import Modal from './dashboard/Modal';
+import FilterTabs from './FilterTabs';
 import { useLocale } from '../state/locale';
 
 const TABS = [
@@ -12,6 +13,7 @@ const TABS = [
 // Demo-only credentials flow: nothing is sent or stored, but it behaves like a real two-step form.
 export default function AuthModal({ mode: initialMode, prefill = '', onClose, onDone }) {
   const { t } = useLocale();
+  const panelId = useId();
   const [mode, setMode] = useState(initialMode);
   const [tab, setTab] = useState(prefill && !prefill.includes('@') && /^\d+$/.test(prefill) ? 'id' : 'email');
   const [identifier, setIdentifier] = useState(prefill);
@@ -31,13 +33,9 @@ export default function AuthModal({ mode: initialMode, prefill = '', onClose, on
             if (identifier.trim()) setStep(2);
           }}
         >
-          <div role="tablist" aria-label={t('Sign in method')} className="flex gap-3 border-b border-line">
-            {TABS.map(([id, name]) => (
-              <button key={id} type="button" role="tab" aria-selected={tab === id} className="tab min-w-0 flex-1 !text-sm" onClick={() => setTab(id)}>
-                {t(name)}
-              </button>
-            ))}
-          </div>
+          <FilterTabs label={t('Sign in method')} tabs={TABS.map(([id, name]) => ({ id, label: t(name) }))} value={tab} onChange={setTab} panelId={panelId} className="flex gap-3 border-b border-line" tabClassName="min-w-0 flex-1 !text-sm" />
+          <div id={panelId} role="tabpanel" aria-labelledby={`${panelId}-tab-${tab}`}>
+
           <label htmlFor="auth-id" className="mt-6 block text-sm text-ink-3">
             {t(label)}
           </label>
@@ -49,6 +47,7 @@ export default function AuthModal({ mode: initialMode, prefill = '', onClose, on
             onChange={(e) => setIdentifier(e.target.value)}
             autoComplete={tab === 'email' ? 'email' : 'off'}
           />
+          </div>
           <button type="submit" className="btn btn-primary btn-lg mt-6 w-full" disabled={!identifier.trim()}>
             {t('Next')}
           </button>
@@ -72,11 +71,11 @@ export default function AuthModal({ mode: initialMode, prefill = '', onClose, on
           <label htmlFor="auth-pass" className="mt-5 block text-sm text-ink-3">
             {t('Password')}
           </label>
-          <div className="mt-2 flex h-12 items-center rounded-lg border border-line-strong px-4 focus-within:border-yellow hover:border-yellow">
+          <div className="mt-2 flex h-12 items-center rounded-lg border border-line-strong px-4 focus-within:border-focus hover:border-yellow">
             <input
               id="auth-pass"
               type={show ? 'text' : 'password'}
-              className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-4"
+              className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-3"
               placeholder={t(signup ? 'At least 8 characters' : 'Password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

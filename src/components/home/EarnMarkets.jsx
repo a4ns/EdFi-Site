@@ -1,9 +1,10 @@
 import { useLocale } from '../../state/locale';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useId, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronRight } from 'lucide-react';
 import Icon from '../Icon';
 import Sparkline from '../Sparkline';
+import FilterTabs from '../FilterTabs';
 import { useMarkets } from '../../state/markets';
 import { EARN_ACTIVITIES, EARN_CATEGORIES } from '../../data/content';
 import { formatUsd, formatInt } from '../../lib/format';
@@ -23,21 +24,16 @@ function SortHead({ k, sort, onSort, children, className = '' }) {
 
 export default function EarnMarkets() {
   const { locale, t } = useLocale();
-  const [cat, setCat] = useState('All');
+  const { hash } = useLocation();
+  const panelId = useId();
+  const [selection, setSelection] = useState(null);
+  const match = hash.match(/^#earn-(\w+)$/);
+  const linked = hash === '#earn' ? 'All' : match && EARN_CATEGORIES.find((category) => category.toLowerCase() === match[1]);
+  const cat = linked && selection?.hash !== hash ? linked : selection?.value ?? linked ?? 'All';
+  const setCat = (value) => setSelection({ hash, value });
   const { quotes } = useMarkets();
   const [sort, setSort] = useState({ key: null, dir: 'desc' });
 
-  // Header dropdown deep links: /#earn-academic, /#earn-attendance, /#earn-research
-  useEffect(() => {
-    const apply = () => {
-      const m = window.location.hash.match(/^#earn-(\w+)$/);
-      const match = m && EARN_CATEGORIES.find((c) => c.toLowerCase() === m[1]);
-      if (match) setCat(match);
-    };
-    apply();
-    window.addEventListener('hashchange', apply);
-    return () => window.removeEventListener('hashchange', apply);
-  }, []);
   const filtered = cat === 'All' ? EARN_ACTIVITIES : EARN_ACTIVITIES.filter((a) => a.category === cat);
   const rows = sort.key ? [...filtered].sort((a, b) => (sort.dir === 'desc' ? b[sort.key] - a[sort.key] : a[sort.key] - b[sort.key])) : filtered;
   const toggleSort = (key) => setSort((s) => (s.key === key ? { key, dir: s.dir === 'desc' ? 'asc' : 'desc' } : { key, dir: 'desc' }));
@@ -51,7 +47,7 @@ export default function EarnMarkets() {
             {t('Proposed EDC rewards for a future Kozybayev University pilot. Rates, earner counts, values and trends are illustrative.')}
           </p>
         </div>
-        <Link to="/demo" className="link-more">
+        <Link to="/demo#tasks" className="link-more">
           {t('View demo rewards')}
           <ChevronRight size={16} />
         </Link>
@@ -60,14 +56,9 @@ export default function EarnMarkets() {
       {EARN_CATEGORIES.slice(1).map((c) => (
         <span key={c} id={`earn-${c.toLowerCase()}`} className="block h-0 scroll-mt-24" aria-hidden="true" />
       ))}
-      <div role="tablist" aria-label={t('Reward categories')} className="no-scrollbar mt-8 flex gap-6 overflow-x-auto border-b border-line [mask-image:linear-gradient(to_right,#000_calc(100%-32px),transparent)] md:[mask-image:none]">
-        {EARN_CATEGORIES.map((c) => (
-          <button key={c} type="button" role="tab" aria-selected={cat === c} className="tab shrink-0" onClick={() => setCat(c)}>
-            {t(c)}
-          </button>
-        ))}
-      </div>
+      <FilterTabs label={t('Reward categories')} tabs={EARN_CATEGORIES.map((category) => ({ id: category, label: t(category) }))} value={cat} onChange={setCat} panelId={panelId} className="no-scrollbar mt-8 flex gap-6 overflow-x-auto border-b border-line [mask-image:linear-gradient(to_right,#000_calc(100%-32px),transparent)] md:[mask-image:none]" />
 
+      <div id={panelId} role="tabpanel" aria-labelledby={`${panelId}-tab-${cat}`} tabIndex={0}>
       <table className="mt-2 w-full table-fixed">
         <thead>
           <tr className="h-12 text-left text-xs text-ink-3">
@@ -80,7 +71,7 @@ export default function EarnMarkets() {
             <th className="hidden w-[130px] font-normal lg:table-cell">{t('Frequency')}</th>
             <th className="hidden w-[200px] font-normal lg:table-cell">{t('Verified by')}</th>
             <SortHead k="earners24h" sort={sort} onSort={toggleSort} className="hidden w-[130px] md:table-cell">{t('Earners (24h)')}</SortHead>
-            <th className="hidden w-[120px] text-right font-normal lg:table-cell">{t('7D trend')}</th>
+            <th className="hidden w-[120px] text-right font-normal lg:table-cell">{t('Illustrative trend')}</th>
             <th className="w-[100px] pr-2 text-right font-normal md:w-[96px]">{t('Action')}</th>
           </tr>
         </thead>
@@ -119,6 +110,7 @@ export default function EarnMarkets() {
           ))}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }

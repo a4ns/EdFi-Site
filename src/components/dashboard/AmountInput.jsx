@@ -15,7 +15,7 @@ export default function AmountInput({ id, value, onChange, maxUnits, invalid }) 
         id={id}
         inputMode="decimal"
         autoComplete="off"
-        className="num min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-4"
+        className="num min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-3"
         placeholder={formatDemoAmount(0, locale)}
         value={value}
         aria-invalid={invalid || undefined}
@@ -26,7 +26,7 @@ export default function AmountInput({ id, value, onChange, maxUnits, invalid }) 
       />
       <span className="text-sm font-medium text-ink">EDC</span>
       <span className="mx-3 h-4 w-px bg-line-strong" />
-      <button type="button" className="text-sm font-medium text-yellow-text hover:text-yellow-hover" onClick={() => onChange(demoAmountInput(maxUnits))}>
+      <button type="button" className="text-sm font-medium text-yellow-text hover:underline" onClick={() => onChange(demoAmountInput(maxUnits))}>
         {t('Max')}
       </button>
     </div>

@@ -6,21 +6,14 @@ import { formatDemoAmount } from '../../lib/demoAmount';
 export default function ReferralCard({ onCopy }) {
   const { locale, t } = useLocale();
   const code = 'EDFI-AK210404';
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(`${window.location.origin}/?ref=${code}`);
-    } catch {
-      /* clipboard can be unavailable */
-    }
-    onCopy();
-  };
+  const copy = () => onCopy(`${window.location.origin}/?ref=${code}`);
   return (
     <section id="referral" className="panel scroll-mt-20 p-4 md:p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-base font-semibold text-ink">{t('Invite classmates')}</h2>
           <p className="mt-1 text-sm text-ink-3">
-            {t('You both get {amount} EDC after their first verified reward.', { amount: formatInt(20, locale) })}
+            {t('Demo referral preview. Rewards and friend counts are illustrative.')}
           </p>
         </div>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-raised text-yellow-text">

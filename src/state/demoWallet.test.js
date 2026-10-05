@@ -202,6 +202,48 @@ describe('task progress and withdrawal settlement', () => {
     expect(demoWalletReducer(submitted, { type: 'advance', taskId: 'paper' })).toBe(submitted);
   });
 
+  it.each(['gpa', 'paper'])('simulates %s verification separately from its one-time reward claim', (taskId) => {
+    const before = createDemoWallet(NOW);
+    const started = taskId === 'paper' ? demoWalletReducer(before, { type: 'advance', taskId }) : before;
+    const ready = demoWalletReducer(started, { type: 'verify', taskId });
+    expect(ready.balanceUnits).toBe(started.balanceUnits);
+    expect(ready.ledger).toBe(started.ledger);
+    expect(ready.tasks.find((task) => task.id === taskId).status).toBe('claimable');
+    expect(demoWalletReducer(ready, { type: 'verify', taskId })).toBe(ready);
+    const rewardUnits = ready.tasks.find((task) => task.id === taskId).rewardUnits;
+    const claimed = demoWalletReducer(ready, claim(taskId));
+    expect(claimed.balanceUnits).toBe(before.balanceUnits + rewardUnits);
+    expect(claimed.ledger).toHaveLength(before.ledger.length + 1);
+    expect(demoWalletReducer(claimed, claim(taskId, 'repeat-claim'))).toBe(claimed);
+    expect(demoWalletReducer(claimed, { type: 'verify', taskId })).toBe(claimed);
+  });
+
+  it.each(['week', 'course', 'paper', 'volunteer', 'missing'])('does not skip task prerequisites with verification for %s', (taskId) => {
+    const before = createDemoWallet(NOW);
+    expect(demoWalletReducer(before, { type: 'verify', taskId })).toBe(before);
+  });
+
+  it('makes volunteering claimable only after all four remaining demo hours', () => {
+    let wallet = createDemoWallet(NOW);
+    const originalLedger = wallet.ledger;
+    for (let hour = 7; hour <= 10; hour += 1) {
+      wallet = demoWalletReducer(wallet, { type: 'advance', taskId: 'volunteer' });
+      expect(wallet.tasks.find((task) => task.id === 'volunteer')).toMatchObject({ progress: hour, status: hour === 10 ? 'claimable' : 'active' });
+      expect(wallet.balanceUnits).toBe(45000);
+      expect(wallet.ledger).toBe(originalLedger);
+    }
+    expect(demoWalletReducer(wallet, { type: 'advance', taskId: 'volunteer' })).toBe(wallet);
+    expect(demoWalletReducer(wallet, claim('volunteer')).balanceUnits).toBe(55000);
+  });
+
+  it('does not verify an incomplete sample task or a task without a verification step', () => {
+    const before = createDemoWallet(NOW);
+    for (const task of [{ id: 'paper', verify: true, progress: 0, total: 1 }, { id: 'course', progress: 4, total: 4 }]) {
+      const state = { ...before, tasks: [{ ...task, status: 'verifying' }] };
+      expect(demoWalletReducer(state, { type: 'verify', taskId: task.id })).toBe(state);
+    }
+  });
+
   it('settles the matching withdrawal once without changing any balance or amount', () => {
     const pending = demoWalletReducer(createDemoWallet(NOW), withdrawal(101));
     const completed = demoWalletReducer(pending, { type: 'settle', id: 'withdraw-1' });

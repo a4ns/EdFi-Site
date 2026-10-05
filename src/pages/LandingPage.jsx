@@ -19,7 +19,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-page">
       <Header variant="home" />
-      <main>
+      <main id="main-content" tabIndex={-1} className="scroll-mt-16 focus:outline-none">
         <Hero />
         <TrustStats />
         <EarnMarkets />

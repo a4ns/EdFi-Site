@@ -1,4 +1,4 @@
-import { ChevronRight, CircleCheck, Hourglass } from 'lucide-react';
+import { ChevronRight, CircleCheck } from 'lucide-react';
 import { formatDemoAmount } from '../../lib/demoAmount';
 import { formatInt } from '../../lib/format';
 import { useLocale } from '../../state/locale';
@@ -7,16 +7,17 @@ function Progress({ value, total }) {
   const { t } = useLocale();
   return (
     <div role="progressbar" aria-label={t('Task progress')} aria-valuenow={value} aria-valuemin={0} aria-valuemax={total} className="h-1 w-full overflow-hidden rounded-full bg-raised">
-      <div className="h-full rounded-full bg-yellow transition-[width] duration-500" style={{ width: `${(value / total) * 100}%` }} />
+      <div className="h-full rounded-full bg-yellow-text transition-[width] duration-500" style={{ width: `${(value / total) * 100}%` }} />
     </div>
   );
 }
 
-function Action({ task, onClaim, onContinue }) {
+function Action({ task, onClaim, onContinue, onVerify }) {
   const { t } = useLocale();
+  // A double click must not also activate the next step appearing in its place.
   if (task.status === 'claimable') {
     return (
-      <button type="button" className="btn btn-primary btn-sm h-auto min-h-8 w-[106px] shrink-0 whitespace-normal px-2 py-1 text-center sm:w-[116px]" onClick={() => onClaim(task)}>
+      <button type="button" className="btn btn-primary btn-sm h-auto min-h-8 w-[106px] shrink-0 whitespace-normal px-2 py-1 text-center sm:w-[116px]" onClick={(event) => { if (event.detail <= 1) onClaim(task); }}>
         {t('Claim')}
       </button>
     );
@@ -31,20 +32,19 @@ function Action({ task, onClaim, onContinue }) {
   }
   if (task.status === 'verifying') {
     return (
-      <span className="inline-flex min-h-8 w-[106px] shrink-0 whitespace-normal px-2 py-1 text-center sm:w-[116px] items-center justify-center gap-1 text-xs text-ink-3 sm:text-sm" title={t('Simulated verification; no registrar request is sent')}>
-        <Hourglass size={14} />
-        {t('Verifying')}
-      </span>
+      <button type="button" className="btn btn-secondary btn-sm h-auto min-h-8 w-[106px] shrink-0 whitespace-normal px-2 py-1 text-center sm:w-[116px]" onClick={(event) => { if (event.detail <= 1) onVerify(task); }}>
+        {t('Simulate verification')}
+      </button>
     );
   }
   return (
-    <button type="button" className="btn btn-secondary btn-sm h-auto min-h-8 w-[106px] shrink-0 whitespace-normal px-2 py-1 text-center sm:w-[116px]" onClick={() => onContinue(task)}>
+    <button type="button" className="btn btn-secondary btn-sm h-auto min-h-8 w-[106px] shrink-0 whitespace-normal px-2 py-1 text-center sm:w-[116px]" onClick={(event) => { if (event.detail <= 1) onContinue(task); }}>
       {t(task.cta ?? 'Start')}
     </button>
   );
 }
 
-export default function TasksCard({ tasks, onClaim, onContinue }) {
+export default function TasksCard({ tasks, onClaim, onContinue, onVerify }) {
   const { locale, t } = useLocale();
   const claimable = tasks.filter((task) => task.status === 'claimable').length;
   return (
@@ -57,6 +57,7 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
           <span className="text-xs text-ink-3">{t('No rewards ready to claim')}</span>
         )}
       </div>
+      <p className="mt-3 text-xs leading-5 text-ink-3">{t('Demo tasks only. Steps and verification run locally; no university data is sent.')}</p>
       <ul className="mt-2">
         {tasks.map((task) => (
           <li key={task.id} className="flex items-center gap-3 py-4 first:pt-2">
@@ -77,7 +78,7 @@ export default function TasksCard({ tasks, onClaim, onContinue }) {
                 <Progress value={Math.min(task.progress, task.total)} total={task.total} />
               </div>
             </div>
-            <Action task={task} onClaim={onClaim} onContinue={onContinue} />
+            <Action task={task} onClaim={onClaim} onContinue={onContinue} onVerify={onVerify} />
           </li>
         ))}
       </ul>

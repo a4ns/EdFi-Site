@@ -1,45 +1,22 @@
-import { COINS } from '../data/content';
 import { LogoMark } from './Logo';
 
-const GLYPHS = {
-  BTC: (
-    <g fill="#fff" fillRule="evenodd">
-      <path d="M9.3 6.9h3.9c1.6 0 2.7.8 2.7 2.1 0 .9-.5 1.6-1.4 1.9 1.2.3 1.9 1.1 1.9 2.2 0 1.6-1.3 2.6-3.3 2.6H9.3zm1.9 1.6v2h1.7c.7 0 1.2-.4 1.2-1s-.5-1-1.2-1zm0 3.4v2.2h1.9c.8 0 1.4-.4 1.4-1.1s-.6-1.1-1.4-1.1z" />
-      <rect x="10.9" y="5.3" width="1.2" height="1.8" />
-      <rect x="13.3" y="5.3" width="1.2" height="1.8" />
-      <rect x="10.9" y="16.9" width="1.2" height="1.8" />
-      <rect x="13.3" y="16.9" width="1.2" height="1.8" />
-    </g>
-  ),
-  ETH: (
-    <g fill="#fff">
-      <path d="M12 4.5 7.6 12.1 12 14.7l4.4-2.6z" opacity="0.9" />
-      <path d="M12 15.6 7.6 13l4.4 6.3 4.4-6.3z" opacity="0.7" />
-    </g>
-  ),
-  BNB: (
-    <g fill="#fff">
-      <rect x="9.6" y="9.6" width="4.8" height="4.8" transform="rotate(45 12 12)" />
-      <rect x="11" y="5.2" width="2" height="2" transform="rotate(45 12 6.2)" />
-      <rect x="11" y="16.8" width="2" height="2" transform="rotate(45 12 17.8)" />
-      <rect x="5.2" y="11" width="2" height="2" transform="rotate(45 6.2 12)" />
-      <rect x="16.8" y="11" width="2" height="2" transform="rotate(45 17.8 12)" />
-    </g>
-  ),
-  SOL: (
-    <g fill="#fff">
-      <path d="M8.2 7.2h9.4l-1.8 1.9H6.4z" />
-      <path d="M6.4 11.1h9.4l1.8 1.9H8.2z" />
-      <path d="M8.2 15h9.4l-1.8 1.9H6.4z" />
-    </g>
-  ),
-  XRP: (
-    <g fill="none" stroke="#fff" strokeWidth="1.7" strokeLinecap="round">
-      <path d="M7 7.5l3.4 3.3a2.3 2.3 0 0 0 3.2 0L17 7.5" />
-      <path d="M7 16.5l3.4-3.3a2.3 2.3 0 0 1 3.2 0l3.4 3.3" />
-    </g>
-  ),
-  USDT: <text x="12" y="16.8" textAnchor="middle" fontSize="13" fontWeight="700" fill="#fff">₮</text>,
+// Curated, locally served SVGs. Attribution and the upstream revision are in public/coins/NOTICE.md.
+const COIN_MARKS = {
+  ADA: '/coins/ada.svg',
+  AVAX: '/coins/avax.svg',
+  BNB: '/coins/bnb.svg',
+  BTC: '/coins/btc.svg',
+  DOGE: '/coins/doge.svg',
+  DOT: '/coins/dot.svg',
+  ETH: '/coins/eth.svg',
+  LINK: '/coins/link.svg',
+  LTC: '/coins/ltc.svg',
+  SOL: '/coins/sol.svg',
+  SUI: '/coins/sui.svg',
+  TON: '/coins/ton.svg',
+  TRX: '/coins/trx.svg',
+  USDT: '/coins/usdt.svg',
+  XRP: '/coins/xrp.svg',
 };
 
 export default function CoinIcon({ symbol, size = 24, className = '' }) {
@@ -54,14 +31,33 @@ export default function CoinIcon({ symbol, size = 24, className = '' }) {
       </span>
     );
   }
+
+  if (Object.hasOwn(COIN_MARKS, symbol)) {
+    return (
+      <img
+        src={COIN_MARKS[symbol]}
+        width={size}
+        height={size}
+        className={`shrink-0 rounded-full ring-1 ring-inset ring-line ${className}`}
+        alt=""
+        aria-hidden="true"
+        draggable="false"
+      />
+    );
+  }
+
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" className={`shrink-0 ${className}`} aria-hidden="true">
-      <circle cx="12" cy="12" r="12" fill={COINS[symbol]?.color ?? '#474D57'} />
-      {GLYPHS[symbol] ?? (
-        <text x="12" y="16.2" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">
-          {symbol[0]}
-        </text>
-      )}
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      className={`shrink-0 text-ink-3 ${className}`}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="12" cy="12" r="12" className="fill-raised" />
+      <path fill="currentColor" fillRule="evenodd" d="M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14Zm0 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z" />
+      <path fill="currentColor" d="m12 8.5 3.5 3.5-3.5 3.5L8.5 12Z" />
     </svg>
   );
 }

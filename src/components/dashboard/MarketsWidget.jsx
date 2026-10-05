@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import CoinIcon from '../CoinIcon';
+import FilterTabs from '../FilterTabs';
 import { Change, Price } from '../PriceCell';
 import { useMarkets } from '../../state/markets';
 import { useLocale } from '../../state/locale';
@@ -13,12 +14,13 @@ const OTHER_HOLDINGS = [
   ['USDT', 32.5],
 ];
 const USDT = { symbol: 'USDT', name: 'TetherUS', price: 1, change: 0.01, tick: 0, dir: null };
-const BAR = { EDC: 'bg-yellow', BNB: 'bg-ink-2', USDT: 'bg-up' };
+const BAR = { EDC: 'bg-yellow-text', BNB: 'bg-ink-2', USDT: 'bg-up' };
 
 export default function MarketsWidget({ balance }) {
   const { locale, t } = useLocale();
   const { list, live } = useMarkets();
   const [tab, setTab] = useState('holding');
+  const panelId = useId();
   const find = (s) => (s === 'USDT' ? USDT : list.find((q) => q.symbol === s));
 
   const holdings = [['EDC', balance], ...OTHER_HOLDINGS].map(([symbol, amount]) => {
@@ -29,8 +31,8 @@ export default function MarketsWidget({ balance }) {
 
   const rows =
     tab === 'hot'
-      ? ['EDC', 'BNB', 'BTC', 'ETH', 'SOL'].map(find)
-      : [...list].sort((a, b) => b.change - a.change).slice(0, 5);
+      ? ['EDC', 'BNB', 'BTC', 'ETH', 'SOL'].map(find).filter(Boolean)
+      : list.filter((quote) => quote.change > 0).sort((a, b) => b.change - a.change).slice(0, 5);
 
   return (
     <section className="panel flex flex-col p-4 md:p-6">
@@ -41,18 +43,9 @@ export default function MarketsWidget({ balance }) {
           <ChevronRight size={16} />
         </Link>
       </div>
-      <div role="tablist" aria-label={t('Market lists')} className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
-        {[
-          ['holding', 'Holding'],
-          ['hot', 'Hot'],
-          ['gainers', 'Gainers'],
-        ].map(([id, label]) => (
-          <button key={id} type="button" role="tab" aria-selected={tab === id} className="tab !text-sm" onClick={() => setTab(id)}>
-            {t(label)}
-          </button>
-        ))}
-      </div>
+      <FilterTabs label={t('Market lists')} tabs={[{ id: 'holding', label: t('Holding') }, { id: 'hot', label: t('Hot') }, { id: 'gainers', label: t('Gainers') }]} value={tab} onChange={setTab} panelId={panelId} className="mt-3 flex flex-wrap gap-x-4 gap-y-1" tabClassName="!text-sm" />
 
+      <div id={panelId} role="tabpanel" aria-labelledby={`${panelId}-tab-${tab}`} tabIndex={0}>
       {tab === 'holding' ? (
         <>
           <div className="mt-3">
@@ -114,8 +107,10 @@ export default function MarketsWidget({ balance }) {
               </li>
             ))}
           </ul>
+          {rows.length === 0 && <p className="py-5 text-sm text-ink-3">{t(tab === 'gainers' ? 'No coins with a positive 24h change.' : 'No market quotes are available.')}</p>}
         </>
       )}
+      </div>
       <p className="mt-auto pt-3 text-xs text-ink-3">{t(live ? 'Live prices from Binance market data. EDC is simulated.' : 'Market prices are delayed or illustrative. EDC is simulated.')}</p>
     </section>
   );

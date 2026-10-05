@@ -1,5 +1,5 @@
 import { useLocale } from '../../state/locale';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BedDouble, Check, Printer, Shirt, Utensils, Zap } from 'lucide-react';
 import Modal from './Modal';
 import AmountInput from './AmountInput';
@@ -16,6 +16,7 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
   const [merchant, setMerchant] = useState(MERCHANTS[0].id);
   const [amount, setAmount] = useState('15.00');
   const [scanning, setScanning] = useState(true);
+  const merchantOptions = useRef([]);
 
   // The demo has no camera: "detect" the canteen QR code after a moment.
   useEffect(() => {
@@ -31,13 +32,25 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
   const valid = units !== null && units > 0 && !over;
   const m = MERCHANTS.find((x) => x.id === merchant);
 
+  const moveMerchant = (event, index) => {
+    let next;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (index + 1) % MERCHANTS.length;
+    else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (index + MERCHANTS.length - 1) % MERCHANTS.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = MERCHANTS.length - 1;
+    else return;
+    event.preventDefault();
+    setMerchant(MERCHANTS[next].id);
+    merchantOptions.current[next]?.focus();
+  };
+
   if (transaction) {
     return (
       <Modal title={t('Scan Pay')} onClose={onClose}>
         <DemoNotice className="mb-5" />
         <div className="flex flex-col items-center text-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-up/15">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-up text-white">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-up text-up-on">
               <Check size={28} strokeWidth={2.5} />
             </span>
           </span>
@@ -97,15 +110,18 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
         <DemoNotice className="mb-5" />
         <p className="text-sm text-ink-3">{t('Demo merchant')}</p>
         <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label={t('Merchant')}>
-          {MERCHANTS.map((x) => {
+          {MERCHANTS.map((x, index) => {
             const Ico = ICONS[x.icon];
             const sel = x.id === merchant;
             return (
               <button
                 key={x.id}
+                ref={(element) => { merchantOptions.current[index] = element; }}
                 type="button"
                 role="radio"
                 aria-checked={sel}
+                tabIndex={sel ? 0 : -1}
+                onKeyDown={(event) => moveMerchant(event, index)}
                 onClick={() => setMerchant(x.id)}
                 className={`flex items-center gap-2 rounded-lg border px-3 py-3 text-left transition-colors ${
                   sel ? 'border-yellow bg-yellow/5' : 'border-line-strong hover:border-ink-3'

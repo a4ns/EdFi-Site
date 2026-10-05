@@ -47,7 +47,7 @@ export const NAV = [
       { icon: 'GraduationCap', title: 'Academic Rewards', desc: 'Grades and GPA paid out in EDC', href: '#earn-academic' },
       { icon: 'CalendarCheck', title: 'Attendance Streaks', desc: 'Weekly and monthly check-in bonuses', href: '#earn-attendance' },
       { icon: 'FlaskConical', title: 'Research Grants', desc: 'Earn for published, DOI-verified work', href: '#earn-research' },
-      { icon: 'PiggyBank', title: 'EDC Staking', desc: 'Lock EDC for a boosted earn rate', href: '#products' },
+      { icon: 'PiggyBank', title: 'EDC Staking', desc: 'Staking is planned, not available', href: '#faq-staking' },
     ],
   },
   { label: 'Markets', href: '/markets' },
@@ -56,19 +56,18 @@ export const NAV = [
   {
     label: 'More',
     menu: [
-      { icon: 'Building2', title: 'For Universities', desc: 'Connect your registrar to EdFi oracles', href: '#products' },
+      { icon: 'Building2', title: 'For Universities', desc: 'Explore the proposed university workflow', href: '#faq-verification' },
       { icon: 'CircleHelp', title: 'FAQ', desc: 'How earning, paying and withdrawing work', href: '#faq' },
       { icon: 'Smartphone', title: 'Download App', desc: 'Earn on the go, iOS and Android', href: '#download' },
     ],
   },
 ];
 
-export const NEWS = [
-  'EdFi wins Crypto Ideathon Kazakhstan',
-  'How EDC rewards are calculated',
-  'Campus Pay concept: paying at the canteen',
-  'Next up: testnet pilot on campus',
-  'Mainnet migration and eGov roadmap',
+export const GUIDE_LINKS = [
+  { label: 'How do I earn EDC?', href: '#earn' },
+  { label: 'What can I spend EDC on?', href: '#products' },
+  { label: 'Can I withdraw EDC to an exchange?', href: '#faq-withdrawals' },
+  { label: 'What happens next?', href: '#roadmap' },
 ];
 
 export const TRUST_STATS = [
@@ -147,26 +146,37 @@ export const ROADMAP = [
 
 export const FAQ = [
   {
+    id: 'staking',
+    q: 'Is staking available?',
+    a: 'Staking is a planned concept only. The prototype has no staking contract, deposits, yield or token lock-up. No funds can be staked here.',
+  },
+  {
+    id: 'about',
     q: 'What is EdFi?',
     a: 'EdFi is a Learn-to-Earn concept for universities. The proposed model rewards verified grades, attendance and research with EDC, a BEP-20 token. Campus payments and withdrawals are planned; the current web prototype uses sample data.',
   },
   {
+    id: 'rewards',
     q: 'How do I earn EDC?',
     a: 'In the demo, claim sample rewards for activities such as an A on an exam, full attendance or a published article. University sign-in, automatic result syncing and real token rewards are not connected yet. The Learn & Earn table shows proposed rates.',
   },
   {
+    id: 'verification',
     q: 'How is my academic data verified?',
     a: 'The planned model uses university systems such as an LMS, registrar, attendance records and DOI registries to verify results. The locally tested contracts verify a signed result before minting EDC. University integrations and the oracle service are not live yet.',
   },
   {
+    id: 'payments',
     q: 'What can I spend EDC on?',
     a: 'Canteen meals, dormitory fees and university merchandise are planned use cases. The current Scan Pay demo only simulates a payment: no funds move and nothing is sent to a blockchain.',
   },
   {
+    id: 'withdrawals',
     q: 'Can I withdraw EDC to an exchange?',
     a: 'Not yet. The EDC contracts have not been deployed, and the demo cannot send tokens to a wallet or exchange. Exchange listings, liquidity and real withdrawals are not available.',
   },
   {
+    id: 'status',
     q: 'Is EdFi live?',
     a: 'EdFi is a concept prototype that won 1st place at Crypto Ideathon Kazakhstan by Binance. The contracts are tested locally and are not deployed. A testnet pilot at Kozybayev University is the next planned step. Try the demo with sample data and no connected wallet.',
   },
@@ -179,15 +189,15 @@ export const FOOTER_COLUMNS = [
   },
   {
     title: 'Products',
-    links: [['Learn & Earn', '#earn'], ['Campus Pay', '#products'], ['EDC Wallet', '/demo'], ['Staking', '#products']],
+    links: [['Learn & Earn', '#earn'], ['Campus Pay', '#products'], ['EDC Wallet', '/demo'], ['Staking', '#faq-staking']],
   },
   {
     title: 'Universities',
-    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq'], ['Kozybayev pilot', '#roadmap']],
+    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq-verification'], ['Kozybayev pilot', '#roadmap']],
   },
   {
     title: 'Learn',
-    links: [['What is Learn-to-Earn?', '#faq'], ['How rewards work', '#earn'], ['Withdrawing EDC', '#faq']],
+    links: [['What is Learn-to-Earn?', '#faq'], ['How rewards work', '#earn'], ['Withdrawing EDC', '#faq-withdrawals']],
   },
   {
     title: 'Support',

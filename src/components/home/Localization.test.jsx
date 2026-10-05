@@ -5,7 +5,7 @@ import { LocaleContext } from '../../state/locale';
 import { MarketsContext } from '../../state/markets';
 import { AuthContext } from '../../state/auth';
 import { messages, translate } from '../../i18n/messages';
-import { COINS, EDC_START, FALLBACK_MARKETS, EARN_ACTIVITIES, EARN_CATEGORIES, FAQ as FAQ_ITEMS, NEWS, PRODUCTS, ROADMAP, TRUST_STATS } from '../../data/content';
+import { COINS, EDC_START, FALLBACK_MARKETS, EARN_ACTIVITIES, EARN_CATEGORIES, FAQ as FAQ_ITEMS, GUIDE_LINKS, PRODUCTS, ROADMAP, TRUST_STATS } from '../../data/content';
 import { formatInt } from '../../lib/format';
 import Hero from './Hero';
 import EarnMarkets from './EarnMarkets';
@@ -43,7 +43,7 @@ function Sections() {
 describe('landing-page localization', () => {
   it('translates every canonical marketing data field in Russian and Kazakh', () => {
     const keys = [
-      ...NEWS, ...EARN_CATEGORIES,
+      ...GUIDE_LINKS.map((item) => item.label), ...EARN_CATEGORIES,
       ...EARN_ACTIVITIES.flatMap((a) => [a.name, a.category, a.frequency, a.oracle]),
       ...PRODUCTS.flatMap((p) => [p.tag, p.title, p.desc, p.cta]),
       ...ROADMAP.flatMap((r) => [r.phase, r.status, r.title, r.desc]),
@@ -67,7 +67,7 @@ describe('landing-page localization', () => {
     expect(screen.getByText(t('EDC price is simulated; the token is not live.'), { exact: false })).toBeVisible();
     const stats = screen.getByRole('region', { name: t('EdFi in numbers') });
     expect(within(stats).getByText(formatInt(6000, locale), { normalizer: (text) => text })).toBeVisible();
-    expect(screen.getByText(t(FAQ_ITEMS[0].a))).toBeVisible();
+    expect(screen.getByText(t(FAQ_ITEMS.find((item) => item.id === 'about').a))).toBeVisible();
   });
 
   it('preserves reward category, sorting and FAQ selection when language changes', () => {
@@ -82,7 +82,7 @@ describe('landing-page localization', () => {
       expect(screen.getByRole('tab', { name: t('Research') })).toHaveAttribute('aria-selected', 'true');
       expect(screen.getAllByRole('row')).toHaveLength(3);
       expect(screen.getAllByRole('row')[1]).toHaveTextContent(t('Published research article'));
-      expect(screen.getByText(t(FAQ_ITEMS[4].a))).toBeVisible();
+      expect(screen.getByText(t(FAQ_ITEMS.find((item) => item.id === 'withdrawals').a))).toBeVisible();
       expect(screen.getAllByRole('link', { name: t('Earn') })).toHaveLength(2);
       expect(screen.getAllByRole('link', { name: t('Earn') })[0]).toHaveAttribute('href', '/demo#tasks');
       expect(document.getElementById('earn-research')).toBeInTheDocument();

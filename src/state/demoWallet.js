@@ -43,8 +43,17 @@ export function demoWalletReducer(state, action) {
     return {
       ...state,
       tasks: state.tasks.map((item) => item.id === task.id
-        ? { ...item, progress, status: task.verify ? 'verifying' : progress >= task.total ? 'claimable' : 'active' }
+        ? { ...item, progress, status: progress >= task.total ? task.verify ? 'verifying' : 'claimable' : 'active' }
         : item),
+    };
+  }
+
+  if (action.type === 'verify') {
+    const task = state.tasks.find((item) => item.id === action.taskId);
+    if (!task?.verify || task.status !== 'verifying' || task.progress !== task.total) return state;
+    return {
+      ...state,
+      tasks: state.tasks.map((item) => item.id === task.id ? { ...item, status: 'claimable' } : item),
     };
   }
 

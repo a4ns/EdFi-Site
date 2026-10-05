@@ -24,7 +24,7 @@ export function ChangePill({ value, className = '' }) {
   const { locale } = useLocale();
   return (
     <span
-      className={`num inline-flex h-7 min-w-[72px] items-center justify-center rounded px-2 text-sm font-medium text-white ${value >= 0 ? 'bg-up' : 'bg-down'} ${className}`}
+      className={`num inline-flex h-7 min-w-[72px] items-center justify-center rounded px-2 text-sm font-medium ${value >= 0 ? 'bg-up text-up-on' : 'bg-down text-down-on'} ${className}`}
     >
       {formatChange(value, locale)}
     </span>

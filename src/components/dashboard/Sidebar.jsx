@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { ExitNavIcon } from '../NavIcons';
 import { SIDEBAR_ITEMS } from './nav';
 import { useLocale } from '../../state/locale';
 
@@ -22,7 +22,7 @@ export default function Sidebar({ active, onSelect }) {
                   isActive ? 'bg-card text-ink' : 'text-ink-3 hover:bg-card hover:text-ink'
                 }`}
               >
-                <Ico size={20} className={isActive ? 'shrink-0 text-ink [&_*]:fill-current [&_*]:[fill-opacity:0.2]' : 'shrink-0'} />
+                <Ico size={20} className={isActive ? 'text-yellow-text' : ''} />
                 {t(label)}
               </button>
               </div>
@@ -33,7 +33,7 @@ export default function Sidebar({ active, onSelect }) {
           to="/"
           className="mt-auto flex h-12 items-center gap-3 rounded-lg px-4 text-sm font-medium text-ink-3 transition-colors hover:bg-card hover:text-ink"
         >
-          <LogOut size={20} />
+          <ExitNavIcon size={20} />
           {t('Exit demo')}
         </Link>
       </aside>

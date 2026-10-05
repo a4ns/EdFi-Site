@@ -5,6 +5,9 @@ import LocaleProvider from './state/LocaleProvider';
 import LandingPage from './pages/LandingPage';
 import DashboardApp from './pages/DashboardApp';
 import MarketsPage from './pages/MarketsPage';
+import CoinDetailPage from './pages/CoinDetailPage';
+import NotFoundPage from './pages/NotFoundPage';
+import RouteAccessibility from './components/RouteAccessibility';
 
 function App() {
   return (
@@ -12,11 +15,13 @@ function App() {
       <MarketsProvider>
         <BrowserRouter>
           <AuthProvider>
+            <RouteAccessibility />
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/markets" element={<MarketsPage />} />
+              <Route path="/markets/:symbol" element={<CoinDetailPage />} />
               <Route path="/demo" element={<DashboardApp />} />
-              <Route path="*" element={<LandingPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </AuthProvider>
         </BrowserRouter>

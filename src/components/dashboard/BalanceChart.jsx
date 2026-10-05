@@ -1,40 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { formatAmount, formatChartDate, formatDate, formatInt } from '../../lib/format';
+import { formatAmount, formatChartDate, formatDate } from '../../lib/format';
+import { BALANCE_RANGES, balanceAxis, balanceDate, buildBalanceSeries } from '../../lib/balanceChart';
 import { useLocale } from '../../state/locale';
-
-// Round axis ticks (e.g. 0 / 200 / 400) covering [lo, hi].
-function niceTicks(lo, hi) {
-  const raw = (hi - lo) / 3 || 1;
-  const mag = 10 ** Math.floor(Math.log10(raw));
-  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((c) => c >= raw);
-  const start = Math.floor(lo / step) * step;
-  const out = [];
-  for (let t = start; t < hi + step * 0.999; t += step) out.push(t);
-  return out.length > 1 ? out : [start, start + step];
-}
-
-const RANGES = { '7D': 7, '30D': 30, '90D': 90 };
-
-// Deterministic balance history ending exactly at today's balance.
-// Walks backwards: rewards arrive in steps, spending pulls the balance down.
-function buildSeries(end, n) {
-  let seed = 11 + n;
-  const rand = () => {
-    seed = (seed * 16807) % 2147483647;
-    return seed / 2147483647;
-  };
-  const growth = { 7: 0.86, 30: 0.62, 90: 0.4 }[n];
-  const step = Math.pow(growth, 1 / (n - 1));
-  const vals = [end];
-  let v = end;
-  for (let i = 1; i < n; i += 1) {
-    const shock = rand() < 0.12 ? (rand() - 0.3) * 0.09 : (rand() - 0.5) * 0.012;
-    v = Math.max(end * 0.15, v * step * (1 + shock));
-    vals.unshift(v);
-  }
-  return vals;
-}
-const DAY = 24 * 3600 * 1000;
 
 // Balance history ending at the current balance, drawn at the container's real pixel width.
 export default function BalanceChart({ end, height = 168 }) {
@@ -54,11 +21,12 @@ export default function BalanceChart({ end, height = 168 }) {
     return () => ro.disconnect();
   }, []);
 
-  const points = useMemo(() => buildSeries(end, RANGES[range]), [end, range]);
+  const points = useMemo(() => buildBalanceSeries(end, BALANCE_RANGES[range]), [end, range]);
 
-  const ticks = niceTicks(Math.min(...points), Math.max(...points));
+  const { ticks, digits } = balanceAxis(Math.min(...points), Math.max(...points));
+  const tickLabels = ticks.map((value) => formatAmount(value, digits, locale));
   const pad = 8;
-  const gutter = 52;
+  const gutter = Math.max(52, ...tickLabels.map((label) => label.length * 7 + 12));
   const axis = 22; // room for x-axis date labels
   const plotH = height - axis;
   const min = ticks[0];
@@ -66,8 +34,8 @@ export default function BalanceChart({ end, height = 168 }) {
   const x = (i) => gutter + (i / (points.length - 1)) * (width - gutter - pad);
   const y = (v) => plotH - pad - ((v - min) / (max - min || 1)) * (plotH - pad * 2);
   const line = points.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
-  const hi = hover ?? points.length - 1;
-  const date = new Date(today - (points.length - 1 - hi) * DAY);
+  const hi = Math.min(hover ?? points.length - 1, points.length - 1);
+  const date = balanceDate(today, points.length - 1 - hi);
 
   const onMove = (e) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -80,16 +48,16 @@ export default function BalanceChart({ end, height = 168 }) {
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-ink-3">{t('Illustrative balance chart')}</span>
         <div className="flex gap-1">
-          {Object.keys(RANGES).map((r) => (
+          {Object.keys(BALANCE_RANGES).map((r) => (
             <button
               key={r}
               type="button"
-              onClick={() => setRange(r)}
-              aria-label={t('Last {count} days', { count: RANGES[r] })}
+              onClick={() => { setRange(r); setHover(null); }}
+              aria-label={t('Last {count} days', { count: BALANCE_RANGES[r] })}
               aria-pressed={range === r}
               className={`h-6 rounded px-2 text-xs transition-colors ${range === r ? 'bg-raised text-ink' : 'text-ink-3 hover:text-ink'}`}
             >
-              {t('{count}D', { count: RANGES[r] })}
+              {t('{count}D', { count: BALANCE_RANGES[r] })}
             </button>
           ))}
         </div>
@@ -102,11 +70,11 @@ export default function BalanceChart({ end, height = 168 }) {
               <stop offset="1" stopColor="currentColor" stopOpacity="0" />
             </linearGradient>
           </defs>
-          {ticks.map((v) => (
+          {ticks.map((v, i) => (
             <g key={v}>
               <line x1={gutter} x2={width} y1={y(v)} y2={y(v)} stroke="currentColor" className="text-line" strokeDasharray="2 4" />
               <text x={0} y={y(v) + 4} fontSize="12" fill="rgb(var(--c-ink-3))" className="num">
-                {formatInt(Math.round(v), locale)}
+                {tickLabels[i]}
               </text>
             </g>
           ))}
@@ -114,7 +82,7 @@ export default function BalanceChart({ end, height = 168 }) {
           <path d={line} fill="none" stroke="currentColor" strokeWidth="1.5" />
           {[0, 0.5, 1].map((f) => {
             const i = Math.round(f * (points.length - 1));
-            const d = new Date(today - (points.length - 1 - i) * DAY);
+            const d = balanceDate(today, points.length - 1 - i);
             const label = formatChartDate(d, locale);
             return (
               <text key={f} x={x(i)} y={height - 5} fontSize="12" textAnchor={f === 0 ? 'start' : f === 1 ? 'end' : 'middle'} fill="rgb(var(--c-ink-3))" className="num">
@@ -131,7 +99,7 @@ export default function BalanceChart({ end, height = 168 }) {
             style={{ left: Math.min(Math.max(x(hi) - 60, 0), width - 128) }}
           >
             <span className="num text-ink-3">{formatDate(date, locale)}</span>{' '}
-            <span className="num font-medium text-ink">{formatAmount(points[hi], 2, locale)} EDC</span>
+            <span className="num font-medium text-ink">{formatAmount(points[hi], Math.max(2, digits), locale)} EDC</span>
           </div>
         )}
       </div>
