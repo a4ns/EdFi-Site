@@ -55,16 +55,21 @@ describe('shared navigation localization', () => {
     expect(screen.getByRole('dialog', { name: translate('kk', 'Menu') })).toBeInTheDocument();
   });
 
-  it('provides named native language controls in the desktop region panel and footer', async () => {
+  it.each([null, 'kk', 'en', 'ru'])('orders named language controls in the desktop panel and footer with saved locale %s', async (savedLocale) => {
+    if (savedLocale) localStorage.setItem('edfi.locale', savedLocale);
+    const locale = savedLocale ?? 'en';
     const user = userEvent.setup();
     renderChrome(<><Header /><Footer /></>);
-    await user.click(screen.getByRole('button', { name: 'Language and currency' }));
-    const controls = screen.getAllByRole('combobox', { name: 'Language' });
+    await user.click(screen.getByRole('button', { name: translate(locale, 'Language and currency') }));
+    const controls = screen.getAllByRole('combobox', { name: translate(locale, 'Language') });
     expect(controls).toHaveLength(2);
     for (const control of controls) {
-      expect(within(control).getAllByRole('option').map((option) => option.textContent)).toEqual(['English', 'Русский', 'Қазақша']);
-      expect(control).toHaveValue('en');
+      expect(within(control).getAllByRole('option').map((option) => [option.value, option.textContent, option.lang])).toEqual([
+        ['kk', 'Қазақша', 'kk'], ['en', 'English', 'en'], ['ru', 'Русский', 'ru'],
+      ]);
+      expect(control).toHaveValue(locale);
     }
+    expect(localStorage.getItem('edfi.locale')).toBe(locale);
     await user.selectOptions(controls[0], 'ru');
     for (const control of screen.getAllByRole('combobox', { name: translate('ru', 'Language') })) {
       expect(control).toHaveValue('ru');
@@ -80,14 +85,20 @@ describe('shared navigation localization', () => {
     expect(screen.getByText(translate('kk', 'Independent concept project. Not affiliated with or endorsed by Binance.'))).toBeInTheDocument();
   });
 
-  it('keeps the mobile drawer open and its language control focused after a language change', async () => {
+  it.each(['kk', 'en', 'ru'])('orders mobile languages and preserves saved %s before a focused language change', async (locale) => {
+    localStorage.setItem('edfi.locale', locale);
     const user = userEvent.setup();
     renderChrome(<Header />);
-    const opener = screen.getByRole('button', { name: 'Open menu' });
+    const opener = screen.getByRole('button', { name: translate(locale, 'Open menu') });
     await user.click(opener);
-    let drawer = screen.getByRole('dialog', { name: 'Menu' });
-    expect(within(drawer).getByRole('button', { name: 'Close menu' })).toHaveFocus();
-    const control = within(drawer).getByRole('combobox', { name: 'Language' });
+    let drawer = screen.getByRole('dialog', { name: translate(locale, 'Menu') });
+    expect(within(drawer).getByRole('button', { name: translate(locale, 'Close menu') })).toHaveFocus();
+    const control = within(drawer).getByRole('combobox', { name: translate(locale, 'Language') });
+    expect(within(control).getAllByRole('option').map((option) => [option.value, option.textContent, option.lang])).toEqual([
+      ['kk', 'Қазақша', 'kk'], ['en', 'English', 'en'], ['ru', 'Русский', 'ru'],
+    ]);
+    expect(control).toHaveValue(locale);
+    expect(localStorage.getItem('edfi.locale')).toBe(locale);
     await user.selectOptions(control, 'kk');
     drawer = screen.getByRole('dialog', { name: translate('kk', 'Menu') });
     expect(control).toHaveFocus();

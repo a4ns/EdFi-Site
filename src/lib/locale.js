@@ -1,4 +1,9 @@
 export const LOCALES = ['en', 'ru', 'kk'];
+export const LANGUAGE_OPTIONS = [
+  { value: 'kk', label: 'Қазақша' },
+  { value: 'en', label: 'English' },
+  { value: 'ru', label: 'Русский' },
+];
 export const LOCALE_TAGS = { en: 'en-US', ru: 'ru-RU', kk: 'kk-KZ' };
 export const LOCALE_STORAGE_KEY = 'edfi.locale';
 

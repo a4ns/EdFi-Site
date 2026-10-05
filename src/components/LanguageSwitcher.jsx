@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { useLocale } from '../state/locale';
+import { LANGUAGE_OPTIONS } from '../lib/locale';
 
 export default function LanguageSwitcher({ className = '', selectClassName = '' }) {
   const id = useId();
@@ -14,9 +15,9 @@ export default function LanguageSwitcher({ className = '', selectClassName = '' 
         onChange={(event) => setLocale(event.target.value)}
         className={`input mt-2 !h-10 !py-0 ${selectClassName}`}
       >
-        <option value="en" lang="en">English</option>
-        <option value="ru" lang="ru">Русский</option>
-        <option value="kk" lang="kk">Қазақша</option>
+        {LANGUAGE_OPTIONS.map(({ value, label }) => (
+          <option key={value} value={value} lang={value}>{label}</option>
+        ))}
       </select>
     </div>
   );

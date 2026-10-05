@@ -124,12 +124,19 @@ describe('Localized demo wallet dialogs', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it('changes language in Settings without resetting switches and keeps select within the focus trap', async () => {
+  it.each(['kk', 'en', 'ru'])('orders Settings languages and preserves saved %s, switches and focus', async (locale) => {
+    localStorage.setItem('edfi.locale', locale);
     const user = userEvent.setup();
     render(<LocaleProvider><AccountModal mode="settings" onClose={vi.fn()} /></LocaleProvider>);
-    const push = screen.getByRole('switch', { name: 'Push notifications' });
+    const control = screen.getByRole('combobox', { name: translate(locale, 'Language') });
+    expect(within(control).getAllByRole('option').map((option) => [option.value, option.textContent, option.lang])).toEqual([
+      ['kk', 'Қазақша', 'kk'], ['en', 'English', 'en'], ['ru', 'Русский', 'ru'],
+    ]);
+    expect(control).toHaveValue(locale);
+    expect(localStorage.getItem('edfi.locale')).toBe(locale);
+    const push = screen.getByRole('switch', { name: translate(locale, 'Push notifications') });
     await user.click(push);
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Language' }), 'kk');
+    await user.selectOptions(control, 'kk');
     expect(document.documentElement).toHaveAttribute('lang', 'kk');
     expect(screen.getByRole('dialog', { name: translate('kk', 'Settings') })).toBeVisible();
     expect(screen.getByRole('switch', { name: translate('kk', 'Push notifications') })).toHaveAttribute('aria-checked', 'false');

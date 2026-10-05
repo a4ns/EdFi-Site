@@ -6,6 +6,7 @@ import { applyTheme } from '../../lib/theme';
 import { useTheme } from '../../state/useTheme';
 import { formatAmount, formatInt, KZT_PER_USD } from '../../lib/format';
 import { useLocale } from '../../state/locale';
+import { LANGUAGE_OPTIONS } from '../../lib/locale';
 
 function Row({ label, children }) {
   return (
@@ -75,9 +76,9 @@ export default function AccountModal({ mode, onClose, onLogout }) {
           className="input h-10 max-w-full bg-page px-3 text-sm text-ink"
           onChange={(event) => setLocale(event.target.value)}
         >
-          <option value="en" lang="en">English</option>
-          <option value="ru" lang="ru">Русский</option>
-          <option value="kk" lang="kk">Қазақша</option>
+          {LANGUAGE_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value} lang={value}>{label}</option>
+          ))}
         </select>
       </Row>
       <Row label={t('Theme')}>
