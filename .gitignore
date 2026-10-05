@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment and secrets (wallet keys, RPC URLs)
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
