@@ -1,0 +1,18 @@
+{
+  "name": "edfi-contracts",
+  "private": true,
+  "version": "0.1.0",
+  "description": "EdFi smart contracts: EDC token, oracle-verified reward minter and campus payments (BNB Smart Chain).",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network bscTestnet"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.6.1",
+    "dotenv": "^18.0.5",
+    "hardhat": "^2.29.1"
+  }
+}

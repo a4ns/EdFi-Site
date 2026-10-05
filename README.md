@@ -27,7 +27,7 @@ The first campus is Kozybayev University in Petropavlovsk, Kazakhstan (6,000 stu
 
 ## What's in this repository
 
-The web prototype: a marketing site and an interactive wallet dashboard.
+The web prototype (a marketing site and an interactive wallet dashboard) and the [smart contracts](contracts/) for the testnet pilot.
 
 | Route | What you can do |
 |---|---|
@@ -56,6 +56,16 @@ The web prototype: a marketing site and an interactive wallet dashboard.
 
 </details>
 
+## Smart contracts
+
+The [`contracts/`](contracts/) folder holds the on-chain side of EdFi, written in Solidity with Hardhat and OpenZeppelin:
+
+- **EDCToken**: the BEP-20 EDC token with gasless approvals (EIP-2612).
+- **RewardMinter**: mints EDC only for results signed by an allow-listed university oracle (EIP-712), each result once, with expiry, a per-claim cap and an emergency pause.
+- **CampusPay**: a registry of verified campus merchants and zero-fee payments with order receipts.
+
+Status: tested locally (22 tests, 100% line coverage) and ready for BNB Smart Chain testnet. Not deployed yet. See [contracts/README.md](contracts/README.md) for the security model and deployment steps.
+
 ## Features
 
 - **Exchange-grade design system.** Dark and light themes built on design tokens, IBM Plex Sans with tabular figures, dense data layouts.
@@ -69,6 +79,8 @@ The web prototype: a marketing site and an interactive wallet dashboard.
 
 React 19 · Vite 7 · Tailwind CSS 3 · React Router 7 · lucide-react · qrcode-generator · IBM Plex Sans (self-hosted). Deployed on Vercel.
 
+Contracts: Solidity 0.8.28 · Hardhat · OpenZeppelin Contracts 5 · BNB Smart Chain.
+
 ## Getting started
 
 Requires Node.js 20.19+ or 22.12+.
@@ -79,6 +91,8 @@ npm run dev        # http://localhost:5173
 npm run lint
 npm run build      # production build in dist/
 npm run preview    # serve the production build locally
+
+cd contracts && npm install && npm test   # smart contract tests
 ```
 
 ## Project structure
@@ -94,6 +108,7 @@ src/
 ├── state/              Live market data and sign-up dialog providers
 ├── lib/                Formatting, theme and link helpers
 └── index.css           Design tokens (dark and light themes) and component classes
+contracts/              Solidity contracts, tests and deploy script (Hardhat)
 public/                 Favicon and social preview image
 docs/screenshots/       Images used in this README
 ```
@@ -101,7 +116,7 @@ docs/screenshots/       Images used in this README
 ## Roadmap
 
 1. ✅ **Concept & prototype** (2025): token mechanics and the web prototype. 1st place at Crypto Ideathon Kazakhstan by Binance.
-2. ⏭️ **Testnet pilot**: smart contracts on BNB Smart Chain testnet and a sandbox pilot at Kozybayev University.
+2. ⏭️ **Testnet pilot**: smart contracts on BNB Smart Chain testnet and a sandbox pilot at Kozybayev University. Contracts are written and tested; testnet deployment is next.
 3. **Full campus economy**: mainnet launch and payments at canteens, dormitories and stores.
 4. **National eGov integration** (2027): connect state education databases to scale across Kazakhstan.
 
