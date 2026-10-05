@@ -459,7 +459,7 @@ export default function Header({ variant = 'site', onDeposit, onAppNavigate, onC
     <header className="sticky top-0 z-50 h-16 w-full bg-page">
       <div className="flex h-full items-center justify-between px-4 md:px-6">
         <div className="flex items-center">
-          <Link to="/" className="mr-5 flex items-center" aria-label={t('EdFi home')}>
+          <Link to="/" className="mr-2 flex items-center sm:mr-5" aria-label={t('EdFi home')}>
             <Logo />
           </Link>
           <nav className="hidden items-center xl:flex" aria-label={t('Main')}>
@@ -469,7 +469,7 @@ export default function Header({ variant = 'site', onDeposit, onAppNavigate, onC
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <SearchBox />
           {isApp ? (
             <>

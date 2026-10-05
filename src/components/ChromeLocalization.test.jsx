@@ -36,6 +36,25 @@ beforeEach(() => {
 });
 
 describe('shared navigation localization', () => {
+  it('uses compact mobile spacing for the Kazakh app header while retaining its controls and desktop spacing', async () => {
+    localStorage.setItem('edfi.locale', 'kk');
+    const user = userEvent.setup();
+    const onDeposit = vi.fn();
+    renderChrome(<Header variant="app" onDeposit={onDeposit} />);
+    const deposit = screen.getByRole('button', { name: translate('kk', 'Deposit') });
+    const actions = deposit.parentElement;
+    // This protects the responsive class contract; actual widths require browser verification.
+    expect(screen.getByRole('link', { name: translate('kk', 'EdFi home') })).toHaveClass('mr-2', 'sm:mr-5');
+    expect(actions).toHaveClass('gap-1', 'sm:gap-2');
+    expect(deposit).toHaveClass('btn', 'btn-primary', 'btn-sm');
+    expect(within(actions).getByRole('button', { name: translate('kk', 'Notifications, {count} unread', { count: 3 }) })).toBeEnabled();
+    expect(within(actions).getByRole('button', { name: translate('kk', 'Account menu') })).toBeEnabled();
+    await user.click(deposit);
+    expect(onDeposit).toHaveBeenCalledOnce();
+    await user.click(within(actions).getByRole('button', { name: translate('kk', 'Open menu') }));
+    expect(screen.getByRole('dialog', { name: translate('kk', 'Menu') })).toBeInTheDocument();
+  });
+
   it('provides named native language controls in the desktop region panel and footer', async () => {
     const user = userEvent.setup();
     renderChrome(<><Header /><Footer /></>);
