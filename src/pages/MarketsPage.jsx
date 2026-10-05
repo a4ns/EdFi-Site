@@ -7,7 +7,8 @@ import CoinIcon from '../components/CoinIcon';
 import Sparkline from '../components/Sparkline';
 import { Change, ChangePill, Price } from '../components/PriceCell';
 import { useMarkets } from '../state/markets';
-import { formatCompact, formatPrice } from '../lib/format';
+import { formatCompact, formatUsd } from '../lib/format';
+import { useLocale } from '../state/locale';
 
 const TABS = [
   ['all', 'All'],
@@ -17,16 +18,17 @@ const TABS = [
 ];
 
 function HotCard({ title, rows }) {
+  const { t } = useLocale();
   return (
     <div className="card p-4 md:p-5">
-      <h2 className="text-base font-semibold text-ink">{title}</h2>
+      <h2 className="text-base font-semibold text-ink">{t(title)}</h2>
       <ul className="mt-2">
         {rows.map((r) => (
           <li key={r.symbol} className="flex h-11 items-center">
             <CoinIcon symbol={r.symbol} size={20} />
-            <span className="ml-2 text-sm font-medium text-ink">{r.symbol}</span>
-            <Price quote={r} className="ml-auto mr-3 text-sm text-ink" />
-            <Change value={r.change} className="w-[68px] text-right text-sm" />
+            <span className="ml-2 text-xs font-medium text-ink xl:text-sm">{r.symbol}</span>
+            <Price quote={r} className="ml-auto mr-2 text-xs text-ink xl:text-sm" />
+            <Change value={r.change} className="w-[64px] shrink-0 text-right text-xs xl:text-sm" />
           </li>
         ))}
       </ul>
@@ -48,17 +50,18 @@ function SortHead({ k, sort, onSort, children, className = '' }) {
 }
 
 export default function MarketsPage() {
+  const { locale, t } = useLocale();
   const { list, live } = useMarkets();
   const [tab, setTab] = useState('all');
   const [q, setQ] = useState('');
   const [sort, setSort] = useState({ key: null, dir: 'desc' });
 
   useEffect(() => {
-    document.title = 'Markets | EdFi';
+    document.title = t('Markets | EdFi');
     return () => {
-      document.title = 'EdFi | Learn-to-Earn on BNB Chain';
+      document.title = t('EdFi | Learn-to-Earn on BNB Chain');
     };
-  }, []);
+  }, [t]);
 
   const rows = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -78,10 +81,10 @@ export default function MarketsPage() {
     <div className="min-h-screen bg-page">
       <Header variant="site" />
       <main className="page-x pb-16 pt-8 md:pt-12">
-        <h1 className="text-[32px] font-semibold leading-10 text-ink md:text-[40px] md:leading-[48px]">Markets</h1>
-        <p className="mt-2 flex items-center gap-2 text-sm text-ink-3">
-          <span className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-up' : 'bg-ink-3'}`} />
-          {live ? 'Live prices from Binance market data.' : 'Price snapshot.'} EDC is an EdFi pilot token (simulated).
+        <h1 className="text-[32px] font-semibold leading-10 text-ink md:text-[40px] md:leading-[48px]">{t('Markets')}</h1>
+        <p className="mt-2 flex items-start gap-2 text-sm text-ink-3">
+          <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${live ? 'bg-up' : 'bg-ink-3'}`} />
+          <span>{t(live ? 'Live prices from Binance market data.' : 'Price snapshot.')} {t('EDC prices are simulated. The token is not deployed.')}</span>
         </p>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -91,10 +94,10 @@ export default function MarketsPage() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-end justify-between gap-4 border-b border-line">
-          <div role="tablist" aria-label="Market lists" className="no-scrollbar flex gap-6 overflow-x-auto">
+          <div role="tablist" aria-label={t('Market lists')} className="no-scrollbar flex max-w-full gap-6 overflow-x-auto">
             {TABS.map(([id, label]) => (
               <button key={id} type="button" role="tab" aria-selected={tab === id} className="tab shrink-0" onClick={() => setTab(id)}>
-                {label}
+                {t(label)}
               </button>
             ))}
           </div>
@@ -103,8 +106,8 @@ export default function MarketsPage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search coins"
-              aria-label="Search coins"
+              placeholder={t('Search coins')}
+              aria-label={t('Search coins')}
               className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-4"
             />
           </label>
@@ -113,18 +116,18 @@ export default function MarketsPage() {
         <table className="w-full table-fixed">
           <thead>
             <tr className="h-12 text-left text-xs text-ink-3">
-              <th className="w-auto pl-2 font-normal">Name</th>
+              <th className="w-auto pl-2 font-normal">{t('Name')}</th>
               <SortHead k="price" sort={sort} onSort={toggleSort} className="w-[120px] md:w-[150px]">
-                Price
+                {t('Price')}
               </SortHead>
               <SortHead k="change" sort={sort} onSort={toggleSort} className="w-[96px] md:w-[130px]">
-                24h Change
+                {t('24h Change')}
               </SortHead>
-              <th className="hidden w-[190px] text-right font-normal lg:table-cell">24h High / Low</th>
+              <th className="hidden w-[190px] text-right font-normal lg:table-cell">{t('24h High / Low')}</th>
               <SortHead k="volume" sort={sort} onSort={toggleSort} className="hidden w-[150px] md:table-cell">
-                24h Volume
+                {t('24h Volume')}
               </SortHead>
-              <th className="hidden w-[130px] pr-2 text-right font-normal lg:table-cell">Last 7 days</th>
+              <th className="hidden w-[130px] pr-2 text-right font-normal lg:table-cell">{t('Last 7 days')}</th>
             </tr>
           </thead>
           <tbody>
@@ -134,9 +137,9 @@ export default function MarketsPage() {
                   <Link to="/demo" className="flex min-w-0 items-center gap-3">
                     <CoinIcon symbol={c.symbol} size={28} />
                     <span className="min-w-0">
-                      <span className="flex items-center gap-2 text-sm font-semibold text-ink">
+                      <span className="flex flex-wrap items-center gap-1 text-sm font-semibold text-ink">
                         {c.symbol}
-                        {c.symbol === 'EDC' && <span className="chip bg-yellow/10 !px-1.5 !py-0.5 text-[11px] text-yellow-text">Pilot</span>}
+                        {c.symbol === 'EDC' && <span className="chip bg-yellow/10 !px-1.5 !py-0.5 text-[11px] text-yellow-text">{t('Demo')}</span>}
                       </span>
                       <span className="block truncate text-xs text-ink-3">{c.name}</span>
                     </span>
@@ -152,9 +155,9 @@ export default function MarketsPage() {
                   <ChangePill value={c.change} className="md:hidden" />
                 </td>
                 <td className="num hidden text-right text-sm text-ink-2 lg:table-cell">
-                  ${formatPrice(c.high)} / ${formatPrice(c.low)}
+                  {formatUsd(c.high, locale)} / {formatUsd(c.low, locale)}
                 </td>
-                <td className="num hidden text-right text-sm text-ink-2 md:table-cell">${formatCompact(c.volume)}</td>
+                <td className="num hidden text-right text-sm text-ink-2 md:table-cell">{formatCompact(c.volume, locale)} USD</td>
                 <td className="hidden rounded-r-lg pr-2 lg:table-cell">
                   <Sparkline seed={c.symbol} up={c.change >= 0} width={110} />
                 </td>
@@ -162,7 +165,7 @@ export default function MarketsPage() {
             ))}
           </tbody>
         </table>
-        {rows.length === 0 && <p className="py-16 text-center text-sm text-ink-3">No coins match your filters.</p>}
+        {rows.length === 0 && <p className="py-16 text-center text-sm text-ink-3">{t('No coins match your filters.')}</p>}
       </main>
       <Footer />
     </div>

@@ -1,3 +1,4 @@
+import { useLocale } from '../../state/locale';
 import { useEffect, useRef, useState } from 'react';
 import { Bell, ChevronRight, Copy, LogOut, Settings, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -21,6 +22,7 @@ function usePopover() {
 }
 
 export function NotificationsMenu() {
+  const { t } = useLocale();
   const { open, setOpen, ref } = usePopover();
   const [unread, setUnread] = useState(NOTIFICATIONS.length);
   return (
@@ -28,7 +30,7 @@ export function NotificationsMenu() {
       <button
         type="button"
         className="icon-btn relative w-10"
-        aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
+        aria-label={unread ? t('Notifications, {count} unread', { count: unread }) : t('Notifications')}
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
       >
@@ -38,9 +40,9 @@ export function NotificationsMenu() {
       {open && (
         <div className="fixed inset-x-4 top-[68px] z-50 animate-pop-in sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-[360px] rounded-xl border border-line bg-card shadow-pop">
           <div className="flex items-center justify-between px-4 py-3">
-            <h2 className="text-base font-semibold text-ink">Notifications</h2>
+            <h2 className="text-base font-semibold text-ink">{t('Notifications')}</h2>
             <button type="button" onClick={() => setUnread(0)} disabled={!unread} className="text-xs font-medium text-yellow-text disabled:text-ink-4">
-              Mark all as read
+              {t('Mark all as read')}
             </button>
           </div>
           <ul className="max-h-[360px] overflow-y-auto border-t border-line">
@@ -48,9 +50,9 @@ export function NotificationsMenu() {
               <li key={n.id} className="flex gap-3 border-b border-line px-4 py-3 last:border-0">
                 <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${i < unread ? 'bg-yellow' : 'bg-transparent'}`} />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-ink">{n.title}</p>
-                  <p className="mt-0.5 text-xs leading-5 text-ink-3">{n.text}</p>
-                  <p className="mt-1 text-xs text-ink-3">{n.ago}</p>
+                  <p className="text-sm font-medium text-ink">{t(n.title)}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-ink-3">{t(n.text)}</p>
+                  <p className="mt-1 text-xs text-ink-3">{t(n.ago)}</p>
                 </div>
               </li>
             ))}
@@ -62,6 +64,7 @@ export function NotificationsMenu() {
 }
 
 export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
+  const { t } = useLocale();
   const { open, setOpen, ref } = usePopover();
   const item = 'flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm text-ink transition-colors hover:bg-raised';
   return (
@@ -70,7 +73,7 @@ export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        aria-label="Account menu"
+        aria-label={t('Account menu')}
         className="flex h-8 w-8 items-center justify-center rounded-full bg-raised text-xs font-semibold text-yellow-text transition-colors hover:bg-line-strong"
       >
         AK
@@ -79,7 +82,7 @@ export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
         <div className="absolute right-0 top-12 z-50 w-[280px] animate-pop-in rounded-xl border border-line bg-card p-2 shadow-pop">
           <div className="px-3 pb-3 pt-2">
             <p className="text-base font-semibold text-ink">Ansar Kazbekov</p>
-            <p className="mt-1 flex items-center gap-1.5 text-xs text-ink-3">
+            <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-3">
               <span className="num">UID 210404</span>
               <button
                 type="button"
@@ -88,12 +91,12 @@ export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
                   setOpen(false);
                 }}
                 className="hover:text-yellow-text"
-                aria-label="Copy UID"
+                aria-label={t('Copy UID')}
               >
                 <Copy size={12} />
               </button>
               <span className="text-ink-4">·</span>
-              <span>Scholar Tier 2</span>
+              <span>{t('Scholar Tier 2')}</span>
             </p>
           </div>
           <div className="border-t border-line pt-2">
@@ -106,7 +109,7 @@ export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
               }}
             >
               <User size={18} className="text-ink-3" />
-              Account
+              {t('Account')}
               <ChevronRight size={16} className="ml-auto text-ink-4" />
             </button>
             <button
@@ -118,12 +121,12 @@ export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
               }}
             >
               <Settings size={18} className="text-ink-3" />
-              Settings
+              {t('Settings')}
               <ChevronRight size={16} className="ml-auto text-ink-4" />
             </button>
             <Link to="/" className={item}>
               <LogOut size={18} className="text-ink-3" />
-              Log Out
+              {t('Log Out')}
             </Link>
           </div>
         </div>

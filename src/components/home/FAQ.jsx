@@ -1,14 +1,16 @@
+import { useLocale } from '../../state/locale';
 import { useId, useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import { FAQ as ITEMS } from '../../data/content';
 
 export default function FAQ() {
+  const { t } = useLocale();
   const [open, setOpen] = useState(0);
   const baseId = useId();
 
   return (
     <section id="faq" className="page-x scroll-mt-16 py-8 lg:py-12">
-      <h2 className="section-title">Frequently Asked Questions</h2>
+      <h2 className="section-title">{t('Frequently Asked Questions')}</h2>
       <div className="mt-10 space-y-2">
         {ITEMS.map((item, i) => {
           const isOpen = open === i;
@@ -25,13 +27,13 @@ export default function FAQ() {
                   <span className="num flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-raised text-base font-semibold text-ink">
                     {i + 1}
                   </span>
-                  <span className="flex-1 text-base font-medium text-ink md:text-xl">{item.q}</span>
+                  <span className="flex-1 text-base font-medium text-ink md:text-xl">{t(item.q)}</span>
                   {isOpen ? <Minus size={24} className="shrink-0 text-ink" /> : <Plus size={24} className="shrink-0 text-ink" />}
                 </button>
               </h3>
               {isOpen && (
                 <div id={`${baseId}-${i}`} role="region" className="animate-fade-in px-4 pb-6 pl-[72px] md:pl-[88px] md:pr-16">
-                  <p className="text-sm leading-6 text-ink-3 md:text-base md:leading-7">{item.a}</p>
+                  <p className="text-sm leading-6 text-ink-3 md:text-base md:leading-7">{t(item.a)}</p>
                 </div>
               )}
             </div>

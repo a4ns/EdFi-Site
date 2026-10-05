@@ -23,6 +23,14 @@ describe('parseDemoAmount', () => {
 });
 
 describe('demo amount display and presets', () => {
+  it.each(['ru', 'kk'])('formats exact integer hundredths with a localized decimal in %s', (locale) => {
+    expect(formatDemoAmount(1, locale)).toBe('0,01');
+    expect(formatDemoAmount(-1, locale)).toBe('-0,01');
+    expect(formatDemoAmount(Number.MAX_SAFE_INTEGER, locale)).toBe('90\u00a0071\u00a0992\u00a0547\u00a0409,91');
+    expect(formatDemoAmount(-Number.MAX_SAFE_INTEGER, locale)).toBe('-90\u00a0071\u00a0992\u00a0547\u00a0409,91');
+    // Decimal input remains ungrouped and supports either decimal separator.
+    expect(parseDemoAmount(formatDemoAmount(44999, locale))).toBe(44999);
+  });
   it.each([
     [0, '0.00'], [1, '0.01'], [10, '0.10'], [101, '1.01'],
     [44999, '449.99'], [45000, '450.00'],

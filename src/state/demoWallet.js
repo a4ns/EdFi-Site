@@ -79,6 +79,7 @@ export function demoWalletReducer(state, action) {
   if (!isDemoAddress(action.address)) return reject(state, action, 'Enter a valid sample address');
   return record(state, action, {
     kind: 'withdraw', title: 'Demo withdrawal', sub: `Sample recipient ${shortAddress(action.address.trim())}`,
+    subKey: 'Sample recipient {address}', subParams: { address: shortAddress(action.address.trim()) },
     amountUnits: -action.amountUnits, status: 'processing',
   });
 }

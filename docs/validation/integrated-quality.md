@@ -2,6 +2,8 @@
 
 Validated locally on 5 October 2026. This report covers one combined patch for [PR #4](https://github.com/a4ns/EdFi-Site/pull/4), not a merge or deployment.
 
+> Historical snapshot: subsequent authorized publication of this integrated tree and the next localization layer are recorded in [localization validation](localization.md). The local results below remain unchanged.
+
 ## Exact base and scope
 
 - Repository: `a4ns/EdFi-Site`

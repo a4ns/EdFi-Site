@@ -1,3 +1,5 @@
+import { localeTag } from './locale';
+
 // The prototype supports two decimal places. These units are not BEP-20 base units.
 export const DEMO_UNITS_PER_EDC = 100;
 
@@ -19,9 +21,14 @@ export function demoAmountPortion(units, percent) {
   return Number((BigInt(units) * BigInt(percent)) / 100n);
 }
 
-export function formatDemoAmount(units) {
+export function formatDemoAmount(units, locale = 'en') {
   const [whole, fraction] = demoAmountInput(Math.abs(units)).split('.');
-  return `${units < 0 ? '-' : ''}${Number(whole).toLocaleString('en-US')}.${fraction}`;
+  const formatter = new Intl.NumberFormat(localeTag(locale), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // Never convert integer hundredths to a floating-point amount: even the
+  // largest safe balance must retain its exact last two digits in every locale.
+  const parts = formatter.formatToParts(units < 0 ? -BigInt(whole) : BigInt(whole));
+  if (units < 0 && whole === '0') parts.unshift({ type: 'minusSign', value: '-' });
+  return parts.map((part) => part.type === 'fraction' ? fraction : part.value).join('');
 }
 
 export const isDemoAddress = (address) => typeof address === 'string' && /^0x[0-9a-fA-F]{40}$/.test(address.trim());

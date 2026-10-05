@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import qrcode from 'qrcode-generator';
+import { useLocale } from '../state/locale';
 import { LogoMark } from './Logo';
 
 // Real, scannable QR code rendered as a single SVG path, with the EdFi mark in the centre.
-export default function QRCode({ value, size = 120, className = '' }) {
+export default function QRCode({ value, size = 120, className = '', label }) {
+  const { t } = useLocale();
   const { path, count } = useMemo(() => {
     const qr = qrcode(0, 'H');
     qr.addData(value);
@@ -21,7 +23,7 @@ export default function QRCode({ value, size = 120, className = '' }) {
   const logo = size * 0.24;
   return (
     <div className={`relative inline-flex rounded-lg bg-white p-2 ${className}`} style={{ width: size + 16, height: size + 16 }}>
-      <svg width={size} height={size} viewBox={`0 0 ${count} ${count}`} shapeRendering="crispEdges" role="img" aria-label={`QR code for ${value}`}>
+      <svg width={size} height={size} viewBox={`0 0 ${count} ${count}`} shapeRendering="crispEdges" role="img" aria-label={label || t('QR code for {value}', { value })}>
         <path d={path} fill="#0B0E11" />
       </svg>
       <span

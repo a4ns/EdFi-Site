@@ -1,3 +1,5 @@
+import { formatAmount } from '../../lib/format';
+import { useLocale } from '../../state/locale';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Monitor, Smartphone } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
@@ -13,12 +15,13 @@ function AppleGlyph() {
 }
 
 const PLATFORMS = [
-  ['iOS', <AppleGlyph key="ios" />],
-  ['Android', <Smartphone key="and" size={20} />],
+  ['iOS web demo', <AppleGlyph key="ios" />],
+  ['Android web demo', <Smartphone key="and" size={20} />],
   ['Web App', <Monitor key="web" size={20} />],
 ];
 
 export default function AppDownload() {
+  const { locale, t } = useLocale();
   return (
     <section id="download" className="page-x scroll-mt-16 py-8 lg:py-12">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
@@ -26,44 +29,45 @@ export default function AppDownload() {
           <div className="relative mx-auto w-fit">
             <PhoneMockup />
             <div className="absolute -left-[126px] top-[170px] hidden w-[152px] rounded-xl border border-line bg-card p-3 shadow-pop lg:block" aria-hidden="true">
-              <p className="text-xs text-ink-3">Reward received</p>
-              <p className="num mt-1 text-lg font-semibold text-up">+50.00 EDC</p>
-              <p className="mt-0.5 text-xs text-ink-3">Macroeconomics · A</p>
+              <p className="text-xs text-ink-3">{t('Sample reward')}</p>
+              <p className="num mt-1 text-lg font-semibold text-up">+{formatAmount(50, 2, locale)} EDC</p>
+              <p className="mt-0.5 text-xs text-ink-3">{t('Macroeconomics · A')}</p>
             </div>
             <div className="absolute -right-[126px] top-[420px] hidden w-[152px] rounded-xl border border-line bg-card p-3 shadow-pop lg:block" aria-hidden="true">
-              <p className="flex items-center justify-between text-xs text-ink-3">
-                Campus Canteen
-                <span className="text-up">Paid</span>
+              <p className="flex flex-wrap items-center justify-between gap-1 text-xs text-ink-3">
+                {t('Campus Canteen')}
+                <span className="text-up">{t('Demo payment')}</span>
               </p>
-              <p className="num mt-1 text-lg font-semibold text-ink">-15.00 EDC</p>
-              <p className="mt-0.5 text-xs text-ink-3">Fee 0 · settled 3s</p>
+              <p className="num mt-1 text-lg font-semibold text-ink">−{formatAmount(15, 2, locale)} EDC</p>
+              <p className="mt-0.5 text-xs text-ink-3">{t('Simulation only')}</p>
             </div>
           </div>
         </div>
         <div className="order-1 lg:order-2">
           <h2 className="section-title">
-            Earn on the go.
+            {t('Try EdFi on the go.')}
             <br />
-            Anywhere, anytime.
+            {t('A web demo for any device.')}
           </h2>
+          <p className="mt-4 text-sm leading-6 text-ink-3">{t('Illustrative screens with sample data. Native iOS and Android apps are planned.')}</p>
           <div className="mt-10 hidden w-full max-w-[520px] items-center gap-6 rounded-xl border border-line p-6 sm:flex">
-            <QRCode value={appUrl()} size={112} />
+            <QRCode value={appUrl()} size={112} label={t('Scan to open the web demo')} />
             <div>
-              <p className="text-sm text-ink-3">Scan to Download App</p>
-              <p className="mt-1 text-xl font-semibold text-ink">iOS and Android</p>
+              <p className="text-sm text-ink-3">{t('Scan to open the web demo')}</p>
+              <p className="mt-1 text-xl font-semibold text-ink">{t('Works in your browser')}</p>
             </div>
           </div>
-          <Link to="/demo" className="btn btn-primary btn-lg mt-8 w-full sm:hidden">Open the Web App</Link>
+          <Link to="/demo" className="btn btn-primary btn-lg mt-8 w-full sm:hidden">{t('Open the web demo')}</Link>
           <div className="mt-6 flex flex-wrap gap-3">
             {PLATFORMS.map(([label, icon]) => (
               <Link key={label} to="/demo" className="btn btn-secondary btn-md gap-2 px-4">
                 {icon}
-                {label}
+                {t(label)}
               </Link>
             ))}
           </div>
           <Link to="/demo" className="link-more mt-6 hidden text-ink sm:inline-flex">
-            More Download Options
+            {t('Explore the web demo')}
             <ChevronRight size={16} />
           </Link>
         </div>

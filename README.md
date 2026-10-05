@@ -23,7 +23,7 @@ Students put years of effort into results that end up as lines in a transcript. 
 - **Spend.** Scan to pay at the canteen, dormitory office or merch store, with zero fees and settlement in seconds.
 - **Withdraw.** EDC moves to any BNB Chain wallet, where it can be swapped or staked.
 
-The first campus is Kozybayev University in Petropavlovsk, Kazakhstan (6,000 students).
+The planned first campus is Kozybayev University in Petropavlovsk, Kazakhstan (6,000 students). This is a concept and web prototype; the pilot is not live.
 
 ## What's in this repository
 
@@ -72,6 +72,7 @@ Status: tested locally with an adversarial regression suite and a CI-enforced 10
 - **Live market data.** Prices from Binance's public API with flash-on-tick updates, automatic back-off and an offline snapshot fallback.
 - **Simulated wallet flows.** Claim sample rewards, Scan Pay (simulated viewfinder, merchant, amount and local demo receipt), a non-wallet deposit QR preview, and demo withdrawal with address validation and simulated processing/completion. All wallet state stays in memory and resets when leaving the dashboard or reloading.
 - **Account shell.** Two-step sign-up and log-in, notifications, account and settings panels, referral card.
+- **English, Russian and Kazakh.** Switch languages in the header, mobile menu, footer or settings. Translated demo notices, forms, receipts and navigation share consistent terminology; numbers, dates, percentages and plural forms use `Intl`.
 - **Responsive.** From 390px phones to wide desktops, with a mobile drawer, bottom tab bar and bottom sheets.
 - **Accessible.** Keyboard focus styles, focus trap and restore in dialogs, reduced-motion support.
 
@@ -105,9 +106,23 @@ npm run coverage   # project coverage report + 100% line-coverage gate
 - The full session ledger drives earnings; only the eight most recent entries are displayed.
 - “Demo earned today” uses the device's local calendar day and refreshes at midnight or on returning to the tab. Spending does not change earned rewards.
 - The chart is illustrative; it is not a recorded on-chain balance history. EDC valuations and the fixed KZT conversion are also illustrative.
+- **KZT conversion uses a fixed demo assumption of 1 USD = 520 KZT.** It is not a live exchange rate, a redemption promise or financial guidance. No exchange-rate service is called.
 - Root `npm test` covers exact balances, validation, replay protection, daily earnings, cancellation and claim/pay/withdraw UI flows.
 
-See [integrated validation](docs/validation/integrated-quality.md) for executed checks and remaining limits. Actual browser checks and CI for a published commit are required before merge; unit tests alone do not establish deployment readiness.
+See [localization validation](docs/validation/localization.md) for the latest local checks, the [earlier integrated validation](docs/validation/integrated-quality.md) for its baseline, and the exact commit's CI for remote results. Actual browser checks and CI for the localization commit are required before merge; unit tests alone do not establish deployment readiness.
+
+## Localization
+
+English is the initial default. The chosen `en`, `ru` or `kk` language is saved under `edfi.locale` when browser storage is available. A blocked or invalid storage value safely falls back to English; switching still works in memory. Language and theme preferences may be persisted; wallet balances and form data are not. Changing language does not reset wallet balances, ledger entries, selected tasks, open forms or receipts. Leaving/reloading the dashboard still resets its demo session.
+
+- `src/i18n/common.js` holds shared terminology; domain dictionaries cover the landing page, dashboard, dialogs, navigation and markets
+- English source messages are stable keys; every entry supplies Russian and Kazakh. Use named placeholders instead of concatenating translated sentences
+- Plural entries include the categories provided by `Intl.PluralRules` for each language
+- Data and reducer records retain source keys and parameters; translation happens when rendering
+- Locale-aware display helpers preserve every integer demo hundredth. Input remains ungrouped and accepts a dot or comma decimal separator
+- Dictionary tests reject missing translations, mismatched placeholders, duplicate shared keys and unlocalized UI literals
+
+The native mobile apps, live wallet connection and on-chain settlement remain future work. Download-style links open the web demo.
 
 ## Project structure
 
@@ -119,7 +134,8 @@ src/
 │   ├── dashboard/      Wallet widgets and dialogs: BalanceCard, TasksCard, PayModal…
 │   └── …               Header, Footer, shared UI (CoinIcon, QRCode, Sparkline…)
 ├── data/content.js     Site copy: navigation, reward rates, roadmap, FAQ
-├── state/              Market/auth providers, demo reducer and local-day refresh
+├── i18n/               Shared and domain EN/RU/KK messages, integrity tests
+├── state/              Locale/market/auth providers, demo reducer and local-day refresh
 ├── lib/                Exact demo amounts, formatting, theme and link helpers
 └── index.css           Design tokens (dark and light themes) and component classes
 contracts/              Solidity contracts, tests and deploy script (Hardhat)

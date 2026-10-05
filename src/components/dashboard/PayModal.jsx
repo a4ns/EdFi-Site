@@ -1,3 +1,4 @@
+import { useLocale } from '../../state/locale';
 import { useEffect, useState } from 'react';
 import { BedDouble, Check, Printer, Shirt, Utensils, Zap } from 'lucide-react';
 import Modal from './Modal';
@@ -11,6 +12,7 @@ import DemoNotice from './DemoNotice';
 const ICONS = { Utensils, BedDouble, Shirt, Printer };
 
 export default function PayModal({ balanceUnits, transaction, error, onClose, onPay, onViewHistory }) {
+  const { locale, t } = useLocale();
   const [merchant, setMerchant] = useState(MERCHANTS[0].id);
   const [amount, setAmount] = useState('15.00');
   const [scanning, setScanning] = useState(true);
@@ -31,7 +33,7 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
 
   if (transaction) {
     return (
-      <Modal title="Scan Pay" onClose={onClose}>
+      <Modal title={t('Scan Pay')} onClose={onClose}>
         <DemoNotice className="mb-5" />
         <div className="flex flex-col items-center text-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-up/15">
@@ -39,21 +41,21 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
               <Check size={28} strokeWidth={2.5} />
             </span>
           </span>
-          <p className="mt-4 text-base font-medium text-ink">Demo payment complete</p>
-          <p className="num mt-1 text-[28px] font-semibold leading-9 text-ink">-{formatDemoAmount(-transaction.amountUnits)} EDC</p>
+          <p className="mt-4 text-base font-medium text-ink">{t('Demo payment complete')}</p>
+          <p className="num mt-1 text-[28px] font-semibold leading-9 text-ink">-{formatDemoAmount(-transaction.amountUnits, locale)} EDC</p>
         </div>
         <div className="mt-6 space-y-3 rounded-lg bg-page p-4">
-          <SummaryRow label="Merchant">{transaction.title}</SummaryRow>
-          <SummaryRow label="Fee">0.00 EDC</SummaryRow>
-          <SummaryRow label="Time">{formatDateTime(new Date(transaction.at))}</SummaryRow>
-          <SummaryRow label="Demo receipt">{transaction.id}</SummaryRow>
-          <p className="text-xs text-ink-3">Local receipt only. No blockchain transaction exists.</p>
+          <SummaryRow label={t('Merchant')}>{t(transaction.title)}</SummaryRow>
+          <SummaryRow label={t('Fee')}>{formatDemoAmount(0, locale)} EDC</SummaryRow>
+          <SummaryRow label={t('Time')}>{formatDateTime(new Date(transaction.at), locale)}</SummaryRow>
+          <SummaryRow label={t('Demo receipt')}>{transaction.id}</SummaryRow>
+          <p className="text-xs text-ink-3">{t('Local receipt only. No blockchain transaction exists.')}</p>
         </div>
         <button type="button" className="btn btn-primary btn-lg mt-6 w-full" onClick={onClose}>
-          Done
+          {t('Done')}
         </button>
         <button type="button" className="mt-3 w-full text-center text-sm font-medium text-ink-3 hover:text-ink" onClick={onViewHistory}>
-          View in History
+          {t('View in History')}
         </button>
       </Modal>
     );
@@ -61,8 +63,8 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
 
   if (scanning) {
     return (
-      <Modal title="Scan Pay" onClose={onClose}>
-        <p className="text-center text-sm text-ink-3">Preview a simulated merchant scan</p>
+      <Modal title={t('Scan Pay')} onClose={onClose}>
+        <p className="text-center text-sm text-ink-3">{t('Preview a simulated merchant scan')}</p>
         <div className="relative mx-auto mt-5 flex h-[260px] w-full max-w-[300px] items-center justify-center overflow-hidden rounded-xl bg-deep">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,rgba(0,0,0,0.55)_100%)]" />
           <div className="relative h-[190px] w-[190px]">
@@ -74,17 +76,17 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
         </div>
         <p className="mt-3 flex items-center justify-center gap-1 text-xs text-ink-3">
           <Zap size={12} />
-          Demo only · No camera access is used
+          {t('Demo only · No camera access is used')}
         </p>
         <button type="button" className="btn btn-secondary btn-lg mt-6 w-full" onClick={() => setScanning(false)}>
-          Select merchant instead
+          {t('Select merchant instead')}
         </button>
       </Modal>
     );
   }
 
   return (
-    <Modal title="Scan Pay" onClose={onClose}>
+    <Modal title={t('Scan Pay')} onClose={onClose}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -93,8 +95,8 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
         }}
       >
         <DemoNotice className="mb-5" />
-        <p className="text-sm text-ink-3">Demo merchant</p>
-        <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Merchant">
+        <p className="text-sm text-ink-3">{t('Demo merchant')}</p>
+        <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label={t('Merchant')}>
           {MERCHANTS.map((x) => {
             const Ico = ICONS[x.icon];
             const sel = x.id === merchant;
@@ -109,32 +111,32 @@ export default function PayModal({ balanceUnits, transaction, error, onClose, on
                   sel ? 'border-yellow bg-yellow/5' : 'border-line-strong hover:border-ink-3'
                 }`}
               >
-                <Ico size={18} className={sel ? 'text-yellow-text' : 'text-ink-3'} />
-                <span className="truncate text-sm font-medium text-ink">{x.name}</span>
+                <Ico size={18} className={`shrink-0 ${sel ? 'text-yellow-text' : 'text-ink-3'}`} />
+                <span className="min-w-0 break-words text-sm font-medium leading-5 text-ink">{t(x.name)}</span>
               </button>
             );
           })}
         </div>
 
         <label htmlFor="pay-amount" className="mt-6 block text-sm text-ink-3">
-          Amount
+          {t('Amount')}
         </label>
         <div className="mt-2">
           <AmountInput id="pay-amount" value={amount} onChange={setAmount} maxUnits={balanceUnits} invalid={over} />
         </div>
-        {over && <p className="mt-2 text-xs text-down">Insufficient balance</p>}
+        {over && <p className="mt-2 text-xs text-down">{t('Insufficient balance')}</p>}
 
         <div className="mt-6 space-y-3 rounded-lg bg-page p-4">
-          <SummaryRow label="Available">{formatDemoAmount(balanceUnits)} EDC</SummaryRow>
-          <SummaryRow label="Network fee">0.00 EDC</SummaryRow>
-          <SummaryRow label="You pay" strong>
-            {formatDemoAmount(units ?? 0)} EDC
+          <SummaryRow label={t('Available')}>{formatDemoAmount(balanceUnits, locale)} EDC</SummaryRow>
+          <SummaryRow label={t('Network fee')}>{formatDemoAmount(0, locale)} EDC</SummaryRow>
+          <SummaryRow label={t('You pay')} strong>
+            {formatDemoAmount(units ?? 0, locale)} EDC
           </SummaryRow>
         </div>
 
-        {error && <p role="alert" className="mt-3 text-sm text-down">{error}</p>}
+        {error && <p role="alert" className="mt-3 text-sm text-down">{t(error)}</p>}
         <button type="submit" className="btn btn-primary btn-lg sticky bottom-0 mt-6 w-full" disabled={!valid}>
-          Simulate payment
+          {t('Simulate payment')}
         </button>
       </form>
     </Modal>

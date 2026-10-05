@@ -15,37 +15,39 @@ import DepositModal from '../components/dashboard/DepositModal';
 import WithdrawModal from '../components/dashboard/WithdrawModal';
 import Toast from '../components/dashboard/Toast';
 import DemoNotice from '../components/dashboard/DemoNotice';
-import { formatDemoAmount } from '../lib/demoAmount';
 import { createDemoWallet, demoWalletReducer, DEMO_SETTLEMENT_MS, RECENT_TRANSACTION_LIMIT, todayEarnedUnits } from '../state/demoWallet';
 import { useLocalDay } from '../state/useLocalDay';
+import { useLocale } from '../state/locale';
+import { formatAmount, formatInt, formatPercent } from '../lib/format';
 
 function ProfileRow({ onCopy }) {
+  const { locale, t } = useLocale();
   const stats = [
-    ['UID', <span key="uid" className="inline-flex items-center gap-1">210404 <button type="button" onClick={onCopy} className="text-ink-3 hover:text-yellow-text" aria-label="Copy UID"><Copy size={14} /></button></span>],
-    ['Earn Rate', '1.4x'],
-    ['Attendance', '98%'],
-    ['GPA', '3.72'],
+    ['UID', <span key="uid" className="inline-flex items-center gap-1">210404 <button type="button" onClick={onCopy} className="text-ink-3 hover:text-yellow-text" aria-label={t('Copy UID')}><Copy size={14} /></button></span>],
+    ['Earn Rate', `${formatAmount(1.4, 1, locale)}×`],
+    ['Attendance', formatPercent(98, 0, locale)],
+    ['GPA', formatAmount(3.72, 2, locale)],
   ];
   return (
-    <section className="flex flex-col gap-5 md:flex-row md:items-center md:gap-6">
+    <section className="flex flex-col gap-5 xl:flex-row xl:items-center xl:gap-6">
       <div className="flex items-center gap-4">
         <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-raised text-lg font-semibold text-yellow-text">AK</span>
         <div>
           <h1 className="text-xl font-semibold text-ink md:text-2xl">Ansar Kazbekov</h1>
-          <p className="text-sm text-ink-3">Kozybayev University</p>
+          <p className="text-sm text-ink-3">{t('Kozybayev University')}</p>
           <div className="mt-1.5 flex flex-wrap gap-2">
-            <span className="chip bg-yellow/10 text-yellow-text">Scholar Tier 2</span>
+            <span className="chip bg-yellow/10 text-yellow-text">{t('Scholar Tier {level}', { level: formatInt(2, locale) })}</span>
             <span className="chip bg-up/10 text-up">
               <BadgeCheck size={12} />
-              Verified
+              {t('Verified')}
             </span>
           </div>
         </div>
       </div>
-      <dl className="grid grid-cols-4 gap-x-4 md:ml-auto md:flex md:gap-10">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4 xl:ml-auto xl:flex xl:gap-10">
         {stats.map(([k, v]) => (
           <div key={k} className="min-w-0">
-            <dt className="text-xs text-ink-3">{k}</dt>
+            <dt className="text-xs text-ink-3">{t(k)}</dt>
             <dd className="num mt-1 truncate text-sm font-medium text-ink">{v}</dd>
           </div>
         ))}
@@ -55,6 +57,7 @@ function ProfileRow({ onCopy }) {
 }
 
 function MobileTabBar({ onSelect }) {
+  const { t } = useLocale();
   const items = [
     ['Home', Home, 'top'],
     ['Earn', GraduationCap, 'tasks'],
@@ -63,7 +66,7 @@ function MobileTabBar({ onSelect }) {
     ['Assets', Wallet, 'balance'],
   ];
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-line bg-page pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="App">
+    <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-line bg-page pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label={t('App')}>
       {items.map(([label, Ico, target], i) => (
         <button
           key={label}
@@ -78,7 +81,7 @@ function MobileTabBar({ onSelect }) {
           ) : (
             <Ico size={20} className={i === 0 ? 'text-yellow-text' : ''} />
           )}
-          {label}
+          {t(label)}
         </button>
       ))}
     </nav>
@@ -86,6 +89,7 @@ function MobileTabBar({ onSelect }) {
 }
 
 export default function DashboardApp() {
+  const { t } = useLocale();
   const [wallet, dispatch] = useReducer(demoWalletReducer, undefined, () => createDemoWallet(Date.now()));
   const { balanceUnits, ledger, tasks } = wallet;
   const day = useLocalDay();
@@ -96,11 +100,11 @@ export default function DashboardApp() {
   const { hash } = useLocation();
 
   useEffect(() => {
-    document.title = 'Dashboard | EdFi';
+    document.title = t('Dashboard | EdFi');
     return () => {
-      document.title = 'EdFi | Learn-to-Earn on BNB Chain';
+      document.title = t('EdFi | Learn-to-Earn on BNB Chain');
     };
-  }, []);
+  }, [t]);
 
   // Deep links such as /demo#tasks from the marketing site.
   useEffect(() => {
@@ -116,7 +120,7 @@ export default function DashboardApp() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  const showToast = (text) => setToast({ id: Date.now(), text });
+  const showToast = (text, amountUnits) => setToast({ id: Date.now(), text, amountUnits });
   const closeModal = useCallback(() => setModal(null), []);
   const openModal = (name) => {
     setToast(null);
@@ -143,7 +147,7 @@ export default function DashboardApp() {
   const claim = (task) => {
     if (task.status !== 'claimable') return;
     dispatch({ type: 'claim', taskId: task.id, requestId: `demo-reward-${task.id}`, at: Date.now() });
-    showToast(`${formatDemoAmount(task.rewardUnits)} demo EDC added to your sample balance`);
+    showToast('{amount} demo EDC added to your sample balance', task.rewardUnits);
   };
 
   const advance = (task) => {

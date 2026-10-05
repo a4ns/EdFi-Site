@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import { ChevronDown, Github, Globe, Instagram, Linkedin, Moon, Sun, Youtube } from 'lucide-react';
-import { applyTheme, currentTheme } from '../lib/theme';
+import { applyTheme } from '../lib/theme';
+import { useTheme } from '../state/useTheme';
 import Logo from './Logo';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLocale } from '../state/locale';
 import { FOOTER_COLUMNS } from '../data/content';
 
 function XIcon() {
@@ -40,25 +42,23 @@ const SOCIAL = [
 ];
 
 function FooterTheme() {
-  const [theme, setTheme] = useState(currentTheme);
+  const { t } = useLocale();
+  const theme = useTheme();
   return (
     <div className="flex items-center gap-3 text-sm text-ink-2">
-      Theme
+      {t('Theme')}
       <div className="flex rounded-lg bg-card p-1">
         {[
           ['dark', Moon],
           ['light', Sun],
-        ].map(([t, Ico]) => (
+        ].map(([themeId, Ico]) => (
           <button
-            key={t}
+            key={themeId}
             type="button"
-            aria-pressed={theme === t}
-            aria-label={`${t} theme`}
-            onClick={() => {
-              applyTheme(t);
-              setTheme(t);
-            }}
-            className={`flex h-7 w-9 items-center justify-center rounded-md transition-colors ${theme === t ? 'bg-raised text-ink' : 'text-ink-3'}`}
+            aria-pressed={theme === themeId}
+            aria-label={t(themeId === 'dark' ? 'Dark theme' : 'Light theme')}
+            onClick={() => applyTheme(themeId)}
+            className={`flex h-7 w-9 items-center justify-center rounded-md transition-colors ${theme === themeId ? 'bg-raised text-ink' : 'text-ink-3'}`}
           >
             <Ico size={14} />
           </button>
@@ -69,22 +69,26 @@ function FooterTheme() {
 }
 
 function FooterLink({ label, href }) {
+  const { t } = useLocale();
+  const text = t(label === 'Download App' ? 'Open web demo' : label);
+  const destination = label === 'Download App' ? '/demo' : href;
   const cls = 'text-sm text-ink-3 transition-colors hover:text-ink';
-  return href.startsWith('/') ? (
-    <Link to={href} className={cls}>{label}</Link>
+  return destination.startsWith('/') ? (
+    <Link to={destination} className={cls}>{text}</Link>
   ) : (
-    <a href={href} className={cls}>{label}</a>
+    <a href={destination} className={cls}>{text}</a>
   );
 }
 
 export default function Footer() {
+  const { t } = useLocale();
   return (
     <footer className="border-t border-line bg-page">
       <div className="page-x pb-10 pt-12 lg:pt-16">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-[1.1fr_repeat(5,1fr)]">
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Logo />
-            <h3 className="mt-8 text-base font-medium text-ink">Community</h3>
+            <h3 className="mt-8 text-base font-medium text-ink">{t('Community')}</h3>
             <div className="mt-4 grid max-w-[176px] grid-cols-4 gap-4">
               {SOCIAL.map(([label, icon]) => (
                 <a key={label} href="#" aria-label={label} className="text-ink-3 transition-colors hover:text-yellow-text">
@@ -95,7 +99,7 @@ export default function Footer() {
           </div>
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.title} className="hidden md:block">
-              <h3 className="text-base font-medium text-ink">{col.title}</h3>
+              <h3 className="text-base font-medium text-ink">{t(col.title)}</h3>
               <ul className="mt-4 space-y-3">
                 {col.links.map(([label, href]) => (
                   <li key={label}>
@@ -109,7 +113,7 @@ export default function Footer() {
             {FOOTER_COLUMNS.map((col) => (
               <details key={col.title} className="group border-b border-line">
                 <summary className="flex h-14 cursor-pointer list-none items-center justify-between text-base font-medium text-ink [&::-webkit-details-marker]:hidden">
-                  {col.title}
+                  {t(col.title)}
                   <ChevronDown size={18} className="text-ink-3 transition-transform group-open:rotate-180" />
                 </summary>
                 <ul className="space-y-3 pb-4">
@@ -126,19 +130,19 @@ export default function Footer() {
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4 md:mt-12 md:border-t md:border-line md:pt-6">
           <div className="flex items-center gap-4 text-sm text-ink-2">
-            <span className="flex items-center gap-1.5">
-              <Globe size={16} className="text-ink-3" />
-              English
-            </span>
+            <Globe size={16} className="shrink-0 text-ink-3" />
+            <LanguageSwitcher />
             <span className="h-4 w-px bg-line-strong" />
-            <span>USD</span>
+            <span className="num">USD · KZT</span>
           </div>
           <FooterTheme />
         </div>
 
+        <p className="mt-3 text-xs leading-5 text-ink-3">{t('Market prices use USD. Demo KZT estimates use a fixed rate of 1 USD = 520 KZT, not a live exchange rate.')}</p>
+
         <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6 text-xs text-ink-3 md:flex-row md:items-center md:justify-between">
-          <p>EdFi © {new Date().getFullYear()} · Created by Ansar Kazbekov · 1st place, Crypto Ideathon Kazakhstan by Binance</p>
-          <p className="text-ink-3">Independent concept project. Not affiliated with or endorsed by Binance.</p>
+          <p>{t('EdFi © {year} · Created by Ansar Kazbekov · 1st place, Crypto Ideathon Kazakhstan by Binance', { year: String(new Date().getFullYear()) })}</p>
+          <p className="text-ink-3">{t('Independent concept project. Not affiliated with or endorsed by Binance.')}</p>
         </div>
       </div>
     </footer>

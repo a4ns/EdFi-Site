@@ -1,5 +1,6 @@
 export const DEMO_DEPOSIT_PAYLOAD = 'EDFI-DEMO-ONLY:DO-NOT-SEND-FUNDS';
 export const DEMO_COPY = {
+  account: 'Demo profile and settings only. No wallet is connected. Security and notification settings are illustrative.',
   overview: 'Demo only. Balances and activity are sample data. No wallet is connected and no funds are sent. Changes reset when you leave or reload.',
   operation: 'Demo only. This changes your sample balance; no funds are sent on-chain.',
   deposit: 'Demo only. Do not send funds. This prototype has no deposit address and cannot receive or credit deposits.',

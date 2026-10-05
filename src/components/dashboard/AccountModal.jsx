@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { BadgeCheck, ShieldCheck } from 'lucide-react';
 import Modal from './Modal';
-import { applyTheme, currentTheme } from '../../lib/theme';
+import DemoNotice from './DemoNotice';
+import { applyTheme } from '../../lib/theme';
+import { useTheme } from '../../state/useTheme';
+import { formatAmount, formatInt, KZT_PER_USD } from '../../lib/format';
+import { useLocale } from '../../state/locale';
 
 function Row({ label, children }) {
   return (
     <div className="flex min-h-12 items-center justify-between gap-4 border-b border-line py-3 last:border-0">
-      <span className="text-sm text-ink-3">{label}</span>
-      <span className="text-right text-sm text-ink">{children}</span>
+      <span className="min-w-0 text-sm text-ink-3">{label}</span>
+      <span className="min-w-0 text-right text-sm text-ink">{children}</span>
     </div>
   );
 }
@@ -20,7 +24,7 @@ function Toggle({ on, onChange, label }) {
       aria-checked={on}
       aria-label={label}
       onClick={() => onChange(!on)}
-      className={`relative h-6 w-10 rounded-full transition-colors ${on ? 'bg-yellow' : 'bg-line-strong'}`}
+      className={`relative h-6 w-10 shrink-0 rounded-full transition-colors ${on ? 'bg-yellow' : 'bg-line-strong'}`}
     >
       <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${on ? 'left-[18px]' : 'left-0.5'}`} />
     </button>
@@ -28,68 +32,81 @@ function Toggle({ on, onChange, label }) {
 }
 
 export default function AccountModal({ mode, onClose, onLogout }) {
-  const [theme, setTheme] = useState(currentTheme);
+  const { locale, setLocale, t } = useLocale();
+  const theme = useTheme();
   const [push, setPush] = useState(true);
   const [email, setEmail] = useState(true);
 
   if (mode === 'account') {
     return (
-      <Modal title="Account" onClose={onClose}>
+      <Modal title={t('Account')} onClose={onClose}>
+        <DemoNotice kind="account" className="mb-5" />
         <div className="flex items-center gap-4">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-raised text-lg font-semibold text-yellow-text">AK</span>
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-raised text-lg font-semibold text-yellow-text">AK</span>
           <div>
             <p className="text-base font-semibold text-ink">Ansar Kazbekov</p>
             <span className="chip mt-1.5 bg-up/10 text-up">
               <BadgeCheck size={12} />
-              Verified
+              {t('Sample profile')}
             </span>
           </div>
         </div>
         <div className="mt-4">
           <Row label="UID"><span className="num">210404</span></Row>
-          <Row label="University">Kozybayev University</Row>
-          <Row label="Tier">Scholar Tier 2</Row>
-          <Row label="Earn rate"><span className="num">1.4x</span></Row>
-          <Row label="Wallet"><span className="num">0x71C4…9A24</span></Row>
+          <Row label={t('University')}>{t('Kozybayev University')}</Row>
+          <Row label={t('Tier')}>{t('Scholar Tier 2')}</Row>
+          <Row label={t('Earn rate')}><span className="num">{t('{rate}x', { rate: formatAmount(1.4, 1, locale) })}</span></Row>
+          <Row label={t('Wallet')}>{t('Not connected')}</Row>
         </div>
         <button type="button" className="btn btn-secondary btn-lg mt-6 w-full" onClick={onLogout}>
-          Log Out
+          {t('Log Out')}
         </button>
       </Modal>
     );
   }
 
   return (
-    <Modal title="Settings" onClose={onClose}>
-      <Row label="Theme">
-        <span className="flex rounded-lg bg-page p-1">
-          {['dark', 'light'].map((t) => (
+    <Modal title={t('Settings')} onClose={onClose}>
+      <DemoNotice kind="account" className="mb-5" />
+      <Row label={t('Language')}>
+        <select
+          value={locale}
+          aria-label={t('Language')}
+          className="input h-10 max-w-full bg-page px-3 text-sm text-ink"
+          onChange={(event) => setLocale(event.target.value)}
+        >
+          <option value="en" lang="en">English</option>
+          <option value="ru" lang="ru">Русский</option>
+          <option value="kk" lang="kk">Қазақша</option>
+        </select>
+      </Row>
+      <Row label={t('Theme')}>
+        <span className="flex flex-wrap justify-end rounded-lg bg-page p-1">
+          {['dark', 'light'].map((value) => (
             <button
-              key={t}
+              key={value}
               type="button"
-              aria-pressed={theme === t}
-              onClick={() => {
-                applyTheme(t);
-                setTheme(t);
-              }}
-              className={`h-7 rounded-md px-3 text-xs font-medium capitalize transition-colors ${theme === t ? 'bg-raised text-ink' : 'text-ink-3'}`}
+              aria-pressed={theme === value}
+              onClick={() => applyTheme(value)}
+              className={`min-h-7 rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors ${theme === value ? 'bg-raised text-ink' : 'text-ink-3'}`}
             >
-              {t}
+              {t(value === 'dark' ? 'Dark' : 'Light')}
             </button>
           ))}
         </span>
       </Row>
-      <Row label="Push notifications"><Toggle on={push} onChange={setPush} label="Push notifications" /></Row>
-      <Row label="Email notifications"><Toggle on={email} onChange={setEmail} label="Email notifications" /></Row>
-      <Row label="Currency">USD - $</Row>
-      <Row label="Two-factor authentication">
+      <Row label={t('Push notifications')}><Toggle on={push} onChange={setPush} label={t('Push notifications')} /></Row>
+      <Row label={t('Email notifications')}><Toggle on={email} onChange={setEmail} label={t('Email notifications')} /></Row>
+      <Row label={t('Currency')}>{t('USD + demo KZT')}</Row>
+      <p className="num mt-3 text-xs leading-5 text-ink-3">{t('Demo conversion: 1 USD = {rate} KZT. Fixed assumption, not a live exchange rate.', { rate: formatInt(KZT_PER_USD, locale) })}</p>
+      <Row label={t('Two-factor authentication')}>
         <span className="inline-flex items-center gap-1.5 text-up">
-          <ShieldCheck size={16} />
-          Enabled
+          <ShieldCheck size={16} className="shrink-0" />
+          {t('Sample: enabled')}
         </span>
       </Row>
       <button type="button" className="btn btn-primary btn-lg mt-6 w-full" onClick={onClose}>
-        Done
+        {t('Done')}
       </button>
     </Modal>
   );

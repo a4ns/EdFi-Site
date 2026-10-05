@@ -47,7 +47,7 @@ React 19, Vite 7, Tailwind CSS 3 (design tokens as CSS variables), React Router 
 
 ```
 src/main.jsx                 Fonts + global CSS + <App/>
-src/App.jsx                  Providers (MarketsProvider, BrowserRouter, AuthProvider) and routes
+src/App.jsx                  Providers (LocaleProvider, MarketsProvider, BrowserRouter, AuthProvider) and routes
 src/index.css                Theme tokens (dark + light) and component classes (.btn, .card, .panel, .tab, .chip, .input…)
 tailwind.config.js           Maps Tailwind colors to the CSS variables
 
@@ -62,10 +62,12 @@ src/components/dashboard/*   Dashboard widgets and dialogs (Modal.jsx is the sha
 src/components/*.jsx         Shared UI: CoinIcon, PriceCell (Price/Change/ChangePill), Sparkline, QRCode, Logo, Icon, AuthModal, ThemeToggle
 
 src/data/content.js          ALL marketing copy and data: coins, fallback prices, nav, news, stats, reward table, products, roadmap, FAQ, footer
+src/i18n/*.js                Shared + domain EN/RU/KK message dictionaries; English source strings are stable keys
 src/components/dashboard/data.js   Demo copy/payload, transactions, tasks, merchants, notifications, announcements
 src/components/dashboard/nav.js    Sidebar / app-drawer items
 src/state/MarketsProvider.jsx      Live prices (see below); read with useMarkets() from state/markets.js
 src/state/AuthProvider.jsx         Sign-up / log-in dialog; open with useAuth().openAuth('signup' | 'login', prefill)
+src/state/LocaleProvider.jsx       Persistent display language, document lang and cross-tab preference sync; useLocale() from state/locale.js
 src/state/demoWallet.js      Atomic demo reducer + full session ledger in integer hundredths
 src/state/useLocalDay.js     Local-day refresh at midnight and on returning to the tab
 src/lib/demoAmount.js        Two-decimal demo amount parsing/formatting (not token base units)
@@ -79,7 +81,7 @@ contracts/test/*.test.js        Hardhat + chai behavior and adversarial tests (k
 contracts/scripts/deploy.js      Deploys all three, wires roles, adds sample merchants, prints addresses
 ```
 
-To change text on the site, edit `src/data/content.js` (or `dashboard/data.js`), not the components.
+Data-driven source copy lives in `src/data/content.js` or `dashboard/data.js`; translations live in `src/i18n/`. UI source messages use `t(source, values)`. When changing a source key, update all three languages and the corresponding data/call sites together. Put terminology used by multiple areas in `i18n/common.js` only; dictionary tests reject duplicate keys and missing translations. Keep brands, token symbols and opaque IDs language-neutral.
 
 ## Live market data
 
@@ -101,6 +103,7 @@ To change text on the site, edit `src/data/content.js` (or `dashboard/data.js`),
 - **Fast refresh:** files that export components must export only components. Put data, hooks' contexts and helpers in separate `.js` files.
 - `no-unused-vars` ignores Capitalized names (component params used only in JSX), by design.
 - Numbers: add the `num` class (tabular figures) to every price, amount, percentage and date.
+- Localization: use `useLocale()` and pass `locale` to shared `Intl` format helpers. Keep stable IDs, source keys and named parameters in state; do not store translated ledger, error, receipt or toast strings. Never key providers/routes by locale or reset financial state when language changes. English is the explicit default; persist the locale safely, keep wallet state in memory, and keep storage failures non-fatal.
 - Icons: lucide-react; global CSS sets 1.5px strokes. Use 16px in dense UI, 20px in nav, 24px for feature icons.
 - Dialogs: build on `dashboard/Modal.jsx` (Esc, focus trap, focus restore, bottom sheet on phones). Toasts: `showToast()` in `DashboardApp`.
 - New routes: add to `src/App.jsx`. Internal links use `<Link>`; in-page anchors use `href="#section"` on `/` and `/#section` elsewhere (Header's `resolveHref` handles this).
@@ -112,6 +115,7 @@ To change text on the site, edit `src/data/content.js` (or `dashboard/data.js`),
 - Retain the full session ledger for earnings. Apply the eight-entry limit only when rendering recent transactions; spending must not reduce earned rewards.
 - “Demo earned today” uses the device's local calendar day, including DST. Preserve midnight and visibility refresh plus unmount cleanup in `useLocalDay`.
 - Wallet actions stay in memory and reset on dashboard unmount/reload. No connected wallet, usable deposit address, blockchain hash, network submission or real settlement may be implied.
+- KZT display uses the fixed illustrative assumption `KZT_PER_USD = 520`. Keep the localized demo-rate disclaimer visible. Do not imply this is a live quote or introduce a rate service without a separate task.
 - Use the shared modal and test focus across scan/form/receipt changes, keyboard submission, cancel/reopen, navigation and pending-timer cleanup. Keep illustrative chart, price and conversion labels explicit.
 
 ## Contract invariants
@@ -154,4 +158,4 @@ Suggested next tasks, highest value first:
 2. **Wallet connection:** connect a real wallet (e.g. wagmi + viem with WalletConnect) on `/demo`, show the real EDC balance on testnet, claim via `RewardMinter.claim` and pay via `CampusPay.payWithPermit`, keep the sample-data mode as a fallback.
 3. **Tests:** extend the Vitest + React Testing Library suite. Demo amounts, formatting, claim/pay/withdraw state and UI flows are covered; add `BalanceChart` series and market-data failure cases next. Keep contract adversarial coverage and the line-coverage gate passing.
 4. **Design polish:** a custom filled icon set for nav/sidebar; official coin marks (BNB, SOL…) instead of simplified glyphs; a coin detail view on `/markets`.
-5. **Localization:** Kazakh and Russian UI plus KZT display (currently shown as "coming with mainnet" in the language menu).
+5. **Localization follow-through:** English, Russian and Kazakh UI and explicit demo KZT display are implemented. Complete real-browser review at all required widths/themes for the published localization commit; native-speaker/product review can refine terminology. Do not describe unverified layouts or translations as production-ready.
