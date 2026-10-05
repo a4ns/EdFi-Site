@@ -12,7 +12,7 @@ Read this before changing anything. It is the single source of truth for how thi
 
 A Learn-to-Earn platform for universities on BNB Chain. Students earn **EDC** (a BEP-20 token) for verified grades, attendance and research, spend it on campus (Scan Pay) or withdraw it. Won **1st place at Crypto Ideathon Kazakhstan by Binance** (Binance Kazakhstan, Sep–Nov 2025). The planned first campus is Kozybayev University, Petropavlovsk (6,000 students).
 
-Current stage: **concept + web prototype**. There are no smart contracts and no backend yet. Next stage on the roadmap is a testnet pilot.
+Current stage: **concept + web prototype + smart contracts tested locally**. The contracts in `contracts/` are not deployed yet and there is no backend. Next stage on the roadmap is the testnet pilot.
 
 - Live site: https://ed-fi.vercel.app (auto-deploys from `main` via Vercel; every PR gets a preview URL)
 - Repo: https://github.com/a4ns/EdFi-Site
@@ -25,9 +25,15 @@ npm run dev       # Vite dev server, http://localhost:5173
 npm run lint      # ESLint, must pass with 0 errors and 0 warnings
 npm run build     # must succeed before every commit
 npm run preview   # serve dist/ on http://localhost:4173
+
+cd contracts
+npm install
+npm test               # Hardhat tests for the Solidity contracts, must all pass
+npm run coverage       # coverage report
+npm run deploy:testnet # BSC testnet deploy, needs contracts/.env (see contracts/README.md)
 ```
 
-There is no test suite yet. Verification = lint + build + visual check in the browser (see "Definition of done").
+The frontend has no test suite yet. Verification = lint + build + visual check in the browser (see "Definition of done"). The root ESLint ignores `contracts/`.
 
 ## Stack
 
@@ -58,6 +64,12 @@ src/state/MarketsProvider.jsx      Live prices (see below); read with useMarkets
 src/state/AuthProvider.jsx         Sign-up / log-in dialog; open with useAuth().openAuth('signup' | 'login', prefill)
 src/lib/format.js            Number/price/date formatting (always use these, never ad-hoc toFixed in JSX)
 src/lib/theme.js             currentTheme(), applyTheme(): the only place that touches data-theme and localStorage
+
+contracts/src/EDCToken.sol       BEP-20 EDC token (ERC20Permit + AccessControl, MINTER_ROLE)
+contracts/src/RewardMinter.sol   Mints EDC for EIP-712 results signed by an ORACLE_ROLE key; replay-safe, capped, pausable
+contracts/src/CampusPay.sol      Merchant registry + zero-fee pay / payWithPermit with order ids
+contracts/test/EdFi.test.js      Hardhat + chai tests (keep line coverage at 100%)
+contracts/scripts/deploy.js      Deploys all three, wires roles, adds sample merchants, prints addresses
 ```
 
 To change text on the site, edit `src/data/content.js` (or `dashboard/data.js`), not the components.
@@ -90,7 +102,8 @@ To change text on the site, edit `src/data/content.js` (or `dashboard/data.js`),
 
 - The product is a concept/prototype. Never present demo numbers as real traction (users, volume, "active scholars"). Demo data must be labelled as sample/illustrative/simulated.
 - Never use the Binance logo or wordmark, and never imply EdFi is affiliated with Binance. The footer disclaimer must stay.
-- Do not claim things that don't exist in code (e.g. deployed smart contracts, a running pilot) on the site or in the README.
+- Do not claim things that don't exist in code (e.g. deployed smart contracts, a running pilot) on the site or in the README. The contracts are tested locally but not deployed; only add addresses after a real deployment.
+- Never commit private keys or `contracts/.env`.
 - Demo flows (sign-up, payments, withdrawals) must not send data anywhere. They say "Demo only" where relevant.
 
 ## Definition of done (every change)
@@ -112,8 +125,8 @@ Product roadmap (keep in sync with `ROADMAP` in `content.js` and the README):
 
 Suggested next tasks, highest value first:
 
-1. **Smart contracts (Phase 2):** EDC BEP-20 token; a reward minter that only mints against results signed by an allow-listed university oracle key; campus payment contract or merchant transfers. Use Hardhat or Foundry in a separate `contracts/` folder with tests; deploy to BSC testnet; document addresses in the README.
-2. **Wallet connection:** connect a real wallet (e.g. wagmi + viem with WalletConnect) on `/demo`, show the real EDC balance on testnet, keep the sample-data mode as a fallback.
+1. **Testnet deployment (Phase 2):** the contracts in `contracts/` are written and tested. Remaining: deploy to BSC testnet with the owner's test wallet, verify on BscScan, list the addresses in `contracts/README.md` and the root README, move admin roles to a multisig, and build a small oracle signer service (signs `Reward` typed data from registrar exports).
+2. **Wallet connection:** connect a real wallet (e.g. wagmi + viem with WalletConnect) on `/demo`, show the real EDC balance on testnet, claim via `RewardMinter.claim` and pay via `CampusPay.payWithPermit`, keep the sample-data mode as a fallback.
 3. **Tests:** add Vitest + React Testing Library; start with `lib/format.js`, `BalanceChart` series, and the claim/pay/withdraw reducers in `DashboardApp`.
 4. **Design polish:** a custom filled icon set for nav/sidebar; official coin marks (BNB, SOL…) instead of simplified glyphs; a coin detail view on `/markets`.
 5. **Localization:** Kazakh and Russian UI plus KZT display (currently shown as "coming with mainnet" in the language menu).
