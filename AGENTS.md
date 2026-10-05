@@ -2,6 +2,8 @@
 
 Read this before changing anything. It is the single source of truth for how this repo works. Design details live in `.agents/rules/design-system.md` (loaded automatically when you touch UI files).
 
+**Local notes:** if `.agents/rules/owner.local.md` exists, read it first. It holds the owner's machine-local notes and current task queue, is git-ignored, and takes precedence over this file. Never copy it into tracked files.
+
 ## Working with the owner
 
 - The owner, Ansar Kazbekov, writes in **Russian**. Reply in Russian. Write code, comments, commit messages and PR text in **English**.
