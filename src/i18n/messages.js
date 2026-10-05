@@ -7,11 +7,13 @@ import { messages as markets } from './markets';
 import { messages as navigation } from './navigation';
 import { messages as coinDetails } from './coinDetails';
 import { messages as demoActions } from './demoActions';
+import { messages as marketAssumptions } from './marketAssumptions';
 import { isLocale, LOCALES, localeTag } from '../lib/locale';
+import { numberFormatter } from '../lib/numberFormat';
 
 // English source messages are stable keys. Data and ledger records keep these
 // keys, so changing language never rewrites financial state or sample data.
-export const messageGroups = { common, site, dashboard, dialogs, chrome, markets, navigation, coinDetails, demoActions };
+export const messageGroups = { common, site, dashboard, dialogs, chrome, markets, navigation, coinDetails, demoActions, marketAssumptions };
 export const messages = Object.assign({}, ...Object.values(messageGroups));
 export const dictionaries = Object.fromEntries(LOCALES.map((locale) => [locale,
   Object.fromEntries(Object.entries(messages).map(([key, entry]) => [key, locale === 'en' ? entry.en ?? key : entry[locale]])),
@@ -28,7 +30,7 @@ export function translate(locale, key, values = {}) {
   return message.replace(/\{(\w+)\}/g, (placeholder, name) => {
     if (!Object.hasOwn(values, name)) return placeholder;
     return typeof values[name] === 'number'
-      ? new Intl.NumberFormat(localeTag(language)).format(values[name])
+      ? numberFormatter(language).format(values[name])
       : String(values[name]);
   });
 }

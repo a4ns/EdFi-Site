@@ -56,6 +56,13 @@
     @apply bg-page text-ink font-sans antialiased;
   }
 
+  /* Native option popups may ignore an ancestor's dark background. */
+  select.input,
+  select.input option {
+    color: rgb(var(--c-ink));
+    background-color: rgb(var(--c-page));
+  }
+
   ::selection {
     @apply bg-yellow text-yellow-on;
   }

@@ -13,7 +13,8 @@ const OTHER_HOLDINGS = [
   ['BNB', 0.0215],
   ['USDT', 32.5],
 ];
-const USDT = { symbol: 'USDT', name: 'TetherUS', price: 1, change: 0.01, tick: 0, dir: null };
+// A fixed demo valuation, not a fetched quote or a measured market change.
+const USDT = { symbol: 'USDT', name: 'TetherUS', price: 1, change: null, tick: 0, dir: null };
 const BAR = { EDC: 'bg-yellow-text', BNB: 'bg-ink-2', USDT: 'bg-up' };
 
 export default function MarketsWidget({ balance }) {
@@ -83,10 +84,13 @@ export default function MarketsWidget({ balance }) {
                   <span className="num block text-sm text-ink">{formatAmount(h.amount, h.symbol === 'BNB' ? 4 : 2, locale)}</span>
                   <span className="num block text-xs text-ink-3">{formatUsd(h.value, locale)}</span>
                 </span>
-                <Change value={h.quote.change} className="w-[80px] text-right text-sm" />
+                {h.symbol === 'USDT'
+                  ? <span className="w-[80px] text-right text-xs text-ink-3">{t('Not available')}</span>
+                  : <Change value={h.quote.change} className="w-[80px] text-right text-sm" />}
               </li>
             ))}
           </ul>
+          <p className="mt-3 text-xs leading-5 text-ink-3">{t('Sample holdings. USDT uses a fixed demo value of 1 USD; its 24h change is unavailable.')}</p>
         </>
       ) : (
         <>
@@ -111,7 +115,9 @@ export default function MarketsWidget({ balance }) {
         </>
       )}
       </div>
-      <p className="mt-auto pt-3 text-xs text-ink-3">{t(live ? 'Live prices from Binance market data. EDC is simulated.' : 'Market prices are delayed or illustrative. EDC is simulated.')}</p>
+      <p className="mt-auto pt-3 text-xs text-ink-3">{tab === 'holding'
+        ? t(live ? 'BNB uses live market data. EDC is simulated.' : 'BNB uses a saved price snapshot. EDC is simulated.')
+        : t(live ? 'Live prices from Binance market data. EDC is simulated.' : 'Market prices are delayed or illustrative. EDC is simulated.')}</p>
     </section>
   );
 }

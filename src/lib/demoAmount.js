@@ -1,4 +1,4 @@
-import { localeTag } from './locale';
+import { numberFormatter } from './numberFormat';
 
 // The prototype supports two decimal places. These units are not BEP-20 base units.
 export const DEMO_UNITS_PER_EDC = 100;
@@ -23,7 +23,7 @@ export function demoAmountPortion(units, percent) {
 
 export function formatDemoAmount(units, locale = 'en') {
   const [whole, fraction] = demoAmountInput(Math.abs(units)).split('.');
-  const formatter = new Intl.NumberFormat(localeTag(locale), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const formatter = numberFormatter(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   // Never convert integer hundredths to a floating-point amount: even the
   // largest safe balance must retain its exact last two digits in every locale.
   const parts = formatter.formatToParts(units < 0 ? -BigInt(whole) : BigInt(whole));
