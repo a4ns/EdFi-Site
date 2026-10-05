@@ -46,7 +46,7 @@ export default function EarnMarkets() {
         <div>
           <h2 className="section-title">Learn &amp; Earn</h2>
           <p className="mt-3 max-w-xl text-base text-ink-3">
-            Verified results pay out in EDC automatically. Current reward rates for the Kozybayev University pilot.
+            Verified results pay out in EDC automatically. Proposed rates for the Kozybayev University pilot; earner counts and trends are illustrative.
           </p>
         </div>
         <Link to="/demo" className="link-more">

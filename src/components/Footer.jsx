@@ -137,7 +137,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6 text-xs text-ink-3 md:flex-row md:items-center md:justify-between">
-          <p>EdFi © {new Date().getFullYear()} · Built for the Binance Crypto Ideathon by Kazbekov Ansar</p>
+          <p>EdFi © {new Date().getFullYear()} · Created by Ansar Kazbekov · 1st place, Crypto Ideathon Kazakhstan by Binance</p>
           <p className="text-ink-3">Independent concept project. Not affiliated with or endorsed by Binance.</p>
         </div>
       </div>

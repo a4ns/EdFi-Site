@@ -64,17 +64,17 @@ export const NAV = [
 ];
 
 export const NEWS = [
-  'EdFi pilot opens to 6,000 students',
+  'EdFi wins Crypto Ideathon Kazakhstan',
   'How EDC rewards are calculated',
   'Campus Pay: spend EDC at the canteen',
-  'EdFi at the Binance Crypto Ideathon',
+  'Next up: testnet pilot on campus',
   'Mainnet migration and eGov roadmap',
 ];
 
 export const TRUST_STATS = [
-  { value: '6,000', label: 'Students in the pilot' },
-  { value: '4,208', label: 'Active scholars' },
-  { value: '1.2M+', label: 'EDC rewarded' },
+  { value: '6,000', label: 'Students on the pilot campus' },
+  { value: '8', label: 'Ways to earn EDC' },
+  { value: '0', label: 'Fees on campus payments' },
   { value: '~3s', label: 'Settlement on BNB Chain' },
 ];
 
@@ -119,20 +119,25 @@ export const PRODUCTS = [
 export const ROADMAP = [
   {
     phase: 'Phase 1',
-    date: 'Nov 2025',
+    date: '2025',
     status: 'Completed',
-    title: 'Smart contract MVP',
-    desc: 'Testnet sandbox at Kozybayev University (6,000 students) to validate the Learn-to-Earn model.',
+    title: 'Concept & prototype',
+    desc: 'Learn-to-Earn model, token mechanics and a working web prototype. 1st place at Crypto Ideathon Kazakhstan by Binance.',
   },
   {
     phase: 'Phase 2',
-    date: 'H2 2026',
-    status: 'In progress',
-    title: 'Full campus economy',
-    desc: 'Mainnet migration. Payments at canteens, dormitories and local merchandise stores.',
+    status: 'Up next',
+    title: 'Testnet pilot',
+    desc: 'Smart contracts on BNB Smart Chain testnet and a sandbox pilot at Kozybayev University (6,000 students).',
   },
   {
     phase: 'Phase 3',
+    status: 'Planned',
+    title: 'Full campus economy',
+    desc: 'Mainnet launch. Payments at canteens, dormitories and local merchandise stores.',
+  },
+  {
+    phase: 'Phase 4',
     date: '2027',
     status: 'Planned',
     title: 'National eGov integration',
@@ -163,14 +168,14 @@ export const FAQ = [
   },
   {
     q: 'Is EdFi live?',
-    a: 'EdFi is a concept built for the Binance Crypto Ideathon and is running as a testnet pilot. The dashboard demo uses sample data so you can try every flow without a wallet.',
+    a: 'EdFi is a concept prototype that won 1st place at Crypto Ideathon Kazakhstan by Binance. The next step is a testnet pilot at Kozybayev University. The dashboard demo uses sample data, so you can try every flow without a wallet.',
   },
 ];
 
 export const FOOTER_COLUMNS = [
   {
     title: 'About',
-    links: [['About EdFi', '#products'], ['Roadmap', '#roadmap'], ['Binance Crypto Ideathon', '#faq']],
+    links: [['About EdFi', '#products'], ['Roadmap', '#roadmap'], ['Crypto Ideathon win', '#roadmap']],
   },
   {
     title: 'Products',
