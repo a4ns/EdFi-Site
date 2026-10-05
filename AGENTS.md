@@ -90,6 +90,8 @@ backend/src/index.js             Offline service and SQLite repository exports
 backend/src/service.js           Validated commands and explicit issuer-authorization boundary
 backend/src/sqlite-repository.js Atomic reward, budget, audit, ledger and idempotency persistence
 backend/src/schema.js            Versioned SQLite schema and append-only constraints
+backend/src/http.js              In-process Request/Response boundary; no listener or real authentication
+backend/HTTP.md                  Exact transport routes, validation, errors and limits
 backend/test/                    Synthetic persistence and adversarial tests
 ```
 
@@ -150,6 +152,7 @@ Data-driven source copy lives in `src/data/content.js` or `dashboard/data.js`; t
 - Business-result uniqueness is `(issuerId, sourceResultId)`. Idempotency keys are unique inside the issuer; fingerprints bind the trusted actor, action and canonical payload. Replay receipts describe historical command outcomes, not current reward state.
 - State/version, budget, audit event, both ledger entries and receipt must commit in one synchronous SQLite transaction. Preserve optimistic version checks, bounded lock waiting, append-only history and startup schema/invariant validation. Storage errors must not silently fall back to memory or reset data.
 - Exercise actual file reopen, concurrent processes, replay, budget contention, permission failures and rollback. Tests of process crashes do not prove hardware power-loss durability. SQLite remains a reference choice until production storage, custody, operators and recovery policies are defined.
+- The HTTP adapter is an in-process contract only. Keep its trusted authentication decision separate from issuer authorization; request body/header actor claims must never supply authority. Preserve strict route/method/field validation, actual-byte and body-time bounds, cancellation cleanup, fixed public errors and response headers. A future network server still needs explicit authentication, origin, header/connection limits and operational decisions.
 
 ## Honesty rules (important, the repo is reviewed by Binance)
 
