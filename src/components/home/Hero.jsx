@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, CircleCheck, Gift, GraduationCap, QrCode } from 'lucide-react';
 import CoinIcon from '../CoinIcon';
@@ -7,17 +7,6 @@ import { Change, Price } from '../PriceCell';
 import { useMarkets } from '../../state/markets';
 import { useAuth } from '../../state/auth';
 import { NEWS } from '../../data/content';
-import { formatInt } from '../../lib/format';
-
-function useEarnedCounter(start) {
-  const [n, setN] = useState(start);
-  useEffect(() => {
-    const id = setInterval(() => setN((v) => v + 5 + Math.floor(Math.random() * 45)), 2200);
-    return () => clearInterval(id);
-  }, []);
-  return n;
-}
-
 function MarketsCard() {
   const { list, live } = useMarkets();
   const [tab, setTab] = useState('popular');
@@ -90,7 +79,6 @@ function NewsCard() {
 }
 
 export default function Hero() {
-  const earned = useEarnedCounter(1204380);
   const { openAuth } = useAuth();
   const onSubmit = (e) => {
     e.preventDefault();
@@ -101,9 +89,9 @@ export default function Hero() {
     <section className="page-x grid grid-cols-1 gap-10 pb-12 pt-8 md:pt-14 lg:grid-cols-[minmax(0,1fr)_468px] lg:gap-16 lg:pb-12 lg:pt-16">
       <div className="flex flex-col">
         <h1 className="text-[44px] font-semibold leading-[52px] text-ink md:text-[68px] md:leading-[76px] lg:text-[76px] lg:leading-[84px]">
-          <span className="num block text-yellow-text">{formatInt(earned)}</span>
-          <span className="block">EDC EARNED</span>
-          <span className="block">BY STUDENTS</span>
+          <span className="block">ACADEMIC</span>
+          <span className="block">STATUS,</span>
+          <span className="block text-yellow-text">NOW LIQUID.</span>
         </h1>
 
         <div className="mt-8 flex items-center gap-3">

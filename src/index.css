@@ -109,9 +109,6 @@
   .btn-secondary {
     @apply bg-raised text-ink hover:bg-line-strong;
   }
-  .btn-ghost {
-    @apply text-ink hover:text-yellow-text;
-  }
 
   .icon-btn {
     @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-ink-2 transition-colors hover:text-yellow-text;
