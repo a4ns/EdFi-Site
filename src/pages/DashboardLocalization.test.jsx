@@ -158,12 +158,19 @@ describe('dashboard locale changes preserve demo accounting', () => {
 
   it.each(['en', 'ru', 'kk'])('formats chart dates and the illustrative KZT balance for %s', (locale) => {
     renderDashboard();
+    const series = document.querySelector('#balance svg path[stroke-width="1.5"]');
+    const originalSeries = series.getAttribute('d');
     changeLocale(locale);
     const caption = translate(locale, 'Demo conversion: 1 USD = {rate} KZT. Fixed assumption, not a live exchange rate.', { rate: KZT_PER_USD });
     expect(balance().getByText(caption)).toBeVisible();
     expect(balance().getByRole('button', { name: translate(locale, 'Last {count} days', { count: 30 }) })).toHaveAttribute('aria-pressed', 'true');
-    const date = formatDate(NOW, locale, { month: 'short', day: 'numeric' });
-    expect(balance().getByText(date)).toBeInTheDocument();
+    const axisDates = [new Date(2026, 8, 6, 12), new Date(2026, 8, 21, 12), NOW];
+    const dates = locale === 'kk' ? ['06.09', '21.09', '05.10'] : axisDates.map((date) => (
+      formatDate(date, locale, { month: 'short', day: 'numeric' })
+    ));
+    const axisLabels = document.querySelectorAll('#balance svg text[text-anchor]');
+    expect(Array.from(axisLabels, (label) => label.textContent)).toEqual(dates);
+    expect(document.querySelector('#balance svg path[stroke-width="1.5"]').getAttribute('d')).toBe(originalSeries);
 
     fireEvent.click(button(balance(), locale, 'Balance display currency'));
     fireEvent.click(balance().getByRole('option', { name: 'KZT' }));

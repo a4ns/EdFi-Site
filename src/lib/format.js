@@ -57,6 +57,17 @@ export function formatDate(d, locale = 'en', options = {}) {
   return new Intl.DateTimeFormat(localeTag(locale), options).format(d);
 }
 
+export function formatChartDate(d, locale = 'en') {
+  // Some browsers lack Kazakh short month names; numeric local dates stay portable.
+  if (locale === 'kk') {
+    const date = new Date(d);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${day}.${month}`;
+  }
+  return formatDate(d, locale, { month: 'short', day: 'numeric' });
+}
+
 export function formatDateTime(d, locale = 'en') {
   return formatDate(d, locale, {
     year: 'numeric', month: '2-digit', day: '2-digit',

@@ -1,5 +1,5 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { formatAmount, formatDate, formatInt } from '../../lib/format';
+import { formatAmount, formatChartDate, formatDate, formatInt } from '../../lib/format';
 import { useLocale } from '../../state/locale';
 
 // Round axis ticks (e.g. 0 / 200 / 400) covering [lo, hi].
@@ -115,7 +115,7 @@ export default function BalanceChart({ end, height = 168 }) {
           {[0, 0.5, 1].map((f) => {
             const i = Math.round(f * (points.length - 1));
             const d = new Date(today - (points.length - 1 - i) * DAY);
-            const label = formatDate(d, locale, { month: 'short', day: 'numeric' });
+            const label = formatChartDate(d, locale);
             return (
               <text key={f} x={x(i)} y={height - 5} fontSize="12" textAnchor={f === 0 ? 'start' : f === 1 ? 'end' : 'middle'} fill="rgb(var(--c-ink-3))" className="num">
                 {label}

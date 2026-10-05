@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
-  formatAmount, formatChange, formatCompact, formatCurrency, formatDate, formatDateTime, formatInt, formatPercent, formatPrice, formatUsd,
+  formatAmount, formatChange, formatChartDate, formatCompact, formatCurrency, formatDate, formatDateTime, formatInt, formatPercent, formatPrice, formatUsd,
 } from './format';
 
 describe('market formatting', () => {
@@ -47,6 +47,39 @@ describe('formatDateTime', () => {
   });
 });
 
+describe('formatChartDate', () => {
+  it.each([
+    [new Date(2026, 8, 6, 12), '06.09'],
+    [new Date(2026, 8, 21, 12), '21.09'],
+    [new Date(2026, 9, 5, 12), '05.10'],
+    [new Date(2026, 8, 30, 23, 59), '30.09'],
+    [new Date(2026, 9, 1, 0, 1), '01.10'],
+    [new Date(2027, 0, 1, 0, 1), '01.01'],
+    [new Date(2028, 1, 29, 23, 59), '29.02'],
+  ])('formats the local Kazakh date %s as %s', (date, expected) => {
+    expect(formatChartDate(date, 'kk')).toBe(expected);
+  });
+
+  it('does not depend on Intl month-name support for Kazakh axis labels', () => {
+    const dateFormatter = vi.spyOn(Intl, 'DateTimeFormat');
+    try {
+      expect(formatChartDate(new Date(2026, 8, 6), 'kk')).toBe('06.09');
+      expect(dateFormatter).not.toHaveBeenCalled();
+    } finally {
+      dateFormatter.mockRestore();
+    }
+  });
+
+  it.each(['en', 'ru'])('preserves the existing short-month format for %s', (locale) => {
+    const date = new Date(2026, 9, 1, 0, 1);
+    expect(formatChartDate(date, locale)).toBe(formatDate(date, locale, { month: 'short', day: 'numeric' }));
+  });
+
+  it('keeps English as the default', () => {
+    expect(formatChartDate(new Date(2026, 9, 5, 12))).toBe('Oct 5');
+  });
+});
+
 describe.each([['en', 'en-US'], ['ru', 'ru-RU'], ['kk', 'kk-KZ']])('Intl formatting in %s', (locale, tag) => {
   it('formats grouping, decimals, percentages and currencies using the locale', () => {
     expect(formatAmount(1234.5, 2, locale)).toBe(new Intl.NumberFormat(tag, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(1234.5));
@@ -57,7 +90,7 @@ describe.each([['en', 'en-US'], ['ru', 'ru-RU'], ['kk', 'kk-KZ']])('Intl formatt
     expect(formatCompact(12345, locale)).toBe(new Intl.NumberFormat(tag, { notation: 'compact', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(12345));
   });
 
-  it('uses locale-aware chart dates and preserves small-price precision', () => {
+  it('uses locale-aware dates and preserves small-price precision', () => {
     const date = new Date(2026, 9, 5, 12);
     expect(formatDate(date, locale, { month: 'short', day: 'numeric' })).toBe(new Intl.DateTimeFormat(tag, { month: 'short', day: 'numeric' }).format(date));
     expect(formatPrice(0.012345, locale)).toBe(new Intl.NumberFormat(tag, { minimumFractionDigits: 5, maximumFractionDigits: 5 }).format(0.012345));
