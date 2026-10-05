@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { BadgeCheck, Copy, GraduationCap, History, Home, QrCode, Wallet } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -14,10 +14,10 @@ import PayModal from '../components/dashboard/PayModal';
 import DepositModal from '../components/dashboard/DepositModal';
 import WithdrawModal from '../components/dashboard/WithdrawModal';
 import Toast from '../components/dashboard/Toast';
-import { INITIAL_TASKS, initialTransactions, shortAddress } from '../components/dashboard/data';
-import { formatAmount } from '../lib/format';
-
-const DAY = 24 * 3600 * 1000;
+import DemoNotice from '../components/dashboard/DemoNotice';
+import { formatDemoAmount } from '../lib/demoAmount';
+import { createDemoWallet, demoWalletReducer, DEMO_SETTLEMENT_MS, RECENT_TRANSACTION_LIMIT, todayEarnedUnits } from '../state/demoWallet';
+import { useLocalDay } from '../state/useLocalDay';
 
 function ProfileRow({ onCopy }) {
   const stats = [
@@ -86,10 +86,9 @@ function MobileTabBar({ onSelect }) {
 }
 
 export default function DashboardApp() {
-  const [sessionStart] = useState(() => Date.now());
-  const [balance, setBalance] = useState(450);
-  const [transactions, setTransactions] = useState(() => initialTransactions());
-  const [tasks, setTasks] = useState(INITIAL_TASKS);
+  const [wallet, dispatch] = useReducer(demoWalletReducer, undefined, () => createDemoWallet(Date.now()));
+  const { balanceUnits, ledger, tasks } = wallet;
+  const day = useLocalDay();
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState(null);
   const [active, setActive] = useState('dashboard');
@@ -118,16 +117,22 @@ export default function DashboardApp() {
   }, [toast]);
 
   const showToast = (text) => setToast({ id: Date.now(), text });
-  const addTx = (tx) => setTransactions((ts) => [{ id: `t${Date.now()}`, at: Date.now(), ...tx }, ...ts].slice(0, 8));
   const closeModal = useCallback(() => setModal(null), []);
   const openModal = (name) => {
     setToast(null);
-    setModal(name);
+    setModal({ name, requestId: `demo-${crypto.randomUUID()}` });
   };
 
-  const todayEarned = transactions
-    .filter((t) => t.kind === 'reward' && t.at > sessionStart - DAY)
-    .reduce((s, t) => s + t.amount, 0);
+  const earnedUnits = todayEarnedUnits(ledger, day);
+  const transaction = modal ? ledger.find((tx) => tx.id === modal.requestId) : null;
+  const error = wallet.error?.requestId === modal?.requestId ? wallet.error?.message : null;
+
+  useEffect(() => {
+    const timers = ledger.filter((tx) => tx.kind === 'withdraw' && tx.status === 'processing').map((tx) =>
+      setTimeout(() => dispatch({ type: 'settle', id: tx.id }), Math.max(0, tx.at + DEMO_SETTLEMENT_MS - Date.now())),
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [ledger]);
 
   const goTo = (target) => {
     if (target === 'pay' || target === 'account' || target === 'settings') return openModal(target);
@@ -136,41 +141,25 @@ export default function DashboardApp() {
   };
 
   const claim = (task) => {
-    setTasks((ts) => ts.map((t) => (t.id === task.id ? { ...t, status: 'claimed' } : t)));
-    setBalance((b) => b + task.reward);
-    addTx({ kind: 'reward', title: task.title, sub: 'Learn & Earn reward', amount: task.reward });
-    showToast(`${formatAmount(task.reward)} EDC added to your wallet`);
+    if (task.status !== 'claimable') return;
+    dispatch({ type: 'claim', taskId: task.id, requestId: `demo-reward-${task.id}`, at: Date.now() });
+    showToast(`${formatDemoAmount(task.rewardUnits)} demo EDC added to your sample balance`);
   };
 
   const advance = (task) => {
-    if (task.verify) {
-      setTasks((ts) => ts.map((t) => (t.id === task.id ? { ...t, progress: 1, status: 'verifying' } : t)));
-      showToast('DOI submitted. Verification usually takes 1–2 days');
-      return;
-    }
-    setTasks((ts) =>
-      ts.map((t) => {
-        if (t.id !== task.id) return t;
-        const progress = t.progress + 1;
-        return { ...t, progress, status: progress >= t.total ? 'claimable' : 'active' };
-      }),
-    );
-    showToast(task.progress + 1 >= task.total ? 'Goal reached. Your reward is ready to claim' : (task.doneText ?? 'Lesson completed'));
+    if (task.status !== 'active') return;
+    dispatch({ type: 'advance', taskId: task.id });
+    showToast(task.verify
+      ? 'Demo verification started. No DOI or registrar request was sent'
+      : task.progress + 1 >= task.total ? 'Demo goal reached. Your sample reward is ready to claim' : (task.doneText ?? 'Demo lesson completed'));
   };
 
-  const pay = ({ merchant, amount }) => {
-    setBalance((b) => b - amount);
-    addTx({ kind: 'payment', title: merchant.name, sub: 'Scan Pay', amount: -amount });
+  const pay = ({ merchantId, amountUnits }) => {
+    dispatch({ type: 'pay', merchantId, amountUnits, requestId: modal.requestId, at: Date.now() });
   };
 
-  const withdraw = ({ address, amount }) => {
-    setBalance((b) => b - amount);
-    const id = `t${Date.now()}`;
-    setTransactions((ts) => [{ id, at: Date.now(), kind: 'withdraw', title: 'Withdraw', sub: `To ${shortAddress(address)}`, amount: -amount, status: 'processing' }, ...ts].slice(0, 8));
-    // On-chain settlement: processing first, completed a few seconds later.
-    setTimeout(() => setTransactions((ts) => ts.map((t) => (t.id === id ? { ...t, status: 'completed' } : t))), 4000);
-    setModal(null);
-    showToast(`Withdrawal of ${formatAmount(amount)} EDC submitted`);
+  const withdraw = ({ address, amountUnits }) => {
+    dispatch({ type: 'withdraw', address, amountUnits, requestId: modal.requestId, at: Date.now() });
   };
 
   return (
@@ -194,17 +183,18 @@ export default function DashboardApp() {
         />
         <main className="min-w-0 flex-1 px-4 pb-24 pt-6 md:px-6 lg:px-8 lg:pb-12 lg:pt-8">
           <div className="mx-auto max-w-[1200px]">
+            <DemoNotice kind="overview" className="mb-6" />
             <ProfileRow onCopy={() => showToast('UID copied')} />
             <div className="mt-6 grid gap-4 lg:mt-8 lg:gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
               <BalanceCard
-                balance={balance}
-                todayEarned={todayEarned}
+                balanceUnits={balanceUnits}
+                earnedUnits={earnedUnits}
                 onPay={() => openModal('pay')}
                 onDeposit={() => openModal('deposit')}
                 onWithdraw={() => openModal('withdraw')}
               />
               <div className="flex min-w-0 max-xl:order-2 [&>section]:min-w-0 [&>section]:flex-1">
-                <MarketsWidget balance={balance} />
+                <MarketsWidget balance={balanceUnits / 100} />
               </div>
               <div className="flex min-w-0 max-xl:order-1 [&>section]:min-w-0 [&>section]:flex-1">
                 <TasksCard tasks={tasks} onClaim={claim} onContinue={advance} />
@@ -215,16 +205,18 @@ export default function DashboardApp() {
               </div>
             </div>
             <div className="mt-4 lg:mt-6">
-              <TransactionsCard transactions={transactions} />
+              <TransactionsCard transactions={ledger.slice(0, RECENT_TRANSACTION_LIMIT)} />
             </div>
           </div>
         </main>
       </div>
       <MobileTabBar onSelect={goTo} />
 
-      {modal === 'pay' && (
+      {modal?.name === 'pay' && (
         <PayModal
-          balance={balance}
+          balanceUnits={balanceUnits}
+          transaction={transaction}
+          error={error}
           onClose={closeModal}
           onPay={pay}
           onViewHistory={() => {
@@ -233,11 +225,11 @@ export default function DashboardApp() {
           }}
         />
       )}
-      {modal === 'deposit' && <DepositModal onClose={closeModal} />}
-      {(modal === 'account' || modal === 'settings') && (
-        <AccountModal mode={modal} onClose={closeModal} onLogout={() => navigate('/')} />
+      {modal?.name === 'deposit' && <DepositModal onClose={closeModal} />}
+      {(modal?.name === 'account' || modal?.name === 'settings') && (
+        <AccountModal mode={modal.name} onClose={closeModal} onLogout={() => navigate('/')} />
       )}
-      {modal === 'withdraw' && <WithdrawModal balance={balance} onClose={closeModal} onWithdraw={withdraw} />}
+      {modal?.name === 'withdraw' && <WithdrawModal balanceUnits={balanceUnits} transaction={transaction} error={error} onClose={closeModal} onWithdraw={withdraw} />}
       <Toast toast={toast} />
     </div>
   );

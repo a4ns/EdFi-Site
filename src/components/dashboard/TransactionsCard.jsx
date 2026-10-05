@@ -1,5 +1,6 @@
-import { ArrowDownLeft, ArrowUpRight, ChevronRight, QrCode } from 'lucide-react';
-import { formatAmount, formatDateTime } from '../../lib/format';
+import { ArrowDownLeft, ArrowUpRight, QrCode } from 'lucide-react';
+import { formatDateTime } from '../../lib/format';
+import { formatDemoAmount } from '../../lib/demoAmount';
 
 const KIND = {
   reward: { label: 'Reward', icon: ArrowDownLeft, cls: 'bg-up/10 text-up' },
@@ -11,9 +12,9 @@ const KIND = {
 function Status({ status = 'completed', className = '' }) {
   const processing = status === 'processing';
   return (
-    <span className={`inline-flex items-center gap-1.5 text-sm text-ink-2 ${className}`}>
+    <span className={`inline-flex items-center gap-1.5 text-xs text-ink-2 ${className}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${processing ? 'animate-pulse bg-yellow' : 'bg-up'}`} />
-      {processing ? 'Processing' : 'Completed'}
+      {processing ? 'Demo processing' : 'Demo complete'}
     </span>
   );
 }
@@ -22,7 +23,7 @@ function Amount({ value }) {
   return (
     <span className={`num whitespace-nowrap text-sm font-medium ${value > 0 ? 'text-up' : 'text-ink'}`}>
       {value > 0 ? '+' : '-'}
-      {formatAmount(Math.abs(value))} EDC
+      {formatDemoAmount(Math.abs(value))} EDC
     </span>
   );
 }
@@ -31,11 +32,8 @@ export default function TransactionsCard({ transactions }) {
   return (
     <section id="history" className="panel scroll-mt-20 p-4 md:p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-ink">Recent Transactions</h2>
-        <button type="button" className="link-more">
-          More
-          <ChevronRight size={16} />
-        </button>
+        <h2 className="text-base font-semibold text-ink">Recent demo transactions</h2>
+        <span className="text-xs text-ink-3">Sample activity</span>
       </div>
 
       {/* desktop table */}
@@ -68,7 +66,7 @@ export default function TransactionsCard({ transactions }) {
                 </td>
                 <td className="hidden text-sm text-ink-2 xl:table-cell">{k.label}</td>
                 <td className="text-right">
-                  <Amount value={t.amount} />
+                  <Amount value={t.amountUnits} />
                 </td>
                 <td className="num whitespace-nowrap text-right text-xs text-ink-3">{formatDateTime(new Date(t.at))}</td>
                 <td className="text-right">
@@ -95,8 +93,8 @@ export default function TransactionsCard({ transactions }) {
                 <p className="num truncate text-xs text-ink-3">{formatDateTime(new Date(t.at))}</p>
               </div>
               <div className="text-right">
-                <Amount value={t.amount} />
-                <p className="text-xs text-ink-3">{t.status === 'processing' ? 'Processing' : 'Completed'}</p>
+                <Amount value={t.amountUnits} />
+                <p className="text-xs text-ink-3">{t.status === 'processing' ? 'Demo processing' : 'Demo complete'}</p>
               </div>
             </li>
           );

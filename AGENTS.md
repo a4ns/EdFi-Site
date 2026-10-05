@@ -22,20 +22,22 @@ Current stage: **concept + web prototype + smart contracts tested locally**. The
 ## Commands
 
 ```bash
-npm install
+npm ci
 npm run dev       # Vite dev server, http://localhost:5173
+npm test          # deterministic frontend unit and component tests
 npm run lint      # ESLint, must pass with 0 errors and 0 warnings
 npm run build     # must succeed before every commit
 npm run preview   # serve dist/ on http://localhost:4173
 
 cd contracts
-npm install
+npm ci
 npm test               # Hardhat tests for the Solidity contracts, must all pass
-npm run coverage       # coverage report
-npm run deploy:testnet # BSC testnet deploy, needs contracts/.env (see contracts/README.md)
+npm run coverage       # coverage report; fails below 100% line coverage (also enforced in CI)
 ```
 
-The frontend has no test suite yet. Verification = lint + build + visual check in the browser (see "Definition of done"). The root ESLint ignores `contracts/`.
+Use Node.js 22.12+ (22.x) or 24.x. CI is configured to test both versions, with separate web and contract jobs. Vitest and React Testing Library cover demo amounts, wallet transitions and UI flows; Hardhat covers contract behavior and adversarial cases. Verification = tests + lint + build + contract coverage + visual checks (see "Definition of done"). The root ESLint ignores `contracts/`.
+
+Deployment is a separate, explicitly authorized task. See `contracts/README.md`; never run a public-network deployment as part of routine validation.
 
 ## Stack
 
@@ -60,17 +62,20 @@ src/components/dashboard/*   Dashboard widgets and dialogs (Modal.jsx is the sha
 src/components/*.jsx         Shared UI: CoinIcon, PriceCell (Price/Change/ChangePill), Sparkline, QRCode, Logo, Icon, AuthModal, ThemeToggle
 
 src/data/content.js          ALL marketing copy and data: coins, fallback prices, nav, news, stats, reward table, products, roadmap, FAQ, footer
-src/components/dashboard/data.js   Demo account data: wallet address, transactions, tasks, merchants, notifications, announcements
+src/components/dashboard/data.js   Demo copy/payload, transactions, tasks, merchants, notifications, announcements
 src/components/dashboard/nav.js    Sidebar / app-drawer items
 src/state/MarketsProvider.jsx      Live prices (see below); read with useMarkets() from state/markets.js
 src/state/AuthProvider.jsx         Sign-up / log-in dialog; open with useAuth().openAuth('signup' | 'login', prefill)
+src/state/demoWallet.js      Atomic demo reducer + full session ledger in integer hundredths
+src/state/useLocalDay.js     Local-day refresh at midnight and on returning to the tab
+src/lib/demoAmount.js        Two-decimal demo amount parsing/formatting (not token base units)
 src/lib/format.js            Number/price/date formatting (always use these, never ad-hoc toFixed in JSX)
 src/lib/theme.js             currentTheme(), applyTheme(): the only place that touches data-theme and localStorage
 
 contracts/src/EDCToken.sol       BEP-20 EDC token (ERC20Permit + AccessControl, MINTER_ROLE)
-contracts/src/RewardMinter.sol   Mints EDC for EIP-712 results signed by an ORACLE_ROLE key; replay-safe, capped, pausable
+contracts/src/RewardMinter.sol   Mints EDC for EIP-712 results signed by an ORACLE_ROLE key; replay-safe, capped per claim, pausable
 contracts/src/CampusPay.sol      Merchant registry + zero-fee pay / payWithPermit with order ids
-contracts/test/EdFi.test.js      Hardhat + chai tests (keep line coverage at 100%)
+contracts/test/*.test.js        Hardhat + chai behavior and adversarial tests (keep line coverage at 100%)
 contracts/scripts/deploy.js      Deploys all three, wires roles, adds sample merchants, prints addresses
 ```
 
@@ -100,6 +105,23 @@ To change text on the site, edit `src/data/content.js` (or `dashboard/data.js`),
 - Dialogs: build on `dashboard/Modal.jsx` (Esc, focus trap, focus restore, bottom sheet on phones). Toasts: `showToast()` in `DashboardApp`.
 - New routes: add to `src/App.jsx`. Internal links use `<Link>`; in-page anchors use `href="#section"` on `/` and `/#section` elsewhere (Header's `resolveHref` handles this).
 
+## Demo accounting and safety
+
+- Use integer hundredths for every demo balance, reward, amount, Max and percentage preset. Parse and format through `src/lib/demoAmount.js`; these units are distinct from the token's 18-decimal base units.
+- Keep balance, ledger and task updates atomic in `demoWalletReducer`. Validate again in the reducer and preserve request-ID / task deduplication; disabling a button alone is not enough.
+- Retain the full session ledger for earnings. Apply the eight-entry limit only when rendering recent transactions; spending must not reduce earned rewards.
+- “Demo earned today” uses the device's local calendar day, including DST. Preserve midnight and visibility refresh plus unmount cleanup in `useLocalDay`.
+- Wallet actions stay in memory and reset on dashboard unmount/reload. No connected wallet, usable deposit address, blockchain hash, network submission or real settlement may be implied.
+- Use the shared modal and test focus across scan/form/receipt changes, keyboard submission, cancel/reopen, navigation and pending-timer cleanup. Keep illustrative chart, price and conversion labels explicit.
+
+## Contract invariants
+
+- Preserve the signed EIP-712 fields, domain separation, current role checks, result-ID replay protection and atomic rollback if minting fails.
+- `maxRewardPerClaim` limits one claim, not total issuance or oracle exposure. Aggregate issuance budgets and token economics require a separate product decision.
+- `CampusPay.orderId` is receipt metadata, not payment deduplication. Failed/front-run permits may fall back to a sufficient allowance from the caller; do not silently change either policy.
+- A zero admin must be rejected by all three constructors. Token minter and admin roles are trusted powers; tests are not a security audit.
+- Test locally without real keys. Keep `.env`, wallet credentials and machine-local notes out of tracked files. Testnet deployment, role changes, keys and addresses need explicit authorization and verified results.
+
 ## Honesty rules (important, the repo is reviewed by Binance)
 
 - The product is a concept/prototype. Never present demo numbers as real traction (users, volume, "active scholars"). Demo data must be labelled as sample/illustrative/simulated.
@@ -110,11 +132,12 @@ To change text on the site, edit `src/data/content.js` (or `dashboard/data.js`),
 
 ## Definition of done (every change)
 
-1. `npm run lint` passes with 0 problems; `npm run build` succeeds.
+1. From the root, `npm ci`, `npm test`, `npm run lint -- --max-warnings=0` and `npm run build` pass. From `contracts/`, `npm ci`, `npm test` and `npm run coverage` pass; the coverage command enforces 100% project line coverage.
 2. Open the page in the browser at **1440px, 820px and 390px** widths: no horizontal scroll, no overlapping or cut-off text, no console errors.
 3. Check **both themes** (moon/sun icon in the header).
 4. If you touched a flow, click through it (claim → toast → balance; Scan Pay → receipt; withdraw → processing → completed).
-5. Commit on a feature branch with a clear English message and open a PR to `main`; check the Vercel preview before merging.
+5. Run `git diff --check`. State which checks passed, failed or were blocked; jsdom is not a visual-browser pass. See `docs/validation/` for recorded validation and remaining limits.
+6. When publication is authorized, commit on a feature branch with a clear English message and open a PR to `main`; verify remote CI and the Vercel preview for that exact commit. Never commit directly to `main`, merge, or deploy without authorization.
 
 ## Roadmap and backlog
 
@@ -129,6 +152,6 @@ Suggested next tasks, highest value first:
 
 1. **Testnet deployment (Phase 2):** the contracts in `contracts/` are written and tested. Remaining: deploy to BSC testnet with the owner's test wallet, verify on BscScan, list the addresses in `contracts/README.md` and the root README, move admin roles to a multisig, and build a small oracle signer service (signs `Reward` typed data from registrar exports).
 2. **Wallet connection:** connect a real wallet (e.g. wagmi + viem with WalletConnect) on `/demo`, show the real EDC balance on testnet, claim via `RewardMinter.claim` and pay via `CampusPay.payWithPermit`, keep the sample-data mode as a fallback.
-3. **Tests:** add Vitest + React Testing Library; start with `lib/format.js`, `BalanceChart` series, and the claim/pay/withdraw reducers in `DashboardApp`.
+3. **Tests:** extend the Vitest + React Testing Library suite. Demo amounts, formatting, claim/pay/withdraw state and UI flows are covered; add `BalanceChart` series and market-data failure cases next. Keep contract adversarial coverage and the line-coverage gate passing.
 4. **Design polish:** a custom filled icon set for nav/sidebar; official coin marks (BNB, SOL…) instead of simplified glyphs; a coin detail view on `/markets`.
 5. **Localization:** Kazakh and Russian UI plus KZT display (currently shown as "coming with mainnet" in the language menu).

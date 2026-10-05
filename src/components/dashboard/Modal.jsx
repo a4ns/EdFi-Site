@@ -14,7 +14,10 @@ export default function Modal({ title, onClose, children }) {
       if (!items.length) return undefined;
       const first = items[0];
       const last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
+      if (!panel.current.contains(document.activeElement)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      } else if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -24,11 +27,19 @@ export default function Modal({ title, onClose, children }) {
       return undefined;
     };
     window.addEventListener('keydown', onKey);
-    // Autofocus only where there is a hardware keyboard; on phones it would cover the sheet.
-    if (window.matchMedia('(min-width: 640px) and (hover: hover)').matches) {
-      panel.current?.querySelector('input, button:not([data-close])')?.focus();
-    }
+    const focusInside = () => {
+      if (!panel.current || panel.current.contains(document.activeElement)) return;
+      // Focus a button on touch devices so opening a sheet does not summon the keyboard.
+      const selector = window.matchMedia('(min-width: 640px) and (hover: hover)').matches
+        ? 'input, button:not([data-close]):not([disabled])' : 'button[data-close]';
+      (panel.current.querySelector(selector) ?? panel.current.querySelector('button'))?.focus();
+    };
+    focusInside();
+    // Scan -> form -> receipt can remove the focused control without remounting Modal.
+    const observer = new MutationObserver(focusInside);
+    observer.observe(panel.current, { childList: true, subtree: true });
     return () => {
+      observer.disconnect();
       document.body.style.overflow = prev;
       window.removeEventListener('keydown', onKey);
       opener?.focus?.();

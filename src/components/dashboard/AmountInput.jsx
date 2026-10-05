@@ -1,4 +1,6 @@
-export default function AmountInput({ id, value, onChange, max, invalid }) {
+import { demoAmountInput, demoAmountPortion } from '../../lib/demoAmount';
+
+export default function AmountInput({ id, value, onChange, maxUnits, invalid }) {
   return (
     <>
     <div
@@ -13,6 +15,7 @@ export default function AmountInput({ id, value, onChange, max, invalid }) {
         className="num min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-4"
         placeholder="0.00"
         value={value}
+        aria-invalid={invalid || undefined}
         onChange={(e) => {
           const v = e.target.value.replace(',', '.');
           if (/^\d*\.?\d{0,2}$/.test(v)) onChange(v);
@@ -20,7 +23,7 @@ export default function AmountInput({ id, value, onChange, max, invalid }) {
       />
       <span className="text-sm font-medium text-ink">EDC</span>
       <span className="mx-3 h-4 w-px bg-line-strong" />
-      <button type="button" className="text-sm font-medium text-yellow-text hover:text-yellow-hover" onClick={() => onChange(max.toFixed(2))}>
+      <button type="button" className="text-sm font-medium text-yellow-text hover:text-yellow-hover" onClick={() => onChange(demoAmountInput(maxUnits))}>
         Max
       </button>
     </div>
@@ -29,8 +32,8 @@ export default function AmountInput({ id, value, onChange, max, invalid }) {
         <button
           key={pct}
           type="button"
-          onClick={() => onChange(((max * pct) / 100).toFixed(2))}
-          className="h-7 rounded bg-raised text-xs font-medium text-ink-2 transition-colors hover:text-ink"
+          onClick={() => onChange(demoAmountInput(demoAmountPortion(maxUnits, pct)))}
+          className="num h-7 rounded bg-raised text-xs font-medium text-ink-2 transition-colors hover:text-ink"
         >
           {pct}%
         </button>

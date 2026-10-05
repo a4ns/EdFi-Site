@@ -32,11 +32,11 @@ The web prototype (a marketing site and an interactive wallet dashboard) and the
 | Route | What you can do |
 |---|---|
 | [`/`](https://ed-fi.vercel.app) | Landing page with live market card, reward rates, roadmap and FAQ |
-| [`/demo`](https://ed-fi.vercel.app/demo) | Wallet dashboard: claim rewards, Scan Pay with receipt, deposit by QR, withdraw, balance history |
+| [`/demo`](https://ed-fi.vercel.app/demo) | Wallet dashboard: claim rewards, Scan Pay with receipt, safe deposit preview, withdraw, illustrative balance chart |
 | [`/markets`](https://ed-fi.vercel.app/markets) | Market overview with sortable tables and live prices |
 
 > [!NOTE]
-> Balances, rewards and pilot figures in the demo are sample data, and EDC's price is simulated. Prices for BTC, ETH, BNB and other majors are live from Binance's public market-data API.
+> Balances, rewards and pilot figures in the demo are sample data, and EDC's price is simulated. No wallet is connected and no funds are sent. The deposit preview has no usable wallet address; do not send funds. Prices for BTC, ETH, BNB and other majors are live from Binance's public market-data API.
 
 ### Wallet dashboard
 
@@ -64,13 +64,13 @@ The [`contracts/`](contracts/) folder holds the on-chain side of EdFi, written i
 - **RewardMinter**: mints EDC only for results signed by an allow-listed university oracle (EIP-712), each result once, with expiry, a per-claim cap and an emergency pause.
 - **CampusPay**: a registry of verified campus merchants and zero-fee payments with order receipts.
 
-Status: tested locally (22 tests, 100% line coverage) and ready for BNB Smart Chain testnet. Not deployed yet. See [contracts/README.md](contracts/README.md) for the security model and deployment steps.
+Status: tested locally with an adversarial regression suite and a CI-enforced 100% line-coverage requirement. Not deployed or audited yet. See [contracts/README.md](contracts/README.md) for the security model, role-configuration requirements and deployment steps.
 
 ## Features
 
 - **Exchange-grade design system.** Dark and light themes built on design tokens, IBM Plex Sans with tabular figures, dense data layouts.
 - **Live market data.** Prices from Binance's public API with flash-on-tick updates, automatic back-off and an offline snapshot fallback.
-- **Complete wallet flows.** Claim rewards, Scan Pay (viewfinder, merchant, amount, receipt with transaction hash), deposit with a scannable QR code, withdraw with address validation, processing and completed states.
+- **Simulated wallet flows.** Claim sample rewards, Scan Pay (simulated viewfinder, merchant, amount and local demo receipt), a non-wallet deposit QR preview, and demo withdrawal with address validation and simulated processing/completion. All wallet state stays in memory and resets when leaving the dashboard or reloading.
 - **Account shell.** Two-step sign-up and log-in, notifications, account and settings panels, referral card.
 - **Responsive.** From 390px phones to wide desktops, with a mobile drawer, bottom tab bar and bottom sheets.
 - **Accessible.** Keyboard focus styles, focus trap and restore in dialogs, reduced-motion support.
@@ -83,17 +83,31 @@ Contracts: Solidity 0.8.28 · Hardhat · OpenZeppelin Contracts 5 · BNB Smart C
 
 ## Getting started
 
-Requires Node.js 20.19+ or 22.12+.
+Use Node.js 22.12+ (22.x) or 24.x. CI is configured to run the web and contract checks on both major versions.
 
 ```bash
-npm install
+npm ci
 npm run dev        # http://localhost:5173
-npm run lint
+npm test           # deterministic frontend unit and component tests
+npm run lint -- --max-warnings=0
 npm run build      # production build in dist/
 npm run preview    # serve the production build locally
 
-cd contracts && npm install && npm test   # smart contract tests
+cd contracts
+npm ci
+npm test           # contract behavior and adversarial regression tests
+npm run coverage   # project coverage report + 100% line-coverage gate
 ```
+
+## Demo accounting
+
+- Wallet amounts use integer hundredths (two decimal places), including validation and Max. These are prototype units, not BEP-20 token base units.
+- The full session ledger drives earnings; only the eight most recent entries are displayed.
+- “Demo earned today” uses the device's local calendar day and refreshes at midnight or on returning to the tab. Spending does not change earned rewards.
+- The chart is illustrative; it is not a recorded on-chain balance history. EDC valuations and the fixed KZT conversion are also illustrative.
+- Root `npm test` covers exact balances, validation, replay protection, daily earnings, cancellation and claim/pay/withdraw UI flows.
+
+See [integrated validation](docs/validation/integrated-quality.md) for executed checks and remaining limits. Actual browser checks and CI for a published commit are required before merge; unit tests alone do not establish deployment readiness.
 
 ## Project structure
 
@@ -105,8 +119,8 @@ src/
 │   ├── dashboard/      Wallet widgets and dialogs: BalanceCard, TasksCard, PayModal…
 │   └── …               Header, Footer, shared UI (CoinIcon, QRCode, Sparkline…)
 ├── data/content.js     Site copy: navigation, reward rates, roadmap, FAQ
-├── state/              Live market data and sign-up dialog providers
-├── lib/                Formatting, theme and link helpers
+├── state/              Market/auth providers, demo reducer and local-day refresh
+├── lib/                Exact demo amounts, formatting, theme and link helpers
 └── index.css           Design tokens (dark and light themes) and component classes
 contracts/              Solidity contracts, tests and deploy script (Hardhat)
 public/                 Favicon and social preview image

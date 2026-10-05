@@ -76,7 +76,7 @@ export default function BalanceChart({ end, height = 168 }) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-xs text-ink-3">Balance history</span>
+        <span className="text-xs text-ink-3">Illustrative balance chart</span>
         <div className="flex gap-1">
           {Object.keys(RANGES).map((r) => (
             <button
