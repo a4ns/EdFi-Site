@@ -31,3 +31,9 @@ dist-ssr
 
 # Vercel
 .vercel
+
+# Local reference-backend databases and SQLite transaction files
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal

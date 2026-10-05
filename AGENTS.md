@@ -14,7 +14,7 @@ Read this before changing anything. It is the single source of truth for how thi
 
 A Learn-to-Earn platform for universities on BNB Chain. Students earn **EDC** (a BEP-20 token) for verified grades, attendance and research, spend it on campus (Scan Pay) or withdraw it. Won **1st place at Crypto Ideathon Kazakhstan by Binance** (Binance Kazakhstan, Sep–Nov 2025). The planned first campus is Kozybayev University, Petropavlovsk (6,000 students).
 
-Current stage: **concept + web prototype + smart contracts tested locally**. The contracts in `contracts/` are not deployed yet and there is no backend. Next stage on the roadmap is the testnet pilot.
+Current stage: **web prototype + locally tested smart contracts + offline reward-ledger foundation**. The contracts in `contracts/` are not deployed. `backend/` is an isolated reference package with synthetic tests, not a running production backend. Next stage on the roadmap is the testnet pilot.
 
 - Live site: https://ed-fi.vercel.app (auto-deploys from `main` via Vercel; every PR gets a preview URL)
 - Repo: https://github.com/a4ns/EdFi-Site
@@ -33,9 +33,13 @@ cd contracts
 npm ci
 npm test               # Hardhat tests for the Solidity contracts, must all pass
 npm run coverage       # coverage report; fails below 100% line coverage (also enforced in CI)
+
+cd ../backend
+npm ci --ignore-scripts # zero third-party dependencies
+npm test               # local SQLite persistence and adversarial service tests
 ```
 
-Use Node.js 22.12+ (22.x) or 24.x. CI is configured to test both versions, with separate web and contract jobs. Vitest and React Testing Library cover demo amounts, wallet transitions and UI flows; Hardhat covers contract behavior and adversarial cases. Verification = tests + lint + build + contract coverage + visual checks (see "Definition of done"). The root ESLint ignores `contracts/`.
+Use Node.js 22.12+ (22.x) or 24.x. CI has separate web, contract and backend jobs; the backend additionally checks exact Node 22.12.0. Its test command includes `--experimental-sqlite` for that minimum version. Vitest and React Testing Library cover demo amounts, wallet transitions and UI flows; Hardhat covers contract behavior and adversarial cases; `node:test` covers the offline backend. Verification = tests + lint + build + contract coverage + visual checks (see "Definition of done"). Root ESLint ignores `contracts/` and applies Node rules to `backend/`.
 
 Deployment is a separate, explicitly authorized task. See `contracts/README.md`; never run a public-network deployment as part of routine validation.
 
@@ -81,6 +85,12 @@ contracts/src/RewardMinter.sol   Mints EDC for EIP-712 results signed by an ORAC
 contracts/src/CampusPay.sol      Merchant registry + zero-fee pay / payWithPermit with order ids
 contracts/test/*.test.js        Hardhat + chai behavior and adversarial tests (keep line coverage at 100%)
 contracts/scripts/deploy.js      Deploys all three, wires roles, adds sample merchants, prints addresses
+
+backend/src/index.js             Offline service and SQLite repository exports
+backend/src/service.js           Validated commands and explicit issuer-authorization boundary
+backend/src/sqlite-repository.js Atomic reward, budget, audit, ledger and idempotency persistence
+backend/src/schema.js            Versioned SQLite schema and append-only constraints
+backend/test/                    Synthetic persistence and adversarial tests
 ```
 
 Data-driven source copy lives in `src/data/content.js` or `dashboard/data.js`; translations live in `src/i18n/`. UI source messages use `t(source, values)`. When changing a source key, update all three languages and the corresponding data/call sites together. Put terminology used by multiple areas in `i18n/common.js` only; dictionary tests reject duplicate keys and missing translations. Keep brands, token symbols and opaque IDs language-neutral.
@@ -130,6 +140,17 @@ Data-driven source copy lives in `src/data/content.js` or `dashboard/data.js`; t
 - A zero admin must be rejected by all three constructors. Token minter and admin roles are trusted powers; tests are not a security audit.
 - Test locally without real keys. Keep `.env`, wallet credentials and machine-local notes out of tracked files. Testnet deployment, role changes, keys and addresses need explicit authorization and verified results.
 
+## Offline backend invariants
+
+- Keep the reference package isolated from the website, contracts and network services. It has no HTTP server or real authentication, funding, academic verification, signing or settlement.
+- Authorization comes only from the explicitly supplied trusted adapter. Default deny; reauthorize reads and retries. Never treat issuer/actor fields from client input as authenticated identity.
+- Quantities are bounded canonical decimal strings with `BigInt` arithmetic. They have no implied EDC scale or price. Never use floating point, SQL `SUM` or arithmetic coercion on stored quantity text.
+- Budgets are issuer/unit scoped and default to zero. Synthetic fixtures may provision test allocations; the service must not expose funding or invent reward economics.
+- Approval reserves allocation without credit. Posting consumes the reserve and writes exactly one balanced ledger pair. Revocation before posting releases the reserve. `posted` and `revoked` are terminal; no post-to-revoke, deletion, reversal or implicit clawback.
+- Business-result uniqueness is `(issuerId, sourceResultId)`. Idempotency keys are unique inside the issuer; fingerprints bind the trusted actor, action and canonical payload. Replay receipts describe historical command outcomes, not current reward state.
+- State/version, budget, audit event, both ledger entries and receipt must commit in one synchronous SQLite transaction. Preserve optimistic version checks, bounded lock waiting, append-only history and startup schema/invariant validation. Storage errors must not silently fall back to memory or reset data.
+- Exercise actual file reopen, concurrent processes, replay, budget contention, permission failures and rollback. Tests of process crashes do not prove hardware power-loss durability. SQLite remains a reference choice until production storage, custody, operators and recovery policies are defined.
+
 ## Honesty rules (important, the repo is reviewed by Binance)
 
 - The product is a concept/prototype. Never present demo numbers as real traction (users, volume, "active scholars"). Demo data must be labelled as sample/illustrative/simulated.
@@ -140,7 +161,7 @@ Data-driven source copy lives in `src/data/content.js` or `dashboard/data.js`; t
 
 ## Definition of done (every change)
 
-1. From the root, `npm ci`, `npm test`, `npm run lint -- --max-warnings=0` and `npm run build` pass. From `contracts/`, `npm ci`, `npm test` and `npm run coverage` pass; the coverage command enforces 100% project line coverage.
+1. From the root, `npm ci`, `npm test`, `npm run lint -- --max-warnings=0` and `npm run build` pass. From `contracts/`, `npm ci`, `npm test` and `npm run coverage` pass; the coverage command enforces 100% project line coverage. From `backend/`, `npm ci --ignore-scripts` and `npm test` pass, including the Node 22.12 compatibility check when backend code changes.
 2. Open the page in the browser at **1440px, 820px and 390px** widths: no horizontal scroll, no overlapping or cut-off text, no console errors.
 3. Check **both themes** (moon/sun icon in the header).
 4. If you touched a flow, click through it (claim → toast → balance; Scan Pay → receipt; withdraw → processing → completed).
