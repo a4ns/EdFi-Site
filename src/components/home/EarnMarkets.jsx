@@ -68,7 +68,7 @@ export default function EarnMarkets() {
               <span className="hidden sm:inline">{t('Reward')}</span>
             </SortHead>
             <th className="hidden w-[110px] text-right font-normal md:table-cell">{t('≈ Value')}</th>
-            <th className="hidden w-[130px] font-normal lg:table-cell">{t('Frequency')}</th>
+            <th className="hidden w-[150px] pl-8 font-normal lg:table-cell">{t('Frequency')}</th>
             <th className="hidden w-[200px] font-normal lg:table-cell">{t('Verified by')}</th>
             <SortHead k="earners24h" sort={sort} onSort={toggleSort} className="hidden w-[130px] md:table-cell">{t('Earners (24h)')}</SortHead>
             <th className="hidden w-[120px] text-right font-normal lg:table-cell">{t('Illustrative trend')}</th>
@@ -93,13 +93,13 @@ export default function EarnMarkets() {
                 +{formatInt(a.reward, locale)} <span className="hidden font-normal text-ink-3 sm:inline">EDC</span>
               </td>
               <td className="num hidden text-right text-sm text-ink-2 md:table-cell">{formatUsd(a.reward * quotes.EDC.price, locale)}</td>
-              <td className="hidden text-sm text-ink-2 lg:table-cell">{t(a.frequency)}</td>
+              <td className="hidden pl-8 text-sm text-ink-2 lg:table-cell">{t(a.frequency)}</td>
               <td className="hidden text-sm text-ink-2 lg:table-cell">
                 {t(a.oracle)}
               </td>
               <td className="num hidden text-right text-sm text-ink-2 md:table-cell">{formatInt(a.earners24h, locale)}</td>
               <td className="hidden text-right lg:table-cell">
-                <Sparkline seed={a.id} />
+                <Sparkline seed={a.id} neutral />
               </td>
               <td className="rounded-r-lg pr-2 text-right">
                 <Link to="/demo#tasks" className="inline-flex min-h-8 items-center rounded-md px-2 py-1 text-sm font-medium text-yellow-text transition-colors hover:bg-raised">
