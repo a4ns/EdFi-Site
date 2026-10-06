@@ -115,7 +115,7 @@ export default function MarketsWidget({ balance }) {
         </>
       )}
       </div>
-      <p className="mt-auto pt-3 text-xs text-ink-3">{tab === 'holding'
+      <p className="pt-3 text-xs text-ink-3">{tab === 'holding'
         ? t(live ? 'BNB uses live market data. EDC is simulated.' : 'BNB uses a saved price snapshot. EDC is simulated.')
         : t(live ? 'Live prices from Binance market data. EDC is simulated.' : 'Market prices are delayed or illustrative. EDC is simulated.')}</p>
     </section>

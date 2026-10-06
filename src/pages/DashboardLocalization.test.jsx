@@ -162,6 +162,7 @@ describe('dashboard locale changes preserve demo accounting', () => {
     const originalSeries = series.getAttribute('d');
     changeLocale(locale);
     const caption = translate(locale, 'Demo conversion: 1 USD = {rate} KZT. Fixed assumption, not a live exchange rate.', { rate: KZT_PER_USD });
+    fireEvent.click(balance().getByRole('button', { name: translate(locale, 'About these values') }));
     expect(balance().getByText(caption)).toBeVisible();
     expect(balance().getByRole('button', { name: translate(locale, 'Last {count} days', { count: 30 }) })).toHaveAttribute('aria-pressed', 'true');
     const axisDates = [new Date(2026, 8, 6, 12), new Date(2026, 8, 21, 12), NOW];

@@ -81,6 +81,8 @@ describe('balance currency keyboard selection', () => {
     await user.click(trigger);
     await user.tab();
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'About these values' })).toHaveFocus();
+    await user.tab();
     expect(screen.getByRole('button', { name: 'Scan Pay' })).toHaveFocus();
     await user.click(trigger);
     await user.tab({ shift: true });

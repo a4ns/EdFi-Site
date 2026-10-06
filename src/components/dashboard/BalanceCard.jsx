@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, Download, Eye, EyeOff, QrCode, Upload } from 'lucide-react';
+import { ChevronDown, Download, Eye, EyeOff, Info, QrCode, Upload } from 'lucide-react';
 import BalanceChart from './BalanceChart';
 import { useMarkets } from '../../state/markets';
 import { KZT_PER_USD, formatAmount, formatCurrency, formatInt } from '../../lib/format';
@@ -10,6 +10,7 @@ import { useDisclosure } from '../../state/useDisclosure';
 const UNITS = ['EDC', 'USDT', 'KZT'];
 
 export default function BalanceCard({ balanceUnits, earnedUnits, onPay, onDeposit, onWithdraw }) {
+  const [notesOpen, setNotesOpen] = useState(false);
   const { locale, t } = useLocale();
   const [hidden, setHidden] = useState(false);
   const [unit, setUnit] = useState('EDC');
@@ -108,13 +109,25 @@ export default function BalanceCard({ balanceUnits, earnedUnits, onPay, onDeposi
           </div>
           <p className="num mt-1 text-sm text-ink-3">
             ≈ {mask(formatCurrency(usd, 'USD', locale))} <span className="text-ink-4">·</span> {mask(formatCurrency(usd * KZT_PER_USD, 'KZT', locale, 0))}
+            <button
+              type="button"
+              className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-md align-middle text-ink-3 transition-colors hover:text-ink"
+              aria-label={t('About these values')}
+              aria-expanded={notesOpen}
+              aria-controls="balance-notes"
+              onClick={() => setNotesOpen((open) => !open)}
+            >
+              <Info size={14} />
+            </button>
           </p>
           <p className="num mt-3 text-sm text-ink-3">
             {t('Demo earned today')}{' '}
             <span className="font-medium text-up">{mask(`+${formatDemoAmount(earnedUnits, locale)} EDC`)}</span>
           </p>
-          <p className="mt-1 text-xs text-ink-3">{t('Your local calendar day · Illustrative value and exchange rate')}</p>
-          <p className="mt-1 max-w-lg text-xs text-ink-3">{t('Demo conversion: 1 USD = {rate} KZT. Fixed assumption, not a live exchange rate.', { rate: formatInt(KZT_PER_USD, locale) })}</p>
+          <div id="balance-notes" hidden={!notesOpen} className="mt-2 max-w-lg rounded-lg bg-raised px-3 py-2 text-xs leading-5 text-ink-3">
+            <p>{t('Your local calendar day · Illustrative value and exchange rate')}</p>
+            <p>{t('Demo conversion: 1 USD = {rate} KZT. Fixed assumption, not a live exchange rate.', { rate: formatInt(KZT_PER_USD, locale) })}</p>
+          </div>
         </div>
 
         <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto">

@@ -5,6 +5,7 @@ export const messages = {
   'Clipboard access is unavailable. Paste or type a sample address manually.': { ru: 'Нет доступа к буферу обмена. Вставьте или введите пример адреса вручную.', kk: 'Алмасу буфері қолжетімсіз. Үлгі мекенжайды қолмен қойыңыз немесе енгізіңіз.' },
   'Clipboard is empty. Enter a sample address manually.': { ru: 'Буфер обмена пуст. Введите пример адреса вручную.', kk: 'Алмасу буфері бос. Үлгі мекенжайды қолмен енгізіңіз.' },
   'Referral link': { ru: 'Ссылка-приглашение', kk: 'Шақыру сілтемесі' },
+  'About these values': { ru: 'Об этих значениях', kk: 'Бұл мәндер туралы' },
   'Verify': { ru: 'Проверить', kk: 'Тексеру' },
   'Demo tasks only. Steps and verification run locally; no university data is sent.': { ru: 'Демонстрационные задания. Шаги и проверка выполняются локально; данные университета не отправляются.', kk: 'Тек демотапсырмалар. Қадамдар мен тексеру жергілікті орындалады; университет деректері жіберілмейді.' },
   'Demo verification complete. Your sample reward is ready to claim': { ru: 'Демопроверка завершена. Пример награды готов к получению', kk: 'Демотексеру аяқталды. Үлгі сыйақыны алуға болады' },
