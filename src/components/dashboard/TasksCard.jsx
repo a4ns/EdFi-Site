@@ -7,7 +7,7 @@ function Progress({ value, total }) {
   const { t } = useLocale();
   return (
     <div role="progressbar" aria-label={t('Task progress')} aria-valuenow={value} aria-valuemin={0} aria-valuemax={total} className="h-1 w-full overflow-hidden rounded-full bg-raised">
-      <div className="h-full rounded-full bg-yellow-text transition-[width] duration-500" style={{ width: `${(value / total) * 100}%` }} />
+      <div className="h-full rounded-full bg-yellow-accent transition-[width] duration-500" style={{ width: `${(value / total) * 100}%` }} />
     </div>
   );
 }

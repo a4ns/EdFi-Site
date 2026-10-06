@@ -30,6 +30,11 @@ describe.each(['dark', 'light'])('%s theme contrast', (theme) => {
       }
     }
   });
+  it('keeps the accent yellow for large text and graphics above 3:1', () => {
+    for (const surface of ['page', 'deep', 'card']) {
+      expect(contrast(colors['yellow-accent'], colors[surface]), `yellow-accent on ${surface}`).toBeGreaterThanOrEqual(3);
+    }
+  });
   it('has a visible focus indicator against the surrounding surfaces', () => {
     for (const surface of ['page', 'deep', 'card', 'raised']) {
       expect(contrast(colors.focus, colors[surface]), `focus on ${surface}`).toBeGreaterThanOrEqual(3);

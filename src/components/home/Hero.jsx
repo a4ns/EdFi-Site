@@ -91,7 +91,7 @@ export default function Hero() {
         <h1 className="break-words text-[40px] font-semibold leading-[48px] text-ink sm:text-[56px] sm:leading-[64px] md:text-[64px] md:leading-[72px] lg:text-[60px] lg:leading-[68px] xl:text-[68px] xl:leading-[76px]">
           <span className="block">{t('ACADEMIC')}</span>
           <span className="block">{t('STATUS,')}</span>
-          <span className="block text-yellow-text">{t('NOW LIQUID.')}</span>
+          <span className="block text-yellow-accent">{t('NOW LIQUID.')}</span>
         </h1>
 
         <div className="mt-8 flex items-center gap-3">

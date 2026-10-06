@@ -15,7 +15,7 @@ const OTHER_HOLDINGS = [
 ];
 // A fixed demo valuation, not a fetched quote or a measured market change.
 const USDT = { symbol: 'USDT', name: 'TetherUS', price: 1, change: null, tick: 0, dir: null };
-const BAR = { EDC: 'bg-yellow-text', BNB: 'bg-ink-2', USDT: 'bg-up' };
+const BAR = { EDC: 'bg-yellow-accent', BNB: 'bg-ink-2', USDT: 'bg-up' };
 
 export default function MarketsWidget({ balance }) {
   const { locale, t } = useLocale();

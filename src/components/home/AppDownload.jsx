@@ -1,7 +1,7 @@
 import { formatAmount } from '../../lib/format';
 import { useLocale } from '../../state/locale';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Monitor, Smartphone } from 'lucide-react';
+import { ChevronRight, Smartphone } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import QRCode from '../QRCode';
 import { appUrl } from '../../lib/links';
@@ -17,7 +17,6 @@ function AppleGlyph() {
 const PLATFORMS = [
   ['iOS web demo', <AppleGlyph key="ios" />],
   ['Android web demo', <Smartphone key="and" size={20} />],
-  ['Web App', <Monitor key="web" size={20} />],
 ];
 
 export default function AppDownload() {

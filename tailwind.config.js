@@ -28,6 +28,7 @@ export default {
           hover: '#F0B90B',
           on: '#202630',        // text on yellow
           text: 'rgb(var(--c-yellow-text) / <alpha-value>)', // yellow used as text (darker on light theme)
+          accent: 'rgb(var(--c-yellow-accent) / <alpha-value>)', // large display text, bars, underlines
         },
         up: 'rgb(var(--c-up) / <alpha-value>)',
         down: 'rgb(var(--c-down) / <alpha-value>)',

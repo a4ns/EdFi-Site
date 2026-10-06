@@ -42,7 +42,7 @@ function PriceRange({ quote, simulated }) {
           })}>
             <div className="relative h-2 rounded-full bg-raised">
               <div className="h-full rounded-full bg-yellow/40" style={{ width: `${position}%` }} />
-              <span className="absolute top-1/2 h-4 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-text" style={{ left: `${position}%` }} />
+              <span className="absolute top-1/2 h-4 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-accent" style={{ left: `${position}%` }} />
             </div>
           </div>
           <div className="mt-4 flex justify-between gap-4 text-sm">
