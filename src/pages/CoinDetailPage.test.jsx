@@ -175,4 +175,19 @@ describe('market detail navigation', () => {
     expect(languageButton('kk')).toHaveAttribute('aria-pressed', 'true');
     expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('kk');
   });
+
+  it('stars a coin and lists it under Favorites', async () => {
+    const user = userEvent.setup();
+    render(<Providers path="/markets" />);
+    await user.click(screen.getByRole('tab', { name: 'Favorites' }));
+    expect(screen.getByText('No favorites yet. Tap the star next to a coin.')).toBeVisible();
+    await user.click(screen.getByRole('tab', { name: 'All' }));
+    await user.click(screen.getByRole('button', { name: 'Favorite BTC' }));
+    expect(screen.getByRole('button', { name: 'Favorite BTC' })).toHaveAttribute('aria-pressed', 'true');
+    await user.click(screen.getByRole('tab', { name: 'Favorites' }));
+    const table = screen.getByRole('table');
+    expect(within(table).getByRole('link', { name: 'View Bitcoin (BTC) details' })).toBeVisible();
+    expect(within(table).queryByRole('link', { name: 'View Ethereum (ETH) details' })).not.toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('edfi.favorites'))).toEqual(['BTC']);
+  });
 });

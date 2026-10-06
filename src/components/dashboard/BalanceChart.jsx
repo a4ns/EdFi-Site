@@ -63,7 +63,7 @@ export default function BalanceChart({ end, height = 168 }) {
         </div>
       </div>
       <div ref={wrap} className="relative" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
-        <svg width={width} height={height} className="block text-yellow-text" aria-hidden="true">
+        <svg width={width} height={height} className="block text-yellow-accent" aria-hidden="true">
           <defs>
             <linearGradient id={gid} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0" stopColor="currentColor" stopOpacity="0.16" />

@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDown, ArrowUp, ArrowUpDown, Search } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Search, Star } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CoinIcon from '../components/CoinIcon';
@@ -10,8 +10,10 @@ import { Change, ChangePill, Price } from '../components/PriceCell';
 import { useMarkets } from '../state/markets';
 import { formatCompact, formatUsd } from '../lib/format';
 import { useLocale } from '../state/locale';
+import { readFavorites, toggleFavorite } from '../lib/favorites';
 
 const TABS = [
+  ['favorites', 'Favorites'],
   ['all', 'All'],
   ['gainers', 'Top Gainers'],
   ['losers', 'Top Losers'],
@@ -59,6 +61,7 @@ export default function MarketsPage() {
   const panelId = useId();
   const [q, setQ] = useState('');
   const [sort, setSort] = useState({ key: null, dir: 'desc' });
+  const [favorites, setFavorites] = useState(readFavorites);
 
   useEffect(() => {
     document.title = t('Markets | EdFi');
@@ -70,13 +73,14 @@ export default function MarketsPage() {
   const rows = useMemo(() => {
     const term = q.trim().toLowerCase();
     let out = list.filter((c) => !term || c.symbol.toLowerCase().includes(term) || c.name.toLowerCase().includes(term));
-    if (tab === 'gainers') out = out.filter((c) => c.change > 0).sort((a, b) => b.change - a.change);
+    if (tab === 'favorites') out = out.filter((c) => favorites.includes(c.symbol));
+    else if (tab === 'gainers') out = out.filter((c) => c.change > 0).sort((a, b) => b.change - a.change);
     else if (tab === 'losers') out = out.filter((c) => c.change < 0).sort((a, b) => a.change - b.change);
     else if (tab === 'volume') out = [...out].sort((a, b) => b.volume - a.volume);
     else out = [...out].sort((a, b) => (a.symbol === 'EDC' ? -1 : b.symbol === 'EDC' ? 1 : b.volume - a.volume));
     if (sort.key) out = [...out].sort((a, b) => (sort.dir === 'desc' ? b[sort.key] - a[sort.key] : a[sort.key] - b[sort.key]));
     return out;
-  }, [list, tab, q, sort]);
+  }, [list, tab, q, sort, favorites]);
 
   const toggleSort = (key) => setSort((s) => (s.key === key ? { key, dir: s.dir === 'desc' ? 'asc' : 'desc' } : { key, dir: 'desc' }));
   const top = (coins, fn) => [...coins].sort(fn).slice(0, 3);
@@ -134,6 +138,16 @@ export default function MarketsPage() {
             {rows.map((c) => (
               <tr key={c.symbol} className="h-16 border-t border-line/60 transition-colors hover:bg-card">
                 <td className="rounded-l-lg pl-2">
+                  <div className="flex min-w-0 items-center gap-1">
+                  <button
+                    type="button"
+                    aria-pressed={favorites.includes(c.symbol)}
+                    aria-label={t('Favorite {symbol}', { symbol: c.symbol })}
+                    onClick={() => setFavorites((current) => toggleFavorite(current, c.symbol))}
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors hover:text-yellow-text ${favorites.includes(c.symbol) ? 'text-yellow-accent' : 'text-ink-4'}`}
+                  >
+                    <Star size={16} fill={favorites.includes(c.symbol) ? 'currentColor' : 'none'} />
+                  </button>
                   <Link to={`/markets/${c.symbol}`} aria-label={t('View {name} ({symbol}) details', { name: c.name, symbol: c.symbol })} className="flex min-w-0 items-center gap-3 rounded">
                     <CoinIcon symbol={c.symbol} size={28} />
                     <span className="min-w-0">
@@ -144,6 +158,7 @@ export default function MarketsPage() {
                       <span className="block truncate text-xs text-ink-3">{c.name}</span>
                     </span>
                   </Link>
+                  </div>
                 </td>
                 <td className="text-right text-sm font-medium text-ink">
                   <Price quote={c} />
@@ -166,7 +181,7 @@ export default function MarketsPage() {
           </tbody>
         </table>
         <p className="mt-4 hidden text-xs leading-5 text-ink-3 lg:block">{t('Trend lines are illustrative graphics, not historical market data.')}</p>
-        {rows.length === 0 && <p className="py-16 text-center text-sm text-ink-3">{t('No coins match your filters.')}</p>}
+        {rows.length === 0 && <p className="py-16 text-center text-sm text-ink-3">{t(tab === 'favorites' && !q.trim() ? 'No favorites yet. Tap the star next to a coin.' : 'No coins match your filters.')}</p>}
         </div>
       </main>
       <Footer />
