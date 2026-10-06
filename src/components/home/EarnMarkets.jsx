@@ -56,7 +56,7 @@ export default function EarnMarkets() {
       {EARN_CATEGORIES.slice(1).map((c) => (
         <span key={c} id={`earn-${c.toLowerCase()}`} className="block h-0 scroll-mt-24" aria-hidden="true" />
       ))}
-      <FilterTabs label={t('Reward categories')} tabs={EARN_CATEGORIES.map((category) => ({ id: category, label: t(category) }))} value={cat} onChange={setCat} panelId={panelId} className="no-scrollbar mt-8 flex gap-6 overflow-x-auto border-b border-line [mask-image:linear-gradient(to_right,#000_calc(100%-32px),transparent)] md:[mask-image:none]" />
+      <FilterTabs label={t('Reward categories')} tabs={EARN_CATEGORIES.map((category) => ({ id: category, label: t(category) }))} value={cat} onChange={setCat} panelId={panelId} className="no-scrollbar mt-8 flex gap-6 overflow-x-auto border-b border-line [mask-image:linear-gradient(to_right,#000_calc(100%-56px),transparent)] md:[mask-image:none]" />
 
       <div id={panelId} role="tabpanel" aria-labelledby={`${panelId}-tab-${cat}`} tabIndex={0}>
       <table className="mt-2 w-full table-fixed">

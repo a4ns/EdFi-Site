@@ -33,7 +33,7 @@ function Action({ task, onClaim, onContinue, onVerify }) {
   if (task.status === 'verifying') {
     return (
       <button type="button" className="btn btn-secondary btn-sm h-auto min-h-8 w-[106px] shrink-0 whitespace-normal px-2 py-1 text-center sm:w-[116px]" onClick={(event) => { if (event.detail <= 1) onVerify(task); }}>
-        {t('Simulate verification')}
+        {t('Verify')}
       </button>
     );
   }

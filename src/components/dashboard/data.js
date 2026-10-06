@@ -22,10 +22,10 @@ export function initialTransactions(now = Date.now()) {
 
 export const INITIAL_TASKS = [
   { id: 'week', title: '100% weekly attendance', sub: 'Sample smart-card check-ins', rewardUnits: 2500, progress: 5, total: 5, status: 'claimable' },
-  { id: 'course', title: 'Blockchain Basics course', sub: 'Sample course · 4 demo steps', rewardUnits: 4000, progress: 3, total: 4, status: 'active', cta: 'Simulate lesson' },
+  { id: 'course', title: 'Blockchain Basics course', sub: 'Sample course · 4 demo steps', rewardUnits: 4000, progress: 3, total: 4, status: 'active', cta: 'Next lesson' },
   { id: 'gpa', title: 'Semester GPA 3.5+', sub: 'Sample GPA 3.72 · local demo', rewardUnits: 20000, progress: 1, total: 1, status: 'verifying', verify: true },
-  { id: 'volunteer', title: 'Volunteer 10 hours', sub: 'Sample volunteering hours', rewardUnits: 10000, progress: 6, total: 10, status: 'active', cta: 'Add demo hour', doneText: 'Demo hour added' },
-  { id: 'paper', title: 'Publish a research article', sub: 'Sample article · no DOI required', rewardUnits: 30000, progress: 0, total: 1, status: 'active', cta: 'Start demo review', verify: true },
+  { id: 'volunteer', title: 'Volunteer 10 hours', sub: 'Sample volunteering hours', rewardUnits: 10000, progress: 6, total: 10, status: 'active', cta: 'Log hour', doneText: 'Demo hour added' },
+  { id: 'paper', title: 'Publish a research article', sub: 'Sample article · no DOI required', rewardUnits: 30000, progress: 0, total: 1, status: 'active', cta: 'Submit', verify: true },
 ];
 
 export const MERCHANTS = [

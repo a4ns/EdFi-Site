@@ -125,7 +125,7 @@ describe('Dashboard demo wallet flows', () => {
     expect(course.getByText('3/4')).toBeVisible();
     expect(course.queryByRole('button', { name: 'Claim' })).not.toBeInTheDocument();
 
-    await user.click(course.getByRole('button', { name: 'Simulate lesson' }));
+    await user.click(course.getByRole('button', { name: 'Next lesson' }));
     expect(course.getByText('4/4')).toBeVisible();
     expect(screen.getByRole('status')).toHaveTextContent('sample reward is ready to claim');
     expectBalance('450.00');
@@ -140,13 +140,13 @@ describe('Dashboard demo wallet flows', () => {
   it('completes local research verification and claims once without contacting a registrar', async () => {
     const user = renderDashboard();
     const research = taskRow('Publish a research article');
-    await user.dblClick(research.getByRole('button', { name: 'Start demo review' }));
+    await user.dblClick(research.getByRole('button', { name: 'Submit' }));
 
-    expect(research.getByRole('button', { name: 'Simulate verification' })).toBeVisible();
+    expect(research.getByRole('button', { name: 'Verify' })).toBeVisible();
     expect(screen.getByRole('status')).toHaveTextContent('No DOI or registrar request was sent');
     expectBalance('450.00');
     expect(transactionRows()).toHaveLength(6);
-    await user.dblClick(research.getByRole('button', { name: 'Simulate verification' }));
+    await user.dblClick(research.getByRole('button', { name: 'Verify' }));
     expect(research.getByRole('button', { name: 'Claim' })).toBeVisible();
     expectBalance('450.00');
     expect(transactionRows()).toHaveLength(6);

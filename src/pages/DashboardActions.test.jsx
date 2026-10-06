@@ -165,7 +165,7 @@ describe('complete local task steps', () => {
     renderDashboard();
     click(`Switch to ${locale}`);
     const gpa = task('Semester GPA 3.5+', locale);
-    fireEvent.click(gpa.getByRole('button', { name: translate(locale, 'Simulate verification') }));
+    fireEvent.click(gpa.getByRole('button', { name: translate(locale, 'Verify') }));
     expectBalance(45000, locale);
     expect(rows()).toHaveLength(6);
     expect(screen.getByRole('status')).toHaveTextContent(translate(locale, 'Demo verification complete. Your sample reward is ready to claim'));
@@ -175,7 +175,7 @@ describe('complete local task steps', () => {
     expect(rows()).toHaveLength(7);
     const volunteer = task('Volunteer 10 hours', locale);
     for (let hour = 7; hour <= 10; hour += 1) {
-      fireEvent.click(volunteer.getByRole('button', { name: translate(locale, 'Add demo hour') }));
+      fireEvent.click(volunteer.getByRole('button', { name: translate(locale, 'Log hour') }));
       expect(volunteer.getByRole('progressbar')).toHaveAttribute('aria-valuenow', String(hour));
       expectBalance(65000, locale);
     }
