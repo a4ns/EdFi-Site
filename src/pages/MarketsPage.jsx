@@ -21,7 +21,7 @@ const TABS = [
 function HotCard({ title, rows, emptyMessage = 'No market quotes are available.' }) {
   const { t } = useLocale();
   return (
-    <div className="card p-4 md:p-5">
+    <div className="card w-[86%] shrink-0 snap-start p-4 md:w-auto md:p-5">
       <h2 className="text-base font-semibold text-ink">{t(title)}</h2>
       {rows.length > 0 ? <ul className="mt-2">
         {rows.map((r) => (
@@ -91,7 +91,8 @@ export default function MarketsPage() {
           <span>{t(live ? 'Live prices from Binance market data.' : 'Price snapshot.')} {t('EDC prices are simulated. The token is not deployed.')}</span>
         </p>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        {/* Phones: one swipeable row with the next card peeking; tablet and up: three columns. */}
+        <div className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0">
           <HotCard title="Hot Coins" rows={top(list, (a, b) => b.volume - a.volume)} />
           <HotCard title="Top Gainers" rows={top(list.filter((coin) => coin.change > 0), (a, b) => b.change - a.change)} emptyMessage="No coins with a positive 24h change." />
           <HotCard title="Top Losers" rows={top(list.filter((coin) => coin.change < 0), (a, b) => a.change - b.change)} emptyMessage="No coins with a negative 24h change." />
