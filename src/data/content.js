@@ -1,4 +1,4 @@
-// Static content for the EdFi site. Numbers are demo values for the Kozybayev University pilot.
+// Static content for the EdFi concept prototype. Numbers illustrate the proposed campus pilot.
 
 export const COINS = {
   EDC: { name: 'EdFi Coin', color: '#F0B90B' },
@@ -47,7 +47,7 @@ export const NAV = [
       { icon: 'GraduationCap', title: 'Academic Rewards', desc: 'Grades and GPA paid out in EDC', href: '#earn-academic' },
       { icon: 'CalendarCheck', title: 'Attendance Streaks', desc: 'Weekly and monthly check-in bonuses', href: '#earn-attendance' },
       { icon: 'FlaskConical', title: 'Research Grants', desc: 'Earn for published, DOI-verified work', href: '#earn-research' },
-      { icon: 'PiggyBank', title: 'EDC Staking', desc: 'Lock EDC for a boosted earn rate', href: '#products' },
+      { icon: 'PiggyBank', title: 'EDC Staking', desc: 'Staking is planned, not available', href: '#faq-staking' },
     ],
   },
   { label: 'Markets', href: '/markets' },
@@ -56,26 +56,25 @@ export const NAV = [
   {
     label: 'More',
     menu: [
-      { icon: 'Building2', title: 'For Universities', desc: 'Connect your registrar to EdFi oracles', href: '#products' },
+      { icon: 'Building2', title: 'For Universities', desc: 'Explore the proposed university workflow', href: '#faq-verification' },
       { icon: 'CircleHelp', title: 'FAQ', desc: 'How earning, paying and withdrawing work', href: '#faq' },
       { icon: 'Smartphone', title: 'Download App', desc: 'Earn on the go, iOS and Android', href: '#download' },
     ],
   },
 ];
 
-export const NEWS = [
-  'EdFi wins Crypto Ideathon Kazakhstan',
-  'How EDC rewards are calculated',
-  'Campus Pay: spend EDC at the canteen',
-  'Next up: testnet pilot on campus',
-  'Mainnet migration and eGov roadmap',
+export const GUIDE_LINKS = [
+  { label: 'How do I earn EDC?', href: '#earn' },
+  { label: 'What can I spend EDC on?', href: '#products' },
+  { label: 'Can I withdraw EDC to an exchange?', href: '#faq-withdrawals' },
+  { label: 'What happens next?', href: '#roadmap' },
 ];
 
 export const TRUST_STATS = [
-  { value: '6,000', label: 'Students on the pilot campus' },
-  { value: '8', label: 'Ways to earn EDC' },
-  { value: '0', label: 'Fees on campus payments' },
-  { value: '~3s', label: 'Settlement on BNB Chain' },
+  { value: 6000, label: 'Students at the proposed pilot campus' },
+  { value: 8, label: 'Proposed ways to earn EDC' },
+  { value: 0, label: 'Proposed campus payment fees' },
+  { value: 'Prototype', label: 'Current product stage' },
 ];
 
 // Earning "markets": what students get paid for.
@@ -97,21 +96,21 @@ export const PRODUCTS = [
     icon: 'GraduationCap',
     tag: 'Earn',
     title: 'Get paid for learning',
-    desc: 'Grades, attendance and published research are verified by university oracles and minted as EDC to your wallet.',
+    desc: 'The proposed model rewards university-verified grades, attendance and research with EDC. Try sample rewards in the demo.',
     cta: 'Start earning',
   },
   {
     icon: 'QrCode',
     tag: 'Spend',
     title: 'Pay across campus',
-    desc: 'Scan to pay at the canteen, dormitory office or merch store. Zero fees, settled on BNB Chain in seconds.',
+    desc: 'Explore a simulated QR payment for a campus canteen. Real campus payments and zero platform fees are planned.',
     cta: 'See Campus Pay',
   },
   {
     icon: 'ArrowLeftRight',
     tag: 'Withdraw',
     title: 'Take it anywhere',
-    desc: 'EDC is a BEP-20 token. Move it to any BNB Chain wallet, swap it, or stake it for a higher earn rate.',
+    desc: 'Preview a simulated withdrawal. EDC contracts are tested locally; wallet transfers, swaps and staking are not available yet.',
     cta: 'How withdrawals work',
   },
 ];
@@ -128,7 +127,7 @@ export const ROADMAP = [
     phase: 'Phase 2',
     status: 'Up next',
     title: 'Testnet pilot',
-    desc: 'Smart contracts on BNB Smart Chain testnet and a sandbox pilot at Kozybayev University (6,000 students).',
+    desc: 'Planned deployment to BNB Smart Chain testnet and a sandbox pilot at Kozybayev University (6,000 students).',
   },
   {
     phase: 'Phase 3',
@@ -147,28 +146,39 @@ export const ROADMAP = [
 
 export const FAQ = [
   {
+    id: 'staking',
+    q: 'Is staking available?',
+    a: 'Staking is a planned concept only. The prototype has no staking contract, deposits, yield or token lock-up. No funds can be staked here.',
+  },
+  {
+    id: 'about',
     q: 'What is EdFi?',
-    a: 'EdFi is a Learn-to-Earn platform for universities. Verified academic results such as grades, attendance and research are rewarded with EDC, a BEP-20 token on BNB Chain that students can spend on campus or withdraw.',
+    a: 'EdFi is a Learn-to-Earn concept for universities. The proposed model rewards verified grades, attendance and research with EDC, a BEP-20 token. Campus payments and withdrawals are planned; the current web prototype uses sample data.',
   },
   {
+    id: 'rewards',
     q: 'How do I earn EDC?',
-    a: 'Sign in with your university account and your results sync automatically. Each verified activity (an A on an exam, a full week of attendance, a published article) mints the matching reward to your EdFi wallet. See the Learn & Earn table for current rates.',
+    a: 'In the demo, claim sample rewards for activities such as an A on an exam, full attendance or a published article. University sign-in, automatic result syncing and real token rewards are not connected yet. The Learn & Earn table shows proposed rates.',
   },
   {
+    id: 'verification',
     q: 'How is my academic data verified?',
-    a: 'EdFi never takes self-reported data. University systems (LMS, registrar, smart-card check-in, DOI registries) sign each result, and an on-chain oracle checks the signature before any EDC is minted.',
+    a: 'The planned model uses university systems such as an LMS, registrar, attendance records and DOI registries to verify results. The locally tested contracts verify a signed result before minting EDC. University integrations and the oracle service are not live yet.',
   },
   {
+    id: 'payments',
     q: 'What can I spend EDC on?',
-    a: 'Canteen meals, dormitory fees and university merchandise during the pilot. Scan the merchant QR code in the app and the payment settles in about three seconds with no fees.',
+    a: 'Canteen meals, dormitory fees and university merchandise are planned use cases. The current Scan Pay demo only simulates a payment: no funds move and nothing is sent to a blockchain.',
   },
   {
+    id: 'withdrawals',
     q: 'Can I withdraw EDC to an exchange?',
-    a: 'Yes. EDC lives on BNB Chain, so you can send it to any BNB Chain wallet. From there it can be swapped or moved to an exchange. Withdrawals are fee-free during the pilot.',
+    a: 'Not yet. The EDC contracts have not been deployed, and the demo cannot send tokens to a wallet or exchange. Exchange listings, liquidity and real withdrawals are not available.',
   },
   {
+    id: 'status',
     q: 'Is EdFi live?',
-    a: 'EdFi is a concept prototype that won 1st place at Crypto Ideathon Kazakhstan by Binance. The next step is a testnet pilot at Kozybayev University. The dashboard demo uses sample data, so you can try every flow without a wallet.',
+    a: 'EdFi is a concept prototype that won 1st place at Crypto Ideathon Kazakhstan by Binance. The contracts are tested locally and are not deployed. A testnet pilot at Kozybayev University is the next planned step. Try the demo with sample data and no connected wallet.',
   },
 ];
 
@@ -179,15 +189,15 @@ export const FOOTER_COLUMNS = [
   },
   {
     title: 'Products',
-    links: [['Learn & Earn', '#earn'], ['Campus Pay', '#products'], ['EDC Wallet', '/demo'], ['Staking', '#products']],
+    links: [['Learn & Earn', '#earn'], ['Campus Pay', '#products'], ['EDC Wallet', '/demo'], ['Staking', '#faq-staking']],
   },
   {
     title: 'Universities',
-    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq'], ['Kozybayev pilot', '#roadmap']],
+    links: [['Partner with EdFi', '#products'], ['Oracle verification', '#faq-verification'], ['Kozybayev pilot', '#roadmap']],
   },
   {
     title: 'Learn',
-    links: [['What is Learn-to-Earn?', '#faq'], ['How rewards work', '#earn'], ['Withdrawing EDC', '#faq']],
+    links: [['What is Learn-to-Earn?', '#faq'], ['How rewards work', '#earn'], ['Withdrawing EDC', '#faq-withdrawals']],
   },
   {
     title: 'Support',

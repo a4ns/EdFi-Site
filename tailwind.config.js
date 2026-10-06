@@ -28,9 +28,13 @@ export default {
           hover: '#F0B90B',
           on: '#202630',        // text on yellow
           text: 'rgb(var(--c-yellow-text) / <alpha-value>)', // yellow used as text (darker on light theme)
+          accent: 'rgb(var(--c-yellow-accent) / <alpha-value>)', // large display text, bars, underlines
         },
         up: 'rgb(var(--c-up) / <alpha-value>)',
         down: 'rgb(var(--c-down) / <alpha-value>)',
+        'up-on': 'rgb(var(--c-up-on) / <alpha-value>)',
+        'down-on': 'rgb(var(--c-down-on) / <alpha-value>)',
+        focus: 'rgb(var(--c-focus) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['"IBM Plex Sans"', 'Arial', 'sans-serif'],
@@ -49,16 +53,16 @@ export default {
         },
         'slide-in': { from: { transform: 'translateX(100%)' }, to: { transform: 'translateX(0)' } },
         scan: { '0%, 100%': { top: '8px' }, '50%': { top: 'calc(100% - 10px)' } },
-        'flash-up': { '0%': { backgroundColor: 'rgba(14, 203, 129, 0.18)' }, '100%': { backgroundColor: 'transparent' } },
-        'flash-down': { '0%': { backgroundColor: 'rgba(246, 70, 93, 0.18)' }, '100%': { backgroundColor: 'transparent' } },
+        'flash-up': { '0%, 35%': { color: 'rgb(var(--c-up))' } },
+        'flash-down': { '0%, 35%': { color: 'rgb(var(--c-down))' } },
       },
       animation: {
         'fade-in': 'fade-in 150ms ease-out',
         'pop-in': 'pop-in 180ms ease-out',
         'slide-in': 'slide-in 220ms cubic-bezier(0.2, 0, 0, 1)',
         scan: 'scan 2s ease-in-out infinite',
-        'flash-up': 'flash-up 900ms ease-out',
-        'flash-down': 'flash-down 900ms ease-out',
+        'flash-up': 'flash-up 700ms ease-out',
+        'flash-down': 'flash-down 700ms ease-out',
       },
     },
   },

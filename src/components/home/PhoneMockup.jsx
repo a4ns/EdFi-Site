@@ -1,8 +1,9 @@
+import { useLocale } from '../../state/locale';
 import { ArrowUpRight, Bell, Eye, GraduationCap, Home, LineChart, QrCode, Search, Send, Wallet, Wifi } from 'lucide-react';
 import CoinIcon from '../CoinIcon';
 import { ChangePill } from '../PriceCell';
 import { useMarkets } from '../../state/markets';
-import { formatPrice } from '../../lib/format';
+import { formatAmount, formatPrice, formatUsd, formatChange } from '../../lib/format';
 
 const ACTIONS = [
   ['Scan Pay', QrCode],
@@ -21,6 +22,7 @@ const TABS = [
 
 // A Binance-app style home screen for the EdFi wallet, drawn in HTML.
 export default function PhoneMockup() {
+  const { locale, t } = useLocale();
   const { quotes } = useMarkets();
   const balance = 450;
   return (
@@ -51,12 +53,12 @@ export default function PhoneMockup() {
         {/* balance */}
         <div className="px-4">
           <p className="flex items-center gap-1 text-[12px] text-ink-3">
-            Est. Total Value (EDC) <Eye size={11} />
+            {t('Demo balance (EDC)')} <Eye size={11} />
           </p>
-          <p className="num mt-1 text-[30px] font-semibold leading-9 text-ink">{balance.toFixed(2)}</p>
-          <p className="num text-[12px] text-ink-3">≈ ${formatPrice(balance * quotes.EDC.price)}</p>
+          <p className="num mt-1 text-[30px] font-semibold leading-9 text-ink">{formatAmount(balance, 2, locale)}</p>
+          <p className="num text-[12px] text-ink-3">≈ {formatUsd(balance * quotes.EDC.price, locale)}</p>
           <p className="num mt-1 text-[12px] text-ink-3">
-            Today&apos;s Earnings <span className="text-up">+50.00 EDC (+12.50%)</span>
+            {t('Sample earnings')} <span className="text-up">+{formatAmount(50, 2, locale)} EDC ({formatChange(12.5, locale)})</span>
           </p>
         </div>
 
@@ -67,20 +69,20 @@ export default function PhoneMockup() {
               <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${i === 0 ? 'bg-yellow text-yellow-on' : 'bg-raised text-ink'}`}>
                 <Ico size={18} />
               </span>
-              <span className="text-[11px] text-ink-2">{label}</span>
+              <span className="text-center text-[11px] text-ink-2">{t(label)}</span>
             </div>
           ))}
         </div>
 
         {/* markets list */}
-        <div className="mt-5 flex gap-4 border-b border-line px-4 text-[13px] font-medium">
-          <span className="text-ink-3">Favorites</span>
+        <div className="mt-5 flex justify-between gap-2 border-b border-line px-4 text-[13px] font-medium">
+          <span className="text-ink-3">{t('Favorites')}</span>
           <span className="relative pb-2 text-ink">
-            Hot
+            {t('Hot')}
             <span className="absolute bottom-0 left-1/2 h-[2px] w-3 -translate-x-1/2 rounded bg-yellow" />
           </span>
-          <span className="text-ink-3">Gainers</span>
-          <span className="text-ink-3">New</span>
+          <span className="text-ink-3">{t('Gainers')}</span>
+          <span className="text-ink-3">{t('New')}</span>
         </div>
         <ul className="px-4">
           {['EDC', 'BNB', 'BTC', 'ETH', 'SOL'].map((s) => (
@@ -90,7 +92,7 @@ export default function PhoneMockup() {
                 {s}
                 <span className="font-normal text-ink-3">/USDT</span>
               </span>
-              <span className="num ml-auto mr-3 text-[13px] font-medium text-ink">{formatPrice(quotes[s].price)}</span>
+              <span className="num ml-auto mr-3 text-[13px] font-medium text-ink">{formatPrice(quotes[s].price, locale)}</span>
               <ChangePill value={quotes[s].change} className="!h-6 !min-w-[62px] !text-[12px]" />
             </li>
           ))}
@@ -99,9 +101,9 @@ export default function PhoneMockup() {
         {/* tab bar */}
         <div className="absolute inset-x-0 bottom-0 grid grid-cols-5 border-t border-line bg-page px-2 pb-5 pt-2">
           {TABS.map(([label, Ico, active]) => (
-            <span key={label} className={`flex flex-col items-center gap-0.5 text-[11px] ${active ? 'text-ink' : 'text-ink-3'}`}>
+            <span key={label} className={`flex min-w-0 flex-col items-center gap-0.5 text-center text-[11px] ${active ? 'text-ink' : 'text-ink-3'}`}>
               <Ico size={18} className={active ? 'text-yellow-text' : ''} />
-              {label}
+              {t(label)}
             </span>
           ))}
         </div>
