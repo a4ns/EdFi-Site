@@ -5,7 +5,7 @@ import { TRUST_STATS } from '../../data/content';
 export default function TrustStats() {
   const { locale, t } = useLocale();
   return (
-    <section className="page-x" aria-label={t('EdFi in numbers')}>
+    <section className="page-x pb-6 lg:pb-0" aria-label={t('EdFi in numbers')}>
       <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4 lg:gap-x-10">
         {TRUST_STATS.map((s) => (
           <div key={t(s.label)}>

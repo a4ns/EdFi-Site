@@ -157,7 +157,7 @@ export default function Hero() {
         </ul>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:flex lg:flex-col">
+      <div className="grid gap-4 lg:flex lg:flex-col">
         <MarketsCard />
         <GuideCard />
       </div>
