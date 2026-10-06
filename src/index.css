@@ -19,7 +19,7 @@
     --c-yellow-text: 252 213 53; /* #FCD535 */
     --c-yellow-accent: 252 213 53; /* #FCD535: large text and graphics */
     --c-up: 14 203 129;          /* #0ECB81 */
-    --c-down: 255 126 144;       /* #FF7E90 */
+    --c-down: 255 124 128;       /* #FF7C80: truer red than pink, still 4.5:1 on tinted chips */
     --c-up-on: 8 45 34;
     --c-down-on: 38 5 9;
     --c-focus: 252 213 53;
