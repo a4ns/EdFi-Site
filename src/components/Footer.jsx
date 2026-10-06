@@ -96,7 +96,7 @@ export default function Footer() {
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4 md:mt-12 md:border-t md:border-line md:pt-6">
           <div className="flex items-center gap-4 text-sm text-ink-2">
             <Globe size={16} className="shrink-0 text-ink-3" />
-            <LanguageSwitcher />
+            <LanguageSwitcher variant="inline" />
             <span className="h-4 w-px bg-line-strong" />
             <span className="num">USD · KZT</span>
           </div>

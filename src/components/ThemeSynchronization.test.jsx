@@ -1,3 +1,4 @@
+import { LANGUAGE_OPTIONS } from '../lib/locale';
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -110,7 +111,7 @@ describe('shared theme controls', () => {
     const user = userEvent.setup();
     renderControls(<><ThemeToggle /><Footer /></>);
     await user.click(screen.getByRole('button', { name: 'Light theme' }));
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Language' }), locale);
+    await user.click(screen.getByRole('button', { name: LANGUAGE_OPTIONS.find((option) => option.value === locale).label }));
     const toggle = screen.getByRole('button', { name: translate(locale, 'Switch to dark theme') });
     expect(document.documentElement).toHaveAttribute('data-theme', 'light');
     await user.click(toggle);

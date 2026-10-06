@@ -61,27 +61,28 @@ describe('shared navigation localization', () => {
     const user = userEvent.setup();
     renderChrome(<><Header /><Footer /></>);
     await user.click(screen.getByRole('button', { name: translate(locale, 'Language and currency') }));
-    const controls = screen.getAllByRole('combobox', { name: translate(locale, 'Language') });
-    expect(controls).toHaveLength(2);
-    for (const control of controls) {
-      expect(within(control).getAllByRole('option').map((option) => [option.value, option.textContent, option.lang])).toEqual([
-        ['kk', 'Қазақша', 'kk'], ['en', 'English', 'en'], ['ru', 'Русский', 'ru'],
-      ]);
-      expect(control).toHaveValue(locale);
-    }
+    const panelControl = screen.getByRole('combobox', { name: translate(locale, 'Language') });
+    expect(within(panelControl).getAllByRole('option').map((option) => [option.value, option.textContent, option.lang])).toEqual([
+      ['kk', 'Қазақша', 'kk'], ['en', 'English', 'en'], ['ru', 'Русский', 'ru'],
+    ]);
+    expect(panelControl).toHaveValue(locale);
+    const footerGroup = screen.getByRole('group', { name: translate(locale, 'Language') });
+    expect(within(footerGroup).getAllByRole('button').map((button) => [button.lang, button.textContent])).toEqual([
+      ['kk', 'Қазақша'], ['en', 'English'], ['ru', 'Русский'],
+    ]);
+    expect(within(footerGroup).getByRole('button', { pressed: true })).toHaveAttribute('lang', locale);
     expect(localStorage.getItem('edfi.locale')).toBe(locale);
-    await user.selectOptions(controls[0], 'ru');
-    for (const control of screen.getAllByRole('combobox', { name: translate('ru', 'Language') })) {
-      expect(control).toHaveValue('ru');
-    }
+    await user.selectOptions(panelControl, 'ru');
+    expect(screen.getByRole('combobox', { name: translate('ru', 'Language') })).toHaveValue('ru');
+    expect(within(screen.getByRole('group', { name: translate('ru', 'Language') })).getByRole('button', { pressed: true })).toHaveAttribute('lang', 'ru');
     expect(localStorage.getItem('edfi.locale')).toBe('ru');
     expect(document.documentElement).toHaveAttribute('lang', 'ru');
     expect(screen.getAllByText(translate('ru', 'Market prices use USD. Demo KZT estimates use a fixed rate of 1 USD = 520 KZT, not a live exchange rate.'))).toHaveLength(2);
     await user.keyboard('{Escape}');
     expect(screen.getByRole('button', { name: translate('ru', 'Language and currency') })).toHaveFocus();
-    const footerControl = screen.getByRole('combobox', { name: translate('ru', 'Language') });
-    await user.selectOptions(footerControl, 'kk');
-    expect(footerControl).toHaveValue('kk');
+    const footerControl = screen.getByRole('group', { name: translate('ru', 'Language') });
+    await user.click(within(footerControl).getByRole('button', { name: 'Қазақша' }));
+    expect(within(footerControl).getByRole('button', { name: 'Қазақша' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByText(translate('kk', 'Independent concept project. Not affiliated with or endorsed by Binance.'))).toBeInTheDocument();
   });
 
@@ -115,7 +116,7 @@ describe('shared navigation localization', () => {
     renderChrome(<Footer />);
     const accordion = screen.getByText('About', { selector: 'summary' }).closest('details');
     accordion.open = true;
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Language' }), 'ru');
+    await user.click(screen.getByRole('button', { name: 'Русский' }));
     expect(accordion.open).toBe(true);
     expect(within(accordion).getByText(translate('ru', 'About EdFi'))).toBeInTheDocument();
   });

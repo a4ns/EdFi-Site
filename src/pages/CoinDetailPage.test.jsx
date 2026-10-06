@@ -10,7 +10,7 @@ import { MarketsContext } from '../state/markets';
 import { COINS, EDC_START, FALLBACK_MARKETS } from '../data/content';
 import { translate } from '../i18n/messages';
 import { formatChange, formatCompact, formatUsd } from '../lib/format';
-import { LOCALE_STORAGE_KEY } from '../lib/locale';
+import { LANGUAGE_OPTIONS, LOCALE_STORAGE_KEY } from '../lib/locale';
 
 const QUOTES = Object.fromEntries(Object.entries({ EDC: EDC_START, ...FALLBACK_MARKETS })
   .map(([symbol, quote]) => [symbol, { ...quote, tick: 0, dir: null }]));
@@ -157,20 +157,22 @@ describe('market detail navigation', () => {
     const hot = screen.getByRole('heading', { name: 'Hot Coins' }).parentElement;
     await user.click(within(hot).getByRole('link', { name: 'View Bitcoin (BTC) details' }));
     expect(screen.getByRole('heading', { name: 'Bitcoin', level: 1 })).toBeVisible();
+    const label = Object.fromEntries(LANGUAGE_OPTIONS.map((option) => [option.value, option.label]));
+    const languageButton = (locale) => screen.getByRole('button', { name: label[locale] });
     for (const locale of ['kk', 'ru', 'en']) {
-      const select = screen.getByRole('combobox');
-      expect(within(select).getAllByRole('option').map((option) => option.value)).toEqual(['kk', 'en', 'ru']);
-      await user.selectOptions(select, locale);
-      expect(select).toHaveValue(locale);
+      const group = languageButton('kk').closest('[role="group"]');
+      expect(within(group).getAllByRole('button').map((button) => button.lang)).toEqual(['kk', 'en', 'ru']);
+      await user.click(languageButton(locale));
+      expect(languageButton(locale)).toHaveAttribute('aria-pressed', 'true');
       expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe(locale);
       expect(screen.getByText(translate(locale, 'Price snapshot'))).toBeVisible();
       expect(screen.getByRole('heading', { name: 'Bitcoin', level: 1 })).toBeVisible();
       expect(document.title).toBe(translate(locale, '{name} ({symbol}) price | EdFi', { name: 'Bitcoin', symbol: 'BTC' }));
     }
-    await user.selectOptions(screen.getByRole('combobox'), 'kk');
+    await user.click(languageButton('kk'));
     await user.click(screen.getByRole('link', { name: translate('kk', 'Back to markets') }));
     expect(screen.getByRole('heading', { name: translate('kk', 'Markets'), level: 1 })).toBeVisible();
-    expect(screen.getByRole('combobox')).toHaveValue('kk');
+    expect(languageButton('kk')).toHaveAttribute('aria-pressed', 'true');
     expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('kk');
   });
 });
