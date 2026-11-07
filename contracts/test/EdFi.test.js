@@ -40,6 +40,11 @@ const claim = (minter, r, sig, from) =>
   (from ? minter.connect(from) : minter).claim(r.student, r.amount, r.resultId, r.deadline, sig);
 
 describe('EDCToken', () => {
+  it('rejects a zero admin at deployment', async () => {
+    const Token = await ethers.getContractFactory('EDCToken');
+    await expect(Token.deploy(ethers.ZeroAddress)).to.be.revertedWithCustomError(Token, 'ZeroAddress');
+  });
+
   it('has EdFi metadata and starts with zero supply', async () => {
     const { token } = await loadFixture(deploy);
     expect(await token.name()).to.equal('EdFi Coin');
@@ -102,12 +107,12 @@ describe('RewardMinter', () => {
     await expect(claim(minter, { ...r, amount: EDC(500) }, sig)).to.be.revertedWithCustomError(minter, 'InvalidOracle');
   });
 
-  it('rejects expired claims', async () => {
+  it('rejects a claim one second after its deadline', async () => {
     const { minter, oracle, sign, reward } = await loadFixture(deploy);
     const r = await reward();
     const sig = await sign(oracle, r);
-    await time.increaseTo(r.deadline + 1);
-    await expect(claim(minter, r, sig)).to.be.revertedWithCustomError(minter, 'Expired');
+    await time.setNextBlockTimestamp(r.deadline + 1);
+    await expect(claim(minter, r, sig)).to.be.revertedWithCustomError(minter, 'Expired').withArgs(r.deadline);
   });
 
   it('caps a single reward and rejects zero amounts', async () => {
@@ -214,7 +219,7 @@ describe('CampusPay', () => {
     await expect(pay.connect(admin).updateMerchant(1, admin.address, true)).to.emit(pay, 'MerchantUpdated').withArgs(1, admin.address, true);
   });
 
-  it('still pays when a permit was front-run but the allowance is set', async () => {
+  it('falls back to an existing allowance when a permit is invalid', async () => {
     const { pay, token, student, merchantWallet } = await funded();
     await token.connect(student).approve(await pay.getAddress(), EDC(10));
     const garbage = ethers.ZeroHash;

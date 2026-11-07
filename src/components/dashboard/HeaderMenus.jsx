@@ -1,46 +1,34 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLocale } from '../../state/locale';
+import { useState } from 'react';
 import { Bell, ChevronRight, Copy, LogOut, Settings, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { NOTIFICATIONS } from './data';
-
-function usePopover() {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDown = (e) => !ref.current?.contains(e.target) && setOpen(false);
-    const onKey = (e) => e.key === 'Escape' && setOpen(false);
-    document.addEventListener('mousedown', onDown);
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDown);
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-  return { open, setOpen, ref };
-}
+import { useDisclosure } from '../../state/useDisclosure';
 
 export function NotificationsMenu() {
-  const { open, setOpen, ref } = usePopover();
+  const { t } = useLocale();
+  const { open, containerRef, triggerRef, panelId, toggle } = useDisclosure();
   const [unread, setUnread] = useState(NOTIFICATIONS.length);
   return (
-    <div ref={ref} className="sm:relative">
+    <div ref={containerRef} className="sm:relative">
       <button
+        ref={triggerRef}
         type="button"
         className="icon-btn relative w-10"
-        aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
+        aria-label={unread ? t('Notifications, {count} unread', { count: unread }) : t('Notifications')}
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
+        aria-controls={open ? panelId : undefined}
+        onClick={toggle}
       >
         <Bell size={20} />
         {unread > 0 && <span className="absolute right-2 top-1.5 h-2 w-2 rounded-full bg-down" />}
       </button>
       {open && (
-        <div className="fixed inset-x-4 top-[68px] z-50 animate-pop-in sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-[360px] rounded-xl border border-line bg-card shadow-pop">
+        <div id={panelId} className="fixed inset-x-4 top-[68px] z-50 animate-pop-in sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-[360px] rounded-xl border border-line bg-card shadow-pop">
           <div className="flex items-center justify-between px-4 py-3">
-            <h2 className="text-base font-semibold text-ink">Notifications</h2>
+            <h2 className="text-base font-semibold text-ink">{t('Notifications')}</h2>
             <button type="button" onClick={() => setUnread(0)} disabled={!unread} className="text-xs font-medium text-yellow-text disabled:text-ink-4">
-              Mark all as read
+              {t('Mark all as read')}
             </button>
           </div>
           <ul className="max-h-[360px] overflow-y-auto border-t border-line">
@@ -48,9 +36,9 @@ export function NotificationsMenu() {
               <li key={n.id} className="flex gap-3 border-b border-line px-4 py-3 last:border-0">
                 <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${i < unread ? 'bg-yellow' : 'bg-transparent'}`} />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-ink">{n.title}</p>
-                  <p className="mt-0.5 text-xs leading-5 text-ink-3">{n.text}</p>
-                  <p className="mt-1 text-xs text-ink-3">{n.ago}</p>
+                  <p className="text-sm font-medium text-ink">{t(n.title)}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-ink-3">{t(n.text)}</p>
+                  <p className="mt-1 text-xs text-ink-3">{t(n.ago)}</p>
                 </div>
               </li>
             ))}
@@ -62,38 +50,41 @@ export function NotificationsMenu() {
 }
 
 export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
-  const { open, setOpen, ref } = usePopover();
+  const { t } = useLocale();
+  const { open, containerRef, triggerRef, panelId, close, toggle } = useDisclosure();
   const item = 'flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm text-ink transition-colors hover:bg-raised';
   return (
-    <div ref={ref} className="relative">
+    <div ref={containerRef} className="relative">
       <button
+        ref={triggerRef}
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggle}
         aria-expanded={open}
-        aria-label="Account menu"
+        aria-controls={open ? panelId : undefined}
+        aria-label={t('Account menu')}
         className="flex h-8 w-8 items-center justify-center rounded-full bg-raised text-xs font-semibold text-yellow-text transition-colors hover:bg-line-strong"
       >
         AK
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-[280px] animate-pop-in rounded-xl border border-line bg-card p-2 shadow-pop">
+        <div id={panelId} className="absolute right-0 top-12 z-50 w-[280px] animate-pop-in rounded-xl border border-line bg-card p-2 shadow-pop">
           <div className="px-3 pb-3 pt-2">
             <p className="text-base font-semibold text-ink">Ansar Kazbekov</p>
-            <p className="mt-1 flex items-center gap-1.5 text-xs text-ink-3">
+            <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-3">
               <span className="num">UID 210404</span>
               <button
                 type="button"
                 onClick={() => {
-                  onCopyUid();
-                  setOpen(false);
+                  close(true);
+                  onCopyUid?.();
                 }}
                 className="hover:text-yellow-text"
-                aria-label="Copy UID"
+                aria-label={t('Copy UID')}
               >
                 <Copy size={12} />
               </button>
               <span className="text-ink-4">·</span>
-              <span>Scholar Tier 2</span>
+              <span>{t('Scholar Tier 2')}</span>
             </p>
           </div>
           <div className="border-t border-line pt-2">
@@ -101,29 +92,29 @@ export function AccountMenu({ onAccount, onSettings, onCopyUid }) {
               type="button"
               className={item}
               onClick={() => {
-                setOpen(false);
-                onAccount();
+                close(true);
+                onAccount?.();
               }}
             >
               <User size={18} className="text-ink-3" />
-              Account
+              {t('Account')}
               <ChevronRight size={16} className="ml-auto text-ink-4" />
             </button>
             <button
               type="button"
               className={item}
               onClick={() => {
-                setOpen(false);
-                onSettings();
+                close(true);
+                onSettings?.();
               }}
             >
               <Settings size={18} className="text-ink-3" />
-              Settings
+              {t('Settings')}
               <ChevronRight size={16} className="ml-auto text-ink-4" />
             </button>
-            <Link to="/" className={item}>
+            <Link to="/" className={item} onClick={() => close(true)}>
               <LogOut size={18} className="text-ink-3" />
-              Log Out
+              {t('Log Out')}
             </Link>
           </div>
         </div>

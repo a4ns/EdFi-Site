@@ -1,13 +1,15 @@
 import { ChevronRight, Megaphone } from 'lucide-react';
 import { ANNOUNCEMENTS } from './data';
+import { useLocale } from '../../state/locale';
 
 export default function AnnouncementsCard() {
+  const { t } = useLocale();
   return (
     <section className="panel flex-1 p-4 md:p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-ink">Announcements</h2>
+        <h2 className="text-base font-semibold text-ink">{t('Announcements')}</h2>
         <a href="/#faq" className="link-more">
-          More
+          {t('More')}
           <ChevronRight size={16} />
         </a>
       </div>
@@ -15,7 +17,7 @@ export default function AnnouncementsCard() {
         {ANNOUNCEMENTS.map((a) => (
           <li key={a} className="flex gap-2 text-sm">
             <Megaphone size={16} className="mt-0.5 shrink-0 text-ink-3" />
-            <span className="text-ink-2">{a}</span>
+            <span className="text-ink-2">{t(a)}</span>
           </li>
         ))}
       </ul>

@@ -21,7 +21,7 @@ contract RewardMinter is AccessControl, Pausable, EIP712 {
         keccak256("Reward(address student,uint256 amount,bytes32 resultId,uint256 deadline)");
 
     EDCToken public immutable token;
-    /// @notice Upper bound for a single reward, protects against a leaked or buggy oracle.
+    /// @notice Upper bound for one reward, not a total issuance or per-oracle budget.
     uint256 public maxRewardPerClaim;
     /// @notice Result IDs that were already paid out (replay protection).
     mapping(bytes32 resultId => bool) public claimed;

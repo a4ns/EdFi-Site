@@ -21,13 +21,13 @@ Defined as RGB triplets in `src/index.css`, mapped in `tailwind.config.js`. Use 
 | `line-strong` | #474D57 | #D8DCE1 | Input borders |
 | `ink` | #EAECEF | #1E2329 | Primary text |
 | `ink-2` | #B7BDC6 | #474D57 | Body text on cards |
-| `ink-3` | #848E9C | #707A8A | Secondary text, labels, table headers |
+| `ink-3` | #A0AAB8 | #525E6F | Secondary text, labels, table headers |
 | `ink-4` | #5E6673 | #929AA5 | Placeholders, disabled only (too low-contrast for readable text) |
-| `up` / `down` | #0ECB81 / #F6465D | #03A66D / #CF304A | Gains/losses, success/error. Green means positive, never use red for "live" |
+| `up` / `down` | #0ECB81 / #FF7E90 | #006946 / #B31F38 | Gains/losses, success/error. Green means positive, never use red for "live" |
 | `yellow` | #FCD535 | same | Primary buttons, active tab bar, focus ring |
 | `yellow-hover` | #F0B90B | same | Primary button hover |
 | `yellow-on` | #202630 | same | Text on yellow (never pure black) |
-| `yellow-text` | #FCD535 | #C99400 | Yellow used as text/links/icons |
+| `yellow-text` | #FCD535 | #785700 | Yellow used as text/links/icons |
 | `brand` | #F0B90B | same | Logo only |
 
 Rules: boxes inside an outlined `.panel` use `bg-card` (a `bg-page` box disappears). Nested inset blocks inside a `card` (summaries, previews) use `bg-page`.
@@ -63,11 +63,13 @@ Rules: boxes inside an outlined `.panel` use `bg-card` (a `bg-page` box disappea
 
 ## Icons and motion
 
-- lucide-react with 1.5px strokes (global CSS). Active nav items may use a subtle fill.
+- Navigation uses the filled `NavIcons.jsx` set. Other UI icons use lucide-react with 1.5px strokes. Coin artwork is locally served with source/license notices; EDC retains its own mortarboard mark.
 - Motion is short and functional: 150–220ms fades/slides, price flashes, scan line. Respect `prefers-reduced-motion` (handled globally). No parallax, glows, gradients on text, or noise overlays.
 
 ## Responsive and accessibility
 
 - Must work at 390px, 820px and 1440px with no horizontal page scroll.
+- Normal text uses contrast-tested tokens (at least 4.5:1 on page/card/raised); colored price pills use `up-on`/`down-on`. The theme-specific `focus` token keeps outlines visible, including in the light theme.
+- Filters and authentication methods use `FilterTabs`, one tab stop, arrow/Home/End selection and a labeled panel.
 - Every interactive element is a real `<button>` or `<a>` with an accessible name; dialogs trap focus; visible yellow focus ring (`:focus-visible`).
 - Minimum readable text color is `ink-3`; `ink-4` is only for placeholders and disabled states.
