@@ -78,6 +78,8 @@ Each request is authorized through an explicit trusted adapter; the default deni
 
 See [backend/README.md](backend/README.md) for the API, invariants, test commands and limitations. This package does not authenticate real users, prove academic results, verify funding or settle blockchain transactions.
 
+A separate [in-process HTTP contract](backend/HTTP.md) maps six reward operations to standard `Request` and `Response` objects. It validates routes and JSON, bounds body reads, keeps identity in a trusted injected adapter, and redacts internal errors. It opens no listening port and supplies no real authentication scheme, hosting configuration or UI connection.
+
 ## Features
 
 - **Exchange-grade design system.** Dark and light themes built on design tokens, IBM Plex Sans with tabular figures, dense data layouts.
