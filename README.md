@@ -27,7 +27,7 @@ The planned first campus is Kozybayev University in Petropavlovsk, Kazakhstan (6
 
 ## What's in this repository
 
-The web prototype (a marketing site and an interactive wallet dashboard) and the [smart contracts](contracts/) for the testnet pilot.
+The web prototype (a marketing site and an interactive wallet dashboard), the [smart contracts](contracts/) for the testnet pilot, and an isolated [offline reward-ledger reference package](backend/).
 
 | Route | What you can do |
 |---|---|
@@ -68,6 +68,16 @@ The [`contracts/`](contracts/) folder holds the on-chain side of EdFi, written i
 
 Status: tested locally with an adversarial regression suite and a CI-enforced 100% line-coverage requirement. Not deployed or audited yet. See [contracts/README.md](contracts/README.md) for the security model, role-configuration requirements and deployment steps.
 
+## Offline reward-ledger foundation
+
+The [`backend/`](backend/) package explores durable reward decisions and accounting with synthetic data. It has no HTTP server, login provider, university integration, signer or wallet connection, and it is not connected to the website. SQLite is a local reference adapter, not a decision about production hosting or storage.
+
+Reward approval reserves an issuer/unit allocation without crediting a balance. Posting moves that reservation to spent and appends one balanced debit/credit pair. Pending and approved rewards can be revoked; posted and revoked rewards are terminal. A posted reward cannot be revoked or silently clawed back.
+
+Each request is authorized through an explicit trusted adapter; the default denies every action, including reads and retries. Budgets default to zero. Only isolated test fixtures provision synthetic allocations. Quantities are canonical decimal strings calculated with `BigInt`, with no assumed EDC denomination, price or reward formula. Business-result uniqueness and issuer-scoped idempotency prevent repeated processing; state, allocation, audit history, ledger and the historical command receipt commit together.
+
+See [backend/README.md](backend/README.md) for the API, invariants, test commands and limitations. This package does not authenticate real users, prove academic results, verify funding or settle blockchain transactions.
+
 ## Features
 
 - **Exchange-grade design system.** Dark and light themes built on design tokens, IBM Plex Sans with tabular figures, dense data layouts.
@@ -86,7 +96,7 @@ Contracts: Solidity 0.8.28 · Hardhat · OpenZeppelin Contracts 5 · BNB Smart C
 
 ## Getting started
 
-Use Node.js 22.12+ (22.x) or 24.x. CI is configured to run the web and contract checks on both major versions.
+Use Node.js 22.12+ (22.x) or 24.x. CI runs the web and contract checks on both major versions; the isolated backend also checks the exact minimum 22.12.0.
 
 ```bash
 npm ci
@@ -100,7 +110,13 @@ cd contracts
 npm ci
 npm test           # contract behavior and adversarial regression tests
 npm run coverage   # project coverage report + 100% line-coverage gate
+
+cd ../backend
+npm ci --ignore-scripts
+npm test           # synthetic persistence, authorization and concurrency tests
 ```
+
+The backend has no third-party dependencies. Its test command includes `--experimental-sqlite` for Node 22.12 compatibility; this reference adapter does not imply a production database choice.
 
 ## Demo accounting
 
@@ -141,13 +157,14 @@ src/
 ├── lib/                Exact demo amounts, formatting, theme and link helpers
 └── index.css           Design tokens (dark and light themes) and component classes
 contracts/              Solidity contracts, tests and deploy script (Hardhat)
+backend/                Offline reward service, SQLite reference adapter and synthetic tests
 public/                 Favicon, social preview and licensed local coin assets (coins/NOTICE.md)
 docs/screenshots/       Images used in this README
 ```
 
 ## Production boundary
 
-The public website and local wallet demo are separate from a production financial service. Production authentication, a durable backend, verified university records, issuer permissions, reward budgets, oracle signing, deployment keys, real wallets, monitoring and operational ownership remain unresolved. Tests use synthetic data and do not establish those capabilities. No real user records or funds should be entered into the demo.
+The public website and local wallet demo are separate from a production financial service. The offline backend demonstrates local persistence and accounting invariants, but production authentication, hosted storage and recovery, verified university records, real issuer permissions and funding policies, oracle signing, deployment keys, real wallets, monitoring and operational ownership remain unresolved. Tests use synthetic data and do not establish those capabilities. No real user records or funds should be entered into the demo or the reference backend.
 
 ## Roadmap
 
