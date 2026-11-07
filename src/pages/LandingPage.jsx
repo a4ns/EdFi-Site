@@ -8,12 +8,18 @@ import Roadmap from '../components/home/Roadmap';
 import FAQ from '../components/home/FAQ';
 import StartEarning from '../components/home/StartEarning';
 import Footer from '../components/Footer';
+import { useEffect } from 'react';
+import { useLocale } from '../state/locale';
 
 export default function LandingPage() {
+  const { t } = useLocale();
+  useEffect(() => {
+    document.title = t('EdFi | Learn-to-Earn on BNB Chain');
+  }, [t]);
   return (
     <div className="min-h-screen bg-page">
       <Header variant="home" />
-      <main>
+      <main id="main-content" tabIndex={-1} className="scroll-mt-16 focus:outline-none">
         <Hero />
         <TrustStats />
         <EarnMarkets />

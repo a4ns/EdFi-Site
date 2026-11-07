@@ -1,20 +1,22 @@
-import { useEffect, useState } from 'react';
-import { BedDouble, Check, Copy, Printer, Shirt, Utensils, Zap } from 'lucide-react';
+import { useLocale } from '../../state/locale';
+import { useEffect, useRef, useState } from 'react';
+import { BedDouble, Check, Printer, Shirt, Utensils, Zap } from 'lucide-react';
 import Modal from './Modal';
 import AmountInput from './AmountInput';
 import SummaryRow from './SummaryRow';
 import { MERCHANTS } from './data';
-import { formatAmount, formatDateTime } from '../../lib/format';
+import { formatDateTime } from '../../lib/format';
+import { formatDemoAmount, parseDemoAmount } from '../../lib/demoAmount';
+import DemoNotice from './DemoNotice';
 
 const ICONS = { Utensils, BedDouble, Shirt, Printer };
 
-const hex = (n) => Array.from({ length: n }, () => Math.floor(Math.random() * 16).toString(16)).join('');
-
-export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
+export default function PayModal({ balanceUnits, transaction, error, onClose, onPay, onViewHistory }) {
+  const { locale, t } = useLocale();
   const [merchant, setMerchant] = useState(MERCHANTS[0].id);
   const [amount, setAmount] = useState('15.00');
-  const [done, setDone] = useState(null);
   const [scanning, setScanning] = useState(true);
+  const merchantOptions = useRef([]);
 
   // The demo has no camera: "detect" the canteen QR code after a moment.
   useEffect(() => {
@@ -25,42 +27,48 @@ export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
     }, 2600);
     return () => clearTimeout(id);
   }, [scanning]);
-  const value = Number(amount) || 0;
-  const over = value > balance;
+  const units = parseDemoAmount(amount);
+  const over = units !== null && units > balanceUnits;
+  const valid = units !== null && units > 0 && !over;
   const m = MERCHANTS.find((x) => x.id === merchant);
 
-  if (done) {
+  const moveMerchant = (event, index) => {
+    let next;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (index + 1) % MERCHANTS.length;
+    else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (index + MERCHANTS.length - 1) % MERCHANTS.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = MERCHANTS.length - 1;
+    else return;
+    event.preventDefault();
+    setMerchant(MERCHANTS[next].id);
+    merchantOptions.current[next]?.focus();
+  };
+
+  if (transaction) {
     return (
-      <Modal title="Scan Pay" onClose={onClose}>
+      <Modal title={t('Scan Pay')} onClose={onClose}>
+        <DemoNotice className="mb-5" />
         <div className="flex flex-col items-center text-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-up/15">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-up text-white">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-up text-up-on">
               <Check size={28} strokeWidth={2.5} />
             </span>
           </span>
-          <p className="mt-4 text-base font-medium text-ink">Payment Successful</p>
-          <p className="num mt-1 text-[28px] font-semibold leading-9 text-ink">-{formatAmount(done.amount)} EDC</p>
+          <p className="mt-4 text-base font-medium text-ink">{t('Demo payment complete')}</p>
+          <p className="num mt-1 text-[28px] font-semibold leading-9 text-ink">-{formatDemoAmount(-transaction.amountUnits, locale)} EDC</p>
         </div>
         <div className="mt-6 space-y-3 rounded-lg bg-page p-4">
-          <SummaryRow label="Merchant">{done.name}</SummaryRow>
-          <SummaryRow label="Fee">0.00 EDC</SummaryRow>
-          <SummaryRow label="Time">{formatDateTime(new Date(done.at))}</SummaryRow>
-          <SummaryRow label="Order ID">{done.order}</SummaryRow>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-ink-3">Tx hash</span>
-            <span className="num flex items-center gap-1.5 text-ink-2">
-              {done.hash.slice(0, 8)}…{done.hash.slice(-6)}
-              <button type="button" onClick={() => navigator.clipboard?.writeText(done.hash).catch(() => {})} className="text-ink-3 hover:text-yellow-text" aria-label="Copy transaction hash">
-                <Copy size={14} />
-              </button>
-            </span>
-          </div>
+          <SummaryRow label={t('Merchant')}>{t(transaction.title)}</SummaryRow>
+          <SummaryRow label={t('Fee')}>{formatDemoAmount(0, locale)} EDC</SummaryRow>
+          <SummaryRow label={t('Time')}>{formatDateTime(new Date(transaction.at), locale)}</SummaryRow>
+          <SummaryRow label={t('Demo receipt')}>{transaction.id}</SummaryRow>
+          <p className="text-xs text-ink-3">{t('Local receipt only. No blockchain transaction exists.')}</p>
         </div>
         <button type="button" className="btn btn-primary btn-lg mt-6 w-full" onClick={onClose}>
-          Done
+          {t('Done')}
         </button>
         <button type="button" className="mt-3 w-full text-center text-sm font-medium text-ink-3 hover:text-ink" onClick={onViewHistory}>
-          View in History
+          {t('View in History')}
         </button>
       </Modal>
     );
@@ -68,8 +76,8 @@ export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
 
   if (scanning) {
     return (
-      <Modal title="Scan Pay" onClose={onClose}>
-        <p className="text-center text-sm text-ink-3">Point your camera at the merchant QR code</p>
+      <Modal title={t('Scan Pay')} onClose={onClose}>
+        <p className="text-center text-sm text-ink-3">{t('Preview a simulated merchant scan')}</p>
         <div className="relative mx-auto mt-5 flex h-[260px] w-full max-w-[300px] items-center justify-center overflow-hidden rounded-xl bg-deep">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,rgba(0,0,0,0.55)_100%)]" />
           <div className="relative h-[190px] w-[190px]">
@@ -81,66 +89,70 @@ export default function PayModal({ balance, onClose, onPay, onViewHistory }) {
         </div>
         <p className="mt-3 flex items-center justify-center gap-1 text-xs text-ink-3">
           <Zap size={12} />
-          Demo: scanning is simulated
+          {t('Demo only · No camera access is used')}
         </p>
         <button type="button" className="btn btn-secondary btn-lg mt-6 w-full" onClick={() => setScanning(false)}>
-          Select merchant instead
+          {t('Select merchant instead')}
         </button>
       </Modal>
     );
   }
 
   return (
-    <Modal title="Scan Pay" onClose={onClose}>
+    <Modal title={t('Scan Pay')} onClose={onClose}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!value || over) return;
-          onPay({ merchant: m, amount: value });
-          setDone({ amount: value, name: m.name, at: Date.now(), order: `CP${Date.now().toString().slice(-10)}`, hash: `0x${hex(64)}` });
+          if (!valid) return;
+          onPay({ merchantId: m.id, amountUnits: units });
         }}
       >
-        <p className="text-sm text-ink-3">Merchant</p>
-        <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Merchant">
-          {MERCHANTS.map((x) => {
+        <DemoNotice className="mb-5" />
+        <p className="text-sm text-ink-3">{t('Demo merchant')}</p>
+        <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label={t('Merchant')}>
+          {MERCHANTS.map((x, index) => {
             const Ico = ICONS[x.icon];
             const sel = x.id === merchant;
             return (
               <button
                 key={x.id}
+                ref={(element) => { merchantOptions.current[index] = element; }}
                 type="button"
                 role="radio"
                 aria-checked={sel}
+                tabIndex={sel ? 0 : -1}
+                onKeyDown={(event) => moveMerchant(event, index)}
                 onClick={() => setMerchant(x.id)}
                 className={`flex items-center gap-2 rounded-lg border px-3 py-3 text-left transition-colors ${
                   sel ? 'border-yellow bg-yellow/5' : 'border-line-strong hover:border-ink-3'
                 }`}
               >
-                <Ico size={18} className={sel ? 'text-yellow-text' : 'text-ink-3'} />
-                <span className="truncate text-sm font-medium text-ink">{x.name}</span>
+                <Ico size={18} className={`shrink-0 ${sel ? 'text-yellow-text' : 'text-ink-3'}`} />
+                <span className="min-w-0 break-words text-sm font-medium leading-5 text-ink">{t(x.name)}</span>
               </button>
             );
           })}
         </div>
 
         <label htmlFor="pay-amount" className="mt-6 block text-sm text-ink-3">
-          Amount
+          {t('Amount')}
         </label>
         <div className="mt-2">
-          <AmountInput id="pay-amount" value={amount} onChange={setAmount} max={balance} invalid={over} />
+          <AmountInput id="pay-amount" value={amount} onChange={setAmount} maxUnits={balanceUnits} invalid={over} />
         </div>
-        {over && <p className="mt-2 text-xs text-down">Insufficient balance</p>}
+        {over && <p className="mt-2 text-xs text-down">{t('Insufficient balance')}</p>}
 
         <div className="mt-6 space-y-3 rounded-lg bg-page p-4">
-          <SummaryRow label="Available">{formatAmount(balance)} EDC</SummaryRow>
-          <SummaryRow label="Network fee">0.00 EDC</SummaryRow>
-          <SummaryRow label="You pay" strong>
-            {formatAmount(value)} EDC
+          <SummaryRow label={t('Available')}>{formatDemoAmount(balanceUnits, locale)} EDC</SummaryRow>
+          <SummaryRow label={t('Network fee')}>{formatDemoAmount(0, locale)} EDC</SummaryRow>
+          <SummaryRow label={t('You pay')} strong>
+            {formatDemoAmount(units ?? 0, locale)} EDC
           </SummaryRow>
         </div>
 
-        <button type="submit" className="btn btn-primary btn-lg sticky bottom-0 mt-6 w-full" disabled={!value || over}>
-          Confirm Payment
+        {error && <p role="alert" className="mt-3 text-sm text-down">{t(error)}</p>}
+        <button type="submit" className="btn btn-primary btn-lg sticky bottom-0 mt-6 w-full" disabled={!valid}>
+          {t('Simulate payment')}
         </button>
       </form>
     </Modal>

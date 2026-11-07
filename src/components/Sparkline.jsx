@@ -16,7 +16,7 @@ function series(seed, dir, n = 24) {
   return { pts, up: pts[n - 1] >= pts[0] };
 }
 
-export default function Sparkline({ seed, up, width = 90, height = 28, className = 'ml-auto' }) {
+export default function Sparkline({ seed, up, neutral = false, width = 90, height = 28, className = 'ml-auto' }) {
   const { pts, up: goesUp } = series(seed, up === undefined ? undefined : up ? 1 : -1);
   const min = Math.min(...pts);
   const max = Math.max(...pts);
@@ -24,7 +24,7 @@ export default function Sparkline({ seed, up, width = 90, height = 28, className
     .map((v, i) => `${i ? 'L' : 'M'}${(i / (pts.length - 1)) * (width - 2) + 1} ${height - 3 - ((v - min) / (max - min || 1)) * (height - 6)}`)
     .join(' ');
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className={`${className} ${goesUp ? 'text-up' : 'text-down'}`} aria-hidden="true">
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className={`${className} ${neutral ? 'text-ink-3' : goesUp ? 'text-up' : 'text-down'}`} aria-hidden="true">
       <path d={d} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );

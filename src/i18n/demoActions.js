@@ -1,0 +1,20 @@
+// Local-only task steps and clipboard feedback for the sample dashboard.
+export const messages = {
+  'Copy manually': { ru: 'Скопировать вручную', kk: 'Қолмен көшіру' },
+  'Clipboard access is unavailable. Select and copy the text below.': { ru: 'Нет доступа к буферу обмена. Выделите и скопируйте текст ниже.', kk: 'Алмасу буфері қолжетімсіз. Төмендегі мәтінді таңдап, көшіріңіз.' },
+  'Clipboard access is unavailable. Paste or type a sample address manually.': { ru: 'Нет доступа к буферу обмена. Вставьте или введите пример адреса вручную.', kk: 'Алмасу буфері қолжетімсіз. Үлгі мекенжайды қолмен қойыңыз немесе енгізіңіз.' },
+  'Clipboard is empty. Enter a sample address manually.': { ru: 'Буфер обмена пуст. Введите пример адреса вручную.', kk: 'Алмасу буфері бос. Үлгі мекенжайды қолмен енгізіңіз.' },
+  'Referral link': { ru: 'Ссылка-приглашение', kk: 'Шақыру сілтемесі' },
+  'About these values': { ru: 'Об этих значениях', kk: 'Бұл мәндер туралы' },
+  'Verify': { ru: 'Проверить', kk: 'Тексеру' },
+  'Demo tasks only. Steps and verification run locally; no university data is sent.': { ru: 'Демонстрационные задания. Шаги и проверка выполняются локально; данные университета не отправляются.', kk: 'Тек демотапсырмалар. Қадамдар мен тексеру жергілікті орындалады; университет деректері жіберілмейді.' },
+  'Demo verification complete. Your sample reward is ready to claim': { ru: 'Демопроверка завершена. Пример награды готов к получению', kk: 'Демотексеру аяқталды. Үлгі сыйақыны алуға болады' },
+  'Sample smart-card check-ins': { ru: 'Пример отметок смарт-картой', kk: 'Смарт-картамен тіркелу үлгісі' },
+  'Sample course · 4 demo steps': { ru: 'Пример курса · 4 демошага', kk: 'Курс үлгісі · 4 демоқадам' },
+  'Next lesson': { ru: 'Следующий урок', kk: 'Келесі сабақ' },
+  'Sample GPA 3.72 · local demo': { ru: 'Пример GPA 3,72 · локальное демо', kk: 'GPA үлгісі: 3,72 · жергілікті демо' },
+  'Sample volunteering hours': { ru: 'Пример часов волонтёрства', kk: 'Еріктілік сағаттарының үлгісі' },
+  'Demo hour added': { ru: 'Демочас добавлен', kk: 'Демосағат қосылды' },
+  'Sample article · no DOI required': { ru: 'Пример статьи · DOI не нужен', kk: 'Мақала үлгісі · DOI қажет емес' },
+  'Demo referral preview. Rewards and friend counts are illustrative.': { ru: 'Пример приглашений. Награды и число друзей показаны условно.', kk: 'Шақырулар үлгісі. Сыйақылар мен достар саны шартты түрде көрсетілген.' },
+};
